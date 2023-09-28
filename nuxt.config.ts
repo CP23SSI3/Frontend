@@ -9,4 +9,10 @@ export default defineNuxtConfig({
       autoprefixer: {}
     }
   }
+  // ใช้ต่อ api ใน .env
+  // runtimeConfig: {
+  //   public: {
+  //     API_URL: process.env.API_URL,
+  //   },
+  // },
 })

@@ -8,8 +8,26 @@
   />
 
   <BaseTitle>Title Topic component</BaseTitle>
+  <button
+    type="button"
+    @click="swalFunction()"
+    class="rounded-md bg-indigo-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+  >
+    Swal Alert
+  </button>
 </template>
 
-<script setup></script>
+<script setup>
+import Swal from 'sweetalert2'
+
+const swalFunction = () =>
+  Swal.fire({
+    showConfirmButton: true,
+    timerProgressBar: true,
+    icon: 'error',
+    title: 'Error',
+    text: 'ระบบผิดพลาด'
+  })
+</script>
 
 <style lang="scss" scoped></style>

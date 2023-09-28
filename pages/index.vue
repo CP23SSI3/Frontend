@@ -8,6 +8,8 @@
   />
 
   <BaseTitle>Title Topic component</BaseTitle>
+  {{ moment(new Date()).format('YYYY-MM-DD') }}
+
   <button
     type="button"
     @click="swalFunction()"
@@ -22,6 +24,7 @@
 </template>
 
 <script setup>
+import moment from 'moment'
 import Swal from 'sweetalert2'
 
 const swalFunction = () =>

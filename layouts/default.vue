@@ -177,6 +177,7 @@
                     aria-orientation="vertical"
                     aria-labelledby="user-menu-button"
                     tabindex="-1"
+                    v-show="false"
                   >
                     <!-- Active: "bg-gray-100", Not Active: "" -->
                     <a

@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   modules: ['@nuxt/image-edge'],
   devtools: { enabled: true },
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', '@vueform/multiselect/themes/default.css'],
   postcss: {
     plugins: {
       tailwindcss: {},

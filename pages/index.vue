@@ -18,9 +18,10 @@
     Swal Alert
   </button>
 
-  <NuxtLink href="/test-easytable">View Vue3-EasyDataTable</NuxtLink>
+  <NuxtLink href="/test/easytable">View Vue3-EasyDataTable</NuxtLink>
 
-  <NuxtLink href="/test-validation">View yup & Vee validation</NuxtLink>
+  <NuxtLink href="/test/validation">View yup & Vee validation</NuxtLink>
+  <NuxtLink href="/test/multiselect">Vue-Multiselect</NuxtLink>
 </template>
 
 <script setup>

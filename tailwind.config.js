@@ -4,10 +4,10 @@ module.exports = {
     './components/**/*.vue',
     './pages/**/*.vue',
     './layouts/**/*.vue',
-    './app.vue'
+    './app.vue',
   ],
   theme: {
-    extend: {}
+    extend: {},
   },
-  plugins: [require('@tailwindcss/forms')]
+  plugins: [require('@tailwindcss/forms'), 'prettier-plugin-tailwindcss'],
 }

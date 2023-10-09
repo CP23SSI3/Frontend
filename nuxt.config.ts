@@ -8,11 +8,19 @@ export default defineNuxtConfig({
       tailwindcss: {},
       autoprefixer: {}
     }
-  }
+  },
   // ใช้ต่อ api ใน .env
   // runtimeConfig: {
   //   public: {
   //     API_URL: process.env.API_URL,
   //   },
   // },
+
+  app: {
+    head: {
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+      title: 'InternHub'
+    }
+  }
 })

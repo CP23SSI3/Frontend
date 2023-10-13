@@ -4,10 +4,16 @@ module.exports = {
     './components/**/*.vue',
     './pages/**/*.vue',
     './layouts/**/*.vue',
-    './app.vue',
+    './app.vue'
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        // thai: ['Noto Sans Thai', 'sans']
+        // thai: ['Kanit', 'sans']
+        thai: ['Prompt', 'sans']
+      }
+    }
   },
-  plugins: [require('@tailwindcss/forms'), 'prettier-plugin-tailwindcss'],
+  plugins: [require('@tailwindcss/forms'), 'prettier-plugin-tailwindcss']
 }

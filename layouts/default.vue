@@ -1,6 +1,10 @@
 <template>
-  <div>
-    <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
+  <div class="font-thai">
+    <Disclosure
+      as="nav"
+      class="sticky top-0 z-50 bg-gray-800"
+      v-slot="{ open }"
+    >
       <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center">
@@ -182,7 +186,7 @@
         </div>
       </DisclosurePanel>
     </Disclosure>
-    <div class="py-10">
+    <div class="relative h-auto py-10">
       <!-- <header>
         <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <h1
@@ -228,6 +232,10 @@ const navigation = ref([
   },
   {
     name: 'Component',
+    href: '/components'
+  },
+  {
+    name: 'Test Component',
     href: '/test/component'
   }
 ])

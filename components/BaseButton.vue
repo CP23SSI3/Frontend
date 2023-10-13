@@ -11,8 +11,7 @@
 
   <button
     v-bind="$attrs"
-    :disabled="disabled"
-    class="px-3 py-2 text-sm font-semibold rounded-md shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+    class="px-3 py-2 text-sm font-semibold rounded-md shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:text-white disabled:bg-gray-300"
     :class="[
       styleButton,
       { 'w-full': full },
@@ -39,10 +38,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
   negative: {
     type: Boolean,
     default: false
@@ -55,16 +50,14 @@ const props = defineProps({
   }
 })
 const styleButton = computed(() => {
-  if (props.disabled) {
-    return 'text-white bg-gray-300 hover:bg-gray-300'
-  } else if (props.secondary) {
+  if (props.secondary) {
     return 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-300 hover:bg-blue-100'
   } else if (props.outline) {
     return 'bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-100'
   } else if (props.negative) {
     return 'bg-red-50 hover:bg-red-100 text-red-700 ring-1 ring-inset ring-red-300'
   } else {
-    return 'text-white bg-blue-600 hover:bg-blue-500  focus-visible:outline-blue-600'
+    return 'text-white bg-blue-600 hover:bg-blue-500 focus-visible:outline-blue-600'
   }
 })
 </script>

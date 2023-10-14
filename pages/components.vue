@@ -27,8 +27,6 @@
           <BaseTitle>Topic 1</BaseTitle>
         </td>
       </tr>
-    </tbody>
-    <tbody class="divide-y divide-gray-200">
       <tr class="divide-x divide-gray-200">
         <td
           class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0"
@@ -39,8 +37,6 @@
           <BaseTitleForm>Topic in Form</BaseTitleForm>
         </td>
       </tr>
-    </tbody>
-    <tbody class="divide-y divide-gray-200">
       <tr class="divide-x divide-gray-200">
         <td
           class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0"
@@ -51,8 +47,6 @@
           <TestBaseButton />
         </td>
       </tr>
-    </tbody>
-    <tbody class="divide-y divide-gray-200">
       <tr class="divide-x divide-gray-200">
         <td
           class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0"
@@ -63,8 +57,6 @@
           <TestBaseInput />
         </td>
       </tr>
-    </tbody>
-    <tbody class="divide-y divide-gray-200">
       <tr class="divide-x divide-gray-200">
         <td
           class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0"
@@ -75,6 +67,16 @@
           <BaseSectionContent :h-padding="6" :v-padding="4">
             Content...
           </BaseSectionContent>
+        </td>
+      </tr>
+      <tr class="divide-x divide-gray-200">
+        <td
+          class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0"
+        >
+          BaseDropdown
+        </td>
+        <td class="p-4 text-sm text-gray-500 whitespace-nowrap">
+          <TestBaseDropdown />
         </td>
       </tr>
     </tbody>

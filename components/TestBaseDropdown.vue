@@ -1,10 +1,12 @@
 <template>
-  <div class="flex">
+  <div class="grid grid-cols-4">
     <BaseDropdown
       :option-lists="categoryLists"
       label="หมวดหมู่งาน"
       v-model="data.category"
-    />
+    >
+      {{ data.category }}
+    </BaseDropdown>
   </div>
 </template>
 

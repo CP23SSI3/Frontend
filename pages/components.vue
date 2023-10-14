@@ -63,7 +63,7 @@
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseDropdown
         </td>
-        <td class="p-4 text-sm text-gray-500">
+        <td class="p-4 text-sm text-gray-500 whitespace-nowrap">
           <TestBaseDropdown />
         </td>
       </tr>
@@ -81,6 +81,21 @@
         </td>
         <td class="p-4 text-sm text-gray-500">
           <TestBaseTimePicker />
+        </td>
+      </tr>
+      <tr class="divide-x divide-gray-200">
+        <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
+          BaseBadge
+        </td>
+        <td class="p-4 text-sm text-gray-500">
+          <BaseSectionContent :h-padding="6" :v-padding="4">
+            <div class="flex gap-2">
+              <BaseBadge color="green">เปิดรับตลอด</BaseBadge>
+              <BaseBadge>ปิดรับสมัคร 19/09/2023</BaseBadge>
+              <BaseBadge color="red">ปิดรับสมัคร 19/09/2023</BaseBadge>
+              <BaseBadge color="yellow">ปิดรับสมัคร 19/09/2023</BaseBadge>
+            </div>
+          </BaseSectionContent>
         </td>
       </tr>
     </tbody>

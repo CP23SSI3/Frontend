@@ -79,6 +79,16 @@
           <TestBaseDropdown />
         </td>
       </tr>
+      <tr class="divide-x divide-gray-200">
+        <td
+          class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-0"
+        >
+          BaseDatePicker
+        </td>
+        <td class="p-4 text-sm text-gray-500 whitespace-nowrap">
+          <TestBaseDatePicker />
+        </td>
+      </tr>
     </tbody>
   </table>
 </template>

@@ -70,7 +70,6 @@ import moment from 'moment'
 import { Field, ErrorMessage, Form } from 'vee-validate'
 import * as yup from 'yup'
 
-console.log(moment.locale())
 const selectedDateTime = ref()
 const selectedDate = ref()
 const selectedDateCustom = ref()

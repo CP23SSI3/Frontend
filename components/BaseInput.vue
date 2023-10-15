@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <!-- Label -->
-    <BaseLabel :id="id" :icon="icon" :required="required">
+    <BaseLabel v-if="label" :id="id" :icon="icon" :required="required">
       {{ label }}
     </BaseLabel>
 
@@ -61,7 +61,7 @@ const props = defineProps({
   },
   label: {
     type: String,
-    required: true
+    default: ''
   },
   required: {
     type: Boolean,

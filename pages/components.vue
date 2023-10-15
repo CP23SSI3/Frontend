@@ -1,7 +1,7 @@
 <template>
-  <table class="min-w-full divide-y divide-gray-300">
+  <table class="min-w-full divide-y divide-gray-400">
     <thead>
-      <tr class="divide-x divide-gray-200">
+      <tr class="divide-x divide-gray-400">
         <th
           scope="col"
           class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-0"
@@ -16,8 +16,8 @@
         </th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-gray-200">
-      <tr class="divide-x divide-gray-200">
+    <tbody class="divide-y divide-gray-400">
+      <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseTitle
         </td>
@@ -25,7 +25,7 @@
           <BaseTitle>Topic 1</BaseTitle>
         </td>
       </tr>
-      <tr class="divide-x divide-gray-200">
+      <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseTitleForm
         </td>
@@ -33,7 +33,7 @@
           <BaseTitleForm>Topic in Form</BaseTitleForm>
         </td>
       </tr>
-      <tr class="divide-x divide-gray-200">
+      <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseButton
         </td>
@@ -41,7 +41,7 @@
           <TestBaseButton />
         </td>
       </tr>
-      <tr class="divide-x divide-gray-200">
+      <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseInput
         </td>
@@ -49,7 +49,7 @@
           <TestBaseInput />
         </td>
       </tr>
-      <tr class="divide-x divide-gray-200">
+      <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseSectionContent
         </td>
@@ -59,7 +59,7 @@
           </BaseSectionContent>
         </td>
       </tr>
-      <tr class="divide-x divide-gray-200">
+      <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseDropdown
         </td>
@@ -67,7 +67,7 @@
           <TestBaseDropdown />
         </td>
       </tr>
-      <tr class="divide-x divide-gray-200">
+      <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseDatePicker
         </td>
@@ -75,7 +75,7 @@
           <TestBaseDatePicker />
         </td>
       </tr>
-      <tr class="divide-x divide-gray-200">
+      <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseTimePicker
         </td>
@@ -83,7 +83,7 @@
           <TestBaseTimePicker />
         </td>
       </tr>
-      <tr class="divide-x divide-gray-200">
+      <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseBadge
         </td>

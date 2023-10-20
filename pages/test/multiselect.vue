@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ value }}
     <Multiselect
       v-model="value"
       mode="tags"
@@ -13,7 +14,7 @@
 </template>
 
 <script setup>
-const value = ref(null)
+const value = ref([])
 const options = [
   'Frontend',
   'Backend',

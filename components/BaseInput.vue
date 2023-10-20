@@ -85,27 +85,6 @@ const props = defineProps({
     type: String,
     default: null
   }
-
-  // icon: {
-  //   type: Object,
-  //   default: null,
-  // },
-  // imgIcon: {
-  //   type: String,
-  //   default: null,
-  // },
-  // placeholder: {
-  //   type: String,
-  //   default: '',
-  // },
-  // type: {
-  //   type: String,
-  //   default: 'text',
-  // },
-  // disabled: {
-  //   type: Boolean,
-  //   default: false,
-  // },
 })
 defineEmits(['update:modelValue'])
 

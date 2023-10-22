@@ -1,15 +1,14 @@
 name: CI
 
-on:
-  push:
-    # branches: [main]
+on: push
 
 jobs:
-  build:
+  CI:
+    name: CI
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Run CI
         uses: ./.github/actions/ci

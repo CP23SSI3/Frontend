@@ -1,21 +1,25 @@
 name: CI
 
-on: push
+on:
+  push:
+    branches: infra
 
 jobs:
-  CI:
-    name: CI
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Run CI
-        uses: github/super-linter@v3
-        env:
-          DEFAULT_BRANCH: infra
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+      - name: Login to Github Container Registy
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.ACCOUNT }}
+          password: ${{ secrets.TOKEN_GITHUB }}
 
+      - name: Build Docker image
+        run: docker build . --file Dockerfile --tag ghcr.io/github_user/image_name:latest
 
-      
+      - name: Push Docker image to Github Container registry
+        run: docker push ghcr.io/github_user/image_name:latest

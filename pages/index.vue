@@ -9,19 +9,24 @@
 
   <BaseTitle>Title Topic component</BaseTitle>
   {{ moment(new Date()).format('YYYY-MM-DD') }}
+  <div class="flex flex-col gap-3">
+    <BaseButton
+      type="button"
+      @click="swalFunction()"
+      class="rounded-md bg-indigo-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+    >
+      Swal Alert
+    </BaseButton>
 
-  <button
-    type="button"
-    @click="swalFunction()"
-    class="rounded-md bg-indigo-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-  >
-    Swal Alert
-  </button>
+    <NuxtLink href="/test/easytable">View Vue3-EasyDataTable</NuxtLink>
 
-  <NuxtLink href="/test/easytable">View Vue3-EasyDataTable</NuxtLink>
+    <NuxtLink href="/test/validation">View yup & Vee validation</NuxtLink>
+    <NuxtLink href="/test/multiselect">Vue-Multiselect</NuxtLink>
+    <NuxtLink href="/test/checkbox">Checkbox</NuxtLink>
+    <NuxtLink href="/test/radio">Radio</NuxtLink>
 
-  <NuxtLink href="/test/validation">View yup & Vee validation</NuxtLink>
-  <NuxtLink href="/test/multiselect">Vue-Multiselect</NuxtLink>
+    <NuxtLink href="/test/map">Google Map</NuxtLink>
+  </div>
 </template>
 
 <script setup>

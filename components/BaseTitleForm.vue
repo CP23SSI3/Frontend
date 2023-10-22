@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h1 class="text-3xl font-bold tracking-tight text-gray-900">
+    <h2 class="text-base font-semibold leading-7 text-gray-900">
       <slot></slot>
-    </h1>
+    </h2>
   </div>
 </template>
 

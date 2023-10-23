@@ -29,5 +29,6 @@ const options = [
 .multiselect-blue {
   --ms-tag-bg: #dbeafe;
   --ms-tag-color: #2563eb;
+  --ms-ring-color: rgba(56, 189, 248, 0.2);
 }
 </style>

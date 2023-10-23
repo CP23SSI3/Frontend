@@ -44,7 +44,7 @@ const submitForm = () => {}
 const schema = yup.object({
   name: yup.string().trim().required(),
   email: yup.string().email().trim().required(),
-  password: yup.string().trim().required()
+  password: yup.string().trim().required().min(8)
 })
 </script>
 

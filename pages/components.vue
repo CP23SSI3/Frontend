@@ -68,7 +68,7 @@
           BaseSectionContent
         </td>
         <td class="p-4 text-sm text-gray-500">
-          <BaseSectionContent :h-padding="6" :v-padding="4">
+          <BaseSectionContent class="px-6 py-4">
             Content...
           </BaseSectionContent>
         </td>
@@ -102,7 +102,7 @@
           BaseBadge
         </td>
         <td class="p-4 text-sm text-gray-500">
-          <BaseSectionContent :h-padding="6" :v-padding="4">
+          <BaseSectionContent class="px-6 py-4">
             <div class="flex gap-2">
               <BaseBadge color="green">เปิดรับตลอด</BaseBadge>
               <BaseBadge>ปิดรับสมัคร 19/09/2023</BaseBadge>

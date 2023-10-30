@@ -43,6 +43,20 @@
       </tr>
       <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
+          BaseLabel
+        </td>
+        <td class="p-4 text-s">
+          <BaseLabel
+            :id="labelIcon"
+            :icon="MusicalNoteIcon"
+            :required="required"
+          >
+            label
+          </BaseLabel>
+        </td>
+      </tr>
+      <tr class="divide-x divide-gray-400">
+        <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseInput
         </td>
         <td class="p-4 text-sm text-gray-500">
@@ -98,10 +112,20 @@
           </BaseSectionContent>
         </td>
       </tr>
+      <tr class="divide-x divide-gray-400">
+        <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
+          BaseItem
+        </td>
+        <td class="p-4 text-sm text-gray-500">
+          <TestBaseItem></TestBaseItem>
+        </td>
+      </tr>
     </tbody>
   </table>
 </template>
 
-<script setup></script>
+<script setup>
+import { MusicalNoteIcon } from '@heroicons/vue/20/solid'
+</script>
 
 <style lang="scss" scoped></style>

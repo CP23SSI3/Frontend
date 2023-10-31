@@ -1,4 +1,7 @@
 <template>
+  {{ filter }}
+
+  <!-- Filter -->
   <div class="grid items-start grid-cols-4 gap-6">
     <BaseSectionContent
       class="hidden col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col"
@@ -29,7 +32,7 @@
         <div>
           <BaseLabel>ชื่อตำแหน่งงาน</BaseLabel>
           <Multiselect
-            v-model="position"
+            v-model="filter.position"
             mode="tags"
             :close-on-select="false"
             :searchable="true"
@@ -49,14 +52,14 @@
             >
           </div>
 
-          <BaseInput
-            label="ระยะเวลาที่ฝึกงาน"
-            id="workMonth"
-            :icon="BriefcaseIcon"
+          <BaseInputGroup
+            label="ระยะเวลาที่ทำงาน"
+            id="price"
             type="number"
-            v-model="filter.workMonth"
+            v-model:amount="filter.workMonth.amount"
+            v-model:unit="filter.workMonth.unit"
             unitSelect
-          ></BaseInput>
+          ></BaseInputGroup>
 
           <BaseInput
             label="สถานที่ฝึกงาน"
@@ -65,11 +68,20 @@
             placeholder="ชื่อจังหวัด / แขวง / เขต"
             v-model="filter.location"
           ></BaseInput>
+
+          <BaseDropdown
+            :option-lists="statusLists"
+            label="การรับสมัคร"
+            v-model="filter.status"
+          >
+          </BaseDropdown>
         </div>
       </div>
     </BaseSectionContent>
+
+    <!-- List Post -->
     <div class="flex flex-col w-full col-span-4 gap-2 lg:col-span-3">
-      <BaseSectionContent class="px-5 py-5" v-for="item in 5">
+      <BaseSectionContent class="px-5 py-5" v-for="(item, index) in 5">
         <div class="flex items-start gap-2 mb-3 lg:gap-6">
           <nuxt-img
             class="w-12 h-12 rounded-sm shadow-md bg-gray-50"
@@ -115,10 +127,15 @@
                 >สีลม เขตบางรัก กรุงเทพมหานคร</BaseItem
               >
             </div>
-
-            <BaseButton :trailingIcon="Bars3BottomLeftIcon" outline>
-              ดูรายละเอียด
-            </BaseButton>
+            <NuxtLink
+              :to="{
+                path: `/internship/${index}`
+              }"
+            >
+              <BaseButton :trailingIcon="Bars3BottomLeftIcon" outline>
+                ดูรายละเอียด
+              </BaseButton></NuxtLink
+            >
           </div>
         </div>
       </BaseSectionContent>
@@ -144,9 +161,10 @@ const filter = ref({
   search: '',
   category: { id: 0, text: '--Select--', value: 'default' },
   position: [],
-  workMonth: null,
+  workMonth: { amount: null, unit: 'เดือน' },
   salary: 0,
-  location: ''
+  location: '',
+  status: { id: 0, text: '--Select--', value: 'default' }
 })
 
 const categoryLists = [
@@ -154,6 +172,10 @@ const categoryLists = [
   { id: 1, text: 'ไอที', value: 'IT' },
   { id: 2, text: 'งานช่าง', value: 'Engineer' },
   { id: 3, text: 'บัญชี', value: 'Accountant' }
+]
+const statusLists = [
+  { id: 1, text: 'เปิดรับตลอด', value: true },
+  { id: 2, text: 'ใกล้ปิดรับสมัคร', value: false }
 ]
 
 const options = [

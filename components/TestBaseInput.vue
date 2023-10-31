@@ -59,14 +59,6 @@
       unit="บาท/วัน"
       >{{ data.number }}</BaseInput
     >
-    <BaseInput
-      label="เบี้ยเลี้ยง"
-      id="price"
-      type="number"
-      v-model="data.number"
-      unitSelect
-      >{{ data.number }}</BaseInput
-    >
 
     <BaseInput label="Phone" id="phone" type="tel" v-model="data.phone">{{
       data.phone
@@ -87,6 +79,7 @@ const data = ref({
   search: '',
   count: '',
   number: '',
+  workMonth: { amount: null, unit: 'เดือน' },
   phone: ''
 })
 

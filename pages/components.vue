@@ -65,6 +65,22 @@
       </tr>
       <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
+          BaseInputGroup
+        </td>
+        <td class="grid grid-cols-4 gap-4 p-4 text-sm text-gray-500">
+          <BaseInputGroup
+            label="ระยะเวลาที่ทำงาน"
+            id="price"
+            type="number"
+            v-model:amount="data.workMonth.amount"
+            v-model:unit="data.workMonth.unit"
+            unitSelect
+            >{{ data.workMonth }}</BaseInputGroup
+          >
+        </td>
+      </tr>
+      <tr class="divide-x divide-gray-400">
+        <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseSectionContent
         </td>
         <td class="p-4 text-sm text-gray-500">
@@ -126,6 +142,9 @@
 
 <script setup>
 import { MusicalNoteIcon } from '@heroicons/vue/20/solid'
+const data = ref({
+  workMonth: { amount: null, unit: 'เดือน' }
+})
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div>
     <!-- Label -->
     <BaseLabel v-if="label" :id="id" :icon="icon" :required="required">
       {{ label }}
@@ -41,6 +41,19 @@
         <span class="text-gray-500 sm:text-sm" id="price-currency">
           {{ unit }}
         </span>
+      </div>
+      <div
+        class="absolute inset-y-0 right-0 flex items-center"
+        v-else-if="unitSelect"
+      >
+        <select
+          :id="id"
+          :name="id"
+          class="h-full py-0 pl-2 text-gray-500 bg-transparent border-0 rounded-md pr-7 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+        >
+          <option>เดือน</option>
+          <option>ปี</option>
+        </select>
       </div>
     </div>
     <!-- Error Message -->
@@ -84,6 +97,9 @@ const props = defineProps({
   unit: {
     type: String,
     default: null
+  },
+  unitSelect: {
+    type: Boolean
   }
 })
 defineEmits(['update:modelValue'])

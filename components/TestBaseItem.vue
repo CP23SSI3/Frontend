@@ -1,8 +1,5 @@
 <template>
-  <div class="flex flex-col mt-1 sm:mt-0 sm:flex-row sm:flex-wrap">
-    <BaseItem :icon="BriefcaseIcon">Fulltime</BaseItem>
-    <BaseItem :icon="BriefcaseIcon">Fulltime</BaseItem>
-    <BaseItem :icon="BriefcaseIcon">Fulltime</BaseItem>
+  <div class="flex flex-col xl:flex-row xl:space-x-6">
     <BaseItem :icon="BriefcaseIcon">Fulltime</BaseItem>
     <BaseItem :icon="BriefcaseIcon">Fulltime</BaseItem>
     <BaseItem :icon="BriefcaseIcon">Fulltime</BaseItem>

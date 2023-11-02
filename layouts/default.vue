@@ -186,7 +186,7 @@
         </div>
       </DisclosurePanel>
     </Disclosure>
-    <div class="relative h-auto py-10">
+    <div class="relative h-auto py-5">
       <!-- <header>
         <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <h1
@@ -197,7 +197,6 @@
         </div>
       </header> -->
       <main>
-        <!--   -->
         <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <!-- Your content -->
           <slot></slot>

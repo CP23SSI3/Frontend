@@ -1,5 +1,5 @@
 <template>
-  {{ filter }}
+  <!-- {{ filter }} -->
 
   <!-- Filter -->
   <div class="grid items-start grid-cols-4 gap-6">

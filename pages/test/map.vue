@@ -20,7 +20,7 @@ import { GoogleMap, Marker } from 'vue3-google-map'
 export default defineComponent({
   data() {
     return {
-      center: { lat: 40.689247, lng: -74.044502 },
+      // center: { lat: 13.705368, lng: 100.5331527 },
       address: '',
       location: { lat: 0, long: 0 },
       api: 'AIzaSyD6ZM0YIEty5m93gpjqkwV6wc7s9rzh7fM'
@@ -28,7 +28,7 @@ export default defineComponent({
   },
   components: { GoogleMap, Marker },
   setup() {
-    const center = { lat: 40.689247, lng: -74.044502 }
+    const center = { lat: 13.705368, lng: 100.5331527 }
     return { center }
   },
   methods: {

@@ -232,11 +232,11 @@ const navigation = ref([
   {
     name: 'Component',
     href: '/components'
-  },
-  {
-    name: 'Test Component',
-    href: '/test/component'
   }
+  // {
+  //   name: 'Test Component',
+  //   href: '/test/component'
+  // }
 ])
 </script>
 

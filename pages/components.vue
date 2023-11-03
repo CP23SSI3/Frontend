@@ -136,6 +136,14 @@
           <TestBaseItem></TestBaseItem>
         </td>
       </tr>
+      <tr class="divide-x divide-gray-400">
+        <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
+          BaseDescription
+        </td>
+        <td class="p-4 text-sm text-gray-500">
+          <BaseDescription label="Topic">Description</BaseDescription>
+        </td>
+      </tr>
     </tbody>
   </table>
 </template>

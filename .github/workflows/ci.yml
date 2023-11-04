@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.GH_PAT }}
 
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag ghcr.io/cp23ssi3/image_name:latest
+        run: docker build . --file Dockerfile --tag ghcr.io/cp23ssi3/frontend:latest
 
       - name: Push Docker image to Github Container registry
-        run: docker push ghcr.io/cp23ssi3/image_name:latest
+        run: docker push ghcr.io/cp23ssi3/frontend:latest

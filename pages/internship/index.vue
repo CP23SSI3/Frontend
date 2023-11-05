@@ -1,8 +1,7 @@
 <template>
-  <!-- {{ filter }} -->
-
+  <BaseLoading v-if="loading" />
   <!-- Filter -->
-  <div class="grid items-start grid-cols-4 gap-6">
+  <div v-else class="grid items-start grid-cols-4 gap-6">
     <BaseSectionContent
       class="hidden col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col"
     >
@@ -83,8 +82,13 @@
     </BaseSectionContent>
 
     <!-- List Post -->
-    <div class="flex flex-col w-full col-span-4 gap-4 lg:col-span-3">
-      <div class="flex items-center justify-between">
+    <div
+      class="flex flex-col w-full col-span-4 gap-4 px-1 lg:col-span-3 sm:px-0"
+    >
+      <!-- Topic -->
+      <div
+        class="flex flex-col justify-between gap-2 sm:items-center sm:flex-row"
+      >
         <div class="flex items-center gap-4">
           <h1 class="text-2xl font-bold leading-8 text-black">
             Internship List
@@ -93,40 +97,63 @@
         </div>
         <BaseButton :leadingIcon="PlusCircleIcon">New Post</BaseButton>
       </div>
+
+      <!-- List -->
       <div class="flex flex-col w-full col-span-4 gap-2 lg:col-span-3">
-        <BaseSectionContent class="px-5 py-5" v-for="(item, index) in 5">
-          <div class="flex items-start gap-2 mb-3 lg:gap-6">
-            <nuxt-img
-              class="w-12 h-12 rounded-sm shadow-md bg-gray-50"
-              src="/logo-test.png"
-              alt="Your Company"
-            />
+        <BaseSectionContent class="px-5 py-5" v-for="(post, index) in listPost">
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex gap-2 lg:gap-6">
+              <nuxt-img
+                class="w-12 h-12 rounded-sm shadow-md bg-gray-50"
+                src="/logo-test.png"
+                alt="Your Company"
+              />
+              <div class="flex flex-col-reverse lg:flex-col">
+                <h2 class="text-sm font-semibold lg:text-lg">
+                  {{ post.title }}
+                </h2>
 
-            <!-- <div class="flex flex-col w-full gap-2"> -->
-            <div class="flex flex-col-reverse lg:flex-col">
-              <h2 class="text-sm lg:text-lg">
-                {{ data.title }}
-              </h2>
-
-              <div class="flex gap-2">
-                <div class="text-xs font-semibold leading-6 lg:text-sm">
-                  {{ data.comp.compName }}
+                <div class="flex items-center gap-2">
+                  <div
+                    class="text-xs font-semibold leading-6 text-gray-600 lg:text-sm"
+                  >
+                    {{ post.comp.compName }}
+                  </div>
+                  <span class="text-xs text-gray-500">
+                    {{
+                      moment(new Date(post.createdDate)).format('DD/MM/YYYY')
+                    }}
+                  </span>
                 </div>
-                <BaseBadge color="green" class="hidden lg:flex"
-                  >เปิดรับตลอด</BaseBadge
-                >
               </div>
             </div>
+            <div class="flex gap-2">
+              <BaseBadge
+                :color="statusClosedDate(post.closedDate).color"
+                class="hidden sm:flex"
+              >
+                {{ statusClosedDate(post.closedDate).text }}
+              </BaseBadge>
 
-            <!-- </div> -->
+              <!-- *เดี๋ยวมาทำ statusStar ผูกกับ Object Post -->
+              <component
+                :is="statusStar ? ActiveStarIcon : StarIcon"
+                :class="[
+                  statusStar ? 'text-yellow-500' : 'text-gray-500',
+                  'shrink-0 h-6 w-6 cursor-pointer'
+                ]"
+                aria-hidden="true"
+                @click="changeStarButton()"
+              />
+            </div>
           </div>
 
           <div class="flex flex-col gap-2 lg:ml-[70px]">
             <div class="flex flex-wrap gap-2">
               <span
-                v-for="(item, index) in listPosition"
+                v-for="(item, index) in post.openPositionList"
                 class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-md lg:text-sm"
-                >{{ item }}</span
+                >{{ item.openPositionTitle }}</span
               >
             </div>
 
@@ -135,24 +162,24 @@
             >
               <div class="flex flex-col gap-1 xl:flex-row xl:space-x-6">
                 <BaseItem :icon="BriefcaseIcon">{{
-                  rangeData.workMonth.all.length > 1 &&
-                  rangeData.workMonth.min != rangeData.workMonth.max
-                    ? `${rangeData.workMonth.min} - ${rangeData.workMonth.max} เดือน`
-                    : `${rangeData.workMonth.all[0]} เดือน`
+                  post.rangeData.workMonth.all.length > 1 &&
+                  post.rangeData.workMonth.min != post.rangeData.workMonth.max
+                    ? `${post.rangeData.workMonth.min} - ${post.rangeData.workMonth.max} เดือน`
+                    : `${post.rangeData.workMonth.all[0]} เดือน`
                 }}</BaseItem>
                 <BaseItem :icon="CurrencyDollarIcon">{{
-                  rangeData.salary.all.length > 1 &&
-                  rangeData.salary.min != rangeData.salary.max
-                    ? `${rangeData.salary.min} - ${rangeData.salary.max} บาทต่อวัน`
-                    : `${rangeData.salary.all[0]} บาท/วัน`
+                  post.rangeData.salary.all.length > 1 &&
+                  post.rangeData.salary.min != post.rangeData.salary.max
+                    ? `${post.rangeData.salary.min} - ${post.rangeData.salary.max} บาทต่อวัน`
+                    : `${post.rangeData.salary.all[0]} บาท/วัน`
                 }}</BaseItem>
                 <BaseItem :icon="MapPinIcon">{{
-                  `${data.address.subDistrict} ${data.address.district}, ${data.address.city} `
+                  `${post.address.subDistrict} ${post.address.district}, ${post.address.city} `
                 }}</BaseItem>
               </div>
               <NuxtLink
                 :to="{
-                  path: `/internship/${index}`
+                  path: `/internship/${post.postId}`
                 }"
               >
                 <BaseButton :trailingIcon="Bars3BottomLeftIcon" outline full>
@@ -195,26 +222,11 @@
             {{ pageNumber }}
           </button>
           <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" -->
-          <!-- <a
-            href="#"
-            class="inline-flex items-center px-4 pt-4 text-sm font-medium text-indigo-600 border-t-2 border-indigo-500"
-            aria-current="page"
-            >2</a
-          >
-          <a
-            href="#"
-            class="inline-flex items-center px-4 pt-4 text-sm font-medium text-gray-500 border-t-2 border-transparent hover:border-gray-300 hover:text-gray-700"
-            >3</a
-          >
+          <!-- 
           <span
             class="inline-flex items-center px-4 pt-4 text-sm font-medium text-gray-500 border-t-2 border-transparent"
             >...</span
-          >
-          <a
-            href="#"
-            class="inline-flex items-center px-4 pt-4 text-sm font-medium text-gray-500 border-t-2 border-transparent hover:border-gray-300 hover:text-gray-700"
-            >8</a
-          > -->
+          >-->
         </div>
         <div class="flex justify-end flex-1 w-0 -mt-px">
           <button
@@ -248,9 +260,71 @@ import {
   ArrowPathIcon,
   ArrowLongRightIcon,
   ArrowLongLeftIcon,
-  PlusCircleIcon
+  PlusCircleIcon,
+  StarIcon as ActiveStarIcon
 } from '@heroicons/vue/20/solid'
-import { number } from 'yup'
+import { StarIcon } from '@heroicons/vue/24/outline'
+import moment from 'moment'
+import Swal from 'sweetalert2'
+
+// ---- SET : MIN-MAX ของระยะการฝึกงาน, ค่าตอบแทนของแต่ละ post ----
+const setMinMax = (positionList, postIndex) => {
+  let rangeData = {
+    workMonth: {
+      all: [],
+      min: 0,
+      max: 0
+    },
+    salary: {
+      all: [],
+      min: 0,
+      max: 0
+    }
+  }
+  positionList.forEach((num) => {
+    rangeData.workMonth.all.push(num.workMonth)
+    rangeData.salary.all.push(num.salary)
+  })
+  if (rangeData.workMonth.all.length > 1) {
+    rangeData.workMonth.min = Math.min.apply(Math, rangeData.workMonth.all)
+    rangeData.workMonth.max = Math.max.apply(Math, rangeData.workMonth.all)
+  }
+
+  if (rangeData.salary.all.length > 1) {
+    rangeData.salary.min = Math.min.apply(Math, rangeData.salary.all)
+    rangeData.salary.max = Math.max.apply(Math, rangeData.salary.all)
+  }
+  listPost.value[postIndex].rangeData = rangeData
+}
+
+// ---- GET : LIST POST ----
+const loading = ref(false)
+const listPost = ref([])
+
+const getPost = async () => {
+  loading.value = true
+  try {
+    const res = await usePost({})
+    if (res.value) {
+      listPost.value = res.value.data.content
+      listPost.value.forEach((post, index) => {
+        setMinMax(post.openPositionList, index)
+      })
+      console.log(listPost.value)
+      loading.value = false
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      icon: 'error',
+      title: 'Error',
+      text: 'ระบบผิดพลาด'
+    })
+  }
+}
+
+await getPost()
 
 const filter = ref({
   search: '',
@@ -308,112 +382,14 @@ const prevPage = () => (currentPage.value > 1 ? currentPage.value-- : '')
 const nextPage = () =>
   currentPage.value < totalPage.value ? currentPage.value++ : ''
 
-// test get post list
-// const getPost = async () => {
-//   console.log('getPost')
-//   try {
-//     const res = await usePost()
-//     if (res.value) {
-//       console.log(res.value)
-//     }
-//   } catch (error) {
-//     Swal.fire({
-//       showConfirmButton: true,
-//       timerProgressBar: true,
-//       icon: 'error',
-//       title: 'Error GET post',
-//       text: 'ไม่สามารถเรียกดูรายละเอียดของโพสต์นี้ได้'
-//     })
-//   }
-// }
-// await getPost()
-
-const data = {
-  postId: 'eba83fe4-937b-4054-a420-d977534feebe',
-  title: 'ประกาศรับฝึกงาน ด่วนที่สุด บริษัทตามใจฉัน',
-  createdDate: '2023-10-04T06:30:00Z',
-  lastUpdateDate: '2023-10-05T06:30:00Z',
-  closedDate: null,
-  totalView: 125,
-  status: 'OPENED',
-  postDesc:
-    'ประกาศรับฝึกงานด่วนที่สุดแต่ตลอดทั้งปี นี่คือส่วนหนึ่งของตัวอย่างรายละเอียดข้อมูล',
-  comp: {
-    compId: '8e20782f-2807-4f13-a11e-0fb9ff955488',
-    compName: 'Test company',
-    compLogoKey: 'https://www.google.com',
-    compDesc:
-      'This is a compDesc as an example. Hope we will be able to make a move soon',
-    defaultWelfare:
-      'Lorem for the welfare for this company, This is the example script only',
-    createdDate: '2023-10-04T06:30:00Z',
-    lastUpdate: '2023-10-04T06:30:00Z',
-    lastActive: '2023-10-04T06:30:00Z',
-    compUrl: 'https://www.google.com',
-    address: {
-      addressId: '9346a466-4a82-4037-ab00-72ba24fa50bf',
-      country: 'Thailand',
-      postalCode: '10120',
-      city: 'Bangkok',
-      district: 'Sathorn',
-      subDistrict: 'ThungWatDon',
-      area: '17 Chan road',
-      latitude: 13.705368,
-      longitude: 100.5331527
-    }
-  },
-  postWelfare: 'สวัสดิการพื้นฐาน : กินขนมฟรี ข้าวฟรี ไม่มีเงินเดือน',
-  enrolling:
-    'ติดต่อไนซ์ วิชชุตา พิภพภิญโญสำหรับข้อมูลเพิ่มเติม กรุณาติดต่อผ่านอีเมลที่ระบุเอาไว้เท่านั้น',
-  documents: 'port-folio,resume,cv',
-  coordinatorName: 'Vichuta Pipoppinyo',
-  tel: '012-345-6789',
-  email: 'nice.vct@mail.kmutt.ac.th',
-  address: {
-    addressId: '9346a466-4a82-4037-ab00-72ba24fa50bf',
-    country: 'Thailand',
-    postalCode: '10120',
-    city: 'Bangkok',
-    district: 'Sathorn',
-    subDistrict: 'ThungWatDon',
-    area: '17 Chan road',
-    latitude: 13.705368,
-    longitude: 100.5331527
-  },
-  workStartTime: '09:30:00',
-  workEndTime: '17:30:00',
-  workDay: 'mon,tue,wed,thu,fri',
-  workType: 'HYBRID',
-  openPositionList: [
-    {
-      openPositionId: '24526070-68cf-48ff-8d02-29e9d05aeda2',
-      openPositionTitle: 'Frontend Developer',
-      openPositionNum: 4,
-      openPositionDesc: 'Working on Frontend mainly, using React',
-      positionTag: {
-        positionId: '04a6ab2d-c1fc-44e2-b46c-b5193fb20bf7',
-        positionName: 'Front-end developer'
-      },
-      workMonth: 6,
-      salary: 300
-    },
-    {
-      openPositionId: '72d02945-9f1b-401a-9809-b10aff9406cc',
-      openPositionTitle: 'Backend developer',
-      openPositionNum: 2,
-      openPositionDesc: 'Open position - for Java or Kotlin',
-      positionTag: {
-        positionId: 'a27c36fd-9ed4-4de7-ad8e-f5334953944d',
-        positionName: 'Backend-end developer'
-      },
-      workMonth: 4,
-      salary: 250
-    }
-  ]
+// --- Favorite Button ---
+const statusStar = ref(false)
+const changeStarButton = () => {
+  statusStar.value ? (statusStar.value = false) : (statusStar.value = true)
 }
 
 // -- แสดงค่า min - max ของระยะเวลาการฝึกงาน/ค่าตอบเทน --
-const rangeData = ref({
+const rangeDate = ref({
   workMonth: {
     all: [],
     min: 0,
@@ -426,25 +402,27 @@ const rangeData = ref({
   }
 })
 
-const getMinMax = () => {
-  let rangeWorkMonth = rangeData.value.workMonth
-  let rangeSalary = rangeData.value.salary
-
-  data.openPositionList.forEach((num) => {
-    rangeWorkMonth.all.push(num.workMonth)
-    rangeSalary.all.push(num.salary)
-  })
-  if (rangeWorkMonth.all.length > 1) {
-    rangeWorkMonth.min = Math.min.apply(Math, rangeWorkMonth.all)
-    rangeWorkMonth.max = Math.max.apply(Math, rangeWorkMonth.all)
-  }
-
-  if (rangeSalary.all.length > 1) {
-    rangeSalary.min = Math.min.apply(Math, rangeSalary.all)
-    rangeSalary.max = Math.max.apply(Math, rangeSalary.all)
+// -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
+const statusClosedDate = (postCloseDate, postIdex) => {
+  if (postCloseDate == null) {
+    return { text: 'เปิดรับตลอด', color: 'green' }
+  } else {
+    let endDate = new Date(new Date(postCloseDate).setHours(23, 59, 0, 0))
+    let closedDate = moment(endDate).format('DD/MM/YYYY')
+    if (new Date() > endDate) {
+      return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
+    } else {
+      // ถ้ายังไม่เลยวันที่ปิดรับสมัคร ดูว่าใกล้ปิดภายใน 7 วันหรือไม่
+      if (
+        new Date(moment(endDate).subtract(7, 'days')) <= new Date() &&
+        new Date() <= endDate
+      ) {
+        return { text: 'ปิดรับสมัคร ' + closedDate, color: 'yellow' }
+      }
+      return { text: 'ปิดรับสมัคร ' + closedDate }
+    }
   }
 }
-getMinMax()
 </script>
 
 <style lang="scss" scoped>

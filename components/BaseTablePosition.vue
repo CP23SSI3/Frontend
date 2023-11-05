@@ -1,40 +1,45 @@
 <template>
-  <EasyDataTable
-    :headers="headers"
-    :items="items"
-    :header-item-class-name="headerItemClassNameFunction"
-    hide-footer
-    table-class-name="customize-table"
-    class="rounded-md shadow-sm h-fit"
-    sort-by="openPositionTitle"
-    sort-type="asc"
-  >
-    <template #item-openPositionTitle="{ openPositionTitle, openPositionDesc }">
-      <div class="text-sm text-gray-500 whitespace-normal">
-        <div class="text-sm font-semibold text-gray-900">
-          {{ openPositionTitle }}
+  <div>
+    <EasyDataTable
+      :headers="headers"
+      :items="items"
+      :header-item-class-name="headerItemClassNameFunction"
+      :loading="loading"
+      hide-footer
+      table-class-name="customize-table"
+      class="rounded-md shadow-sm h-fit"
+      sort-by="openPositionTitle"
+      sort-type="asc"
+    >
+      <template
+        #item-openPositionTitle="{ openPositionTitle, openPositionDesc }"
+      >
+        <div class="text-sm text-gray-500 whitespace-normal">
+          <div class="text-sm font-semibold text-gray-900">
+            {{ openPositionTitle }}
+          </div>
+          <div class="text-sm font-medium text-gray-500 capitalize">
+            {{ openPositionDesc }}
+          </div>
         </div>
-        <div class="text-sm font-medium text-gray-500 capitalize">
-          {{ openPositionDesc }}
+      </template>
+      <template #item-workMonth="{ workMonth }">
+        <div class="text-sm text-gray-500 whitespace-normal">
+          {{ workMonth }} เดือน
         </div>
-      </div>
-    </template>
-    <template #item-workMonth="{ workMonth }">
-      <div class="text-sm text-gray-500 whitespace-normal">
-        {{ workMonth }} เดือน
-      </div>
-    </template>
-    <template #item-salary="{ salary }">
-      <div class="text-sm text-gray-500 whitespace-normal">
-        {{ salary }} บาท/วัน
-      </div>
-    </template>
-    <template #item-openPositionNum="{ openPositionNum }">
-      <div class="text-sm text-gray-500 whitespace-normal">
-        {{ openPositionNum }} คน
-      </div>
-    </template>
-  </EasyDataTable>
+      </template>
+      <template #item-salary="{ salary }">
+        <div class="text-sm text-gray-500 whitespace-normal">
+          {{ salary }} บาท/วัน
+        </div>
+      </template>
+      <template #item-openPositionNum="{ openPositionNum }">
+        <div class="text-sm text-gray-500 whitespace-normal">
+          {{ openPositionNum }} คน
+        </div>
+      </template>
+    </EasyDataTable>
+  </div>
 </template>
 <script lang="ts" setup>
 import type {
@@ -47,6 +52,10 @@ import type { Position } from '@/types/Post'
 const props = defineProps({
   list: {
     type: Array,
+    required: true
+  },
+  loading: {
+    type: Boolean,
     required: true
   }
 })
@@ -64,19 +73,6 @@ const headerItemClassNameFunction: HeaderItemClassNameFunction = (
   header: Header,
   columnNumber: number
 ): string => 'text-left text-sm font-semibold sm:pl-6'
-
-// {
-//       openPositionId: '72d02945-9f1b-401a-9809-b10aff9406cc',
-//       openPositionTitle: 'Backend developer',
-//       openPositionNum: 2,
-//       openPositionDesc: 'Open position - for Java or Kotlin',
-//       positionTag: {
-//         positionId: 'a27c36fd-9ed4-4de7-ad8e-f5334953944d',
-//         positionName: 'Backend-end developer'
-//       },
-//       workMonth: 4,
-//       salary: 250
-//     }
 </script>
 
 <style lang="scss" scoped>

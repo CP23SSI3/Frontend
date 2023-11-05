@@ -25,8 +25,7 @@
 
         <div class="flex flex-col-reverse lg:flex-col lg:pr-[300px]">
           <h2 class="text-lg font-semibold lg:text-lg">
-            {{ post.title }} ลองพิมข้อความยาวๆ เพื่อชื่อ post ยาวมาก
-            ,yo0tgxhopy'w ดูเมหือนจะทับปุ่มนะ
+            {{ post.title }}
           </h2>
 
           <div class="flex items-center gap-2">

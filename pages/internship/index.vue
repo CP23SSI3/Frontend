@@ -1,7 +1,7 @@
 <template>
   <BaseLoading v-if="loading" />
-  <!-- Filter -->
   <div v-else class="grid items-start grid-cols-4 gap-6">
+    <!-- Filter -->
     <BaseSectionContent
       class="hidden col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col"
     >
@@ -93,6 +93,7 @@
           <h1 class="text-2xl font-bold leading-8 text-black">
             Internship List
           </h1>
+          <!-- total element -->
           <span class="text-sm text-gray-400">2 posts</span>
         </div>
         <BaseButton :leadingIcon="PlusCircleIcon">New Post</BaseButton>
@@ -260,10 +261,9 @@ import {
   ArrowPathIcon,
   ArrowLongRightIcon,
   ArrowLongLeftIcon,
-  PlusCircleIcon,
   StarIcon as ActiveStarIcon
 } from '@heroicons/vue/20/solid'
-import { StarIcon } from '@heroicons/vue/24/outline'
+import { StarIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 

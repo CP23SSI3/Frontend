@@ -12,7 +12,6 @@
           required
         ></BaseInputField>
         <div class="col-span-full">
-          {{ positionEditing }}
           <BaseLabel id="positions" required> ตำแหน่งงานที่เปิดรับ </BaseLabel>
           <!-- List Position -->
           <div v-for="(position, index) in form.positionList">
@@ -425,7 +424,9 @@
       </ContainerField>
     </ContainerForm>
     <div class="flex flex-row-reverse gap-2">
-      <BaseButton :trailingIcon="EyeIcon">Preview</BaseButton>
+      <BaseButton :trailingIcon="EyeIcon" @click="submitForm()"
+        >Preview</BaseButton
+      >
       <BaseButton :leadingIcon="TrashIcon" negative>Cancel</BaseButton>
     </div>
   </BaseSectionContent>
@@ -459,11 +460,11 @@ const hideAddPosition = () => {
   resetPosition()
 }
 const position = ref({
-  title: 'Frontend Developer',
-  desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
-  workMonth: 6,
-  salary: 300,
-  num: 2
+  title: '',
+  desc: '',
+  workMonth: null,
+  salary: null,
+  num: null
 })
 const resetPosition = () => {
   position.value = {
@@ -511,7 +512,6 @@ const listDays = [
   { text: 'ศุกร์', value: 'fri' },
   { text: 'เสาร์', value: 'sat' }
 ]
-const checkedDays = ref(['mon', 'tue', 'wed', 'thu', 'fri'])
 
 // --- checkbox : เอกสารประกอบการสมัคร ---
 const listDocs = [
@@ -520,7 +520,6 @@ const listDocs = [
   { text: 'CV', value: 'cv' },
   { text: 'Transcript', value: 'transcipt' }
 ]
-const checkedDocs = ref([])
 
 // --- radio : รูปแบบการทำงาน ---
 const selectedWorkDays = ref('style-1')
@@ -538,13 +537,32 @@ const choicesLocation = [
 ]
 
 // --- radio : ระยะที่เปิดรับสมัคร ---
-const selectedChoiceClosedDate = ref(false)
 const choicesClosedDate = [
   { id: 'open', text: 'เปิดรับตลอดเวลา', value: false },
   { id: 'close', text: 'ปิดรับสมัคร', value: true }
 ]
 const statusClosingDate = ref(false)
 const closingDate = ref()
+
+// --- time-picker : เวลาเริ่ม-เลิกงาน ---
+const setWorkTime = () => {
+  if (form.value.workTime) {
+    let startTime = form.value.workTime[0]
+    let endTime = form.value.workTime[1]
+    console.log(startTime + ',' + endTime)
+    form.value.workStartTime = `${
+      startTime.hours < 10 ? '0' + startTime.hours : startTime.hours
+    }:${
+      startTime.minutes < 10 ? '0' + startTime.minutes : startTime.minutes
+    }:00`
+
+    form.value.workEndTime = `${
+      endTime.hours < 10 ? '0' + endTime.hours : endTime.hours
+    }:${endTime.minutes < 10 ? '0' + endTime.minutes : endTime.minutes}:00`
+
+    console.log(form.value.workStartTime + ',' + form.value.workEndTime)
+  }
+}
 
 const form = ref({
   title: '',
@@ -565,12 +583,11 @@ const form = ref({
     }
   ],
   workTime: [
-    { hours: 9, minutes: 30, seconds: 0 },
-    { hours: 18, minutes: 30, seconds: 0 }
+    { hours: 9, minutes: 0, seconds: 0 },
+    { hours: 18, minutes: 0, seconds: 0 }
   ],
-  // *function set workTime
-  workStartTime: '09:30:00',
-  workEndTime: '17:30:00',
+  workStartTime: '',
+  workEndTime: '',
 
   workDay: ['mon', 'tue', 'wed', 'thu', 'fri'],
   workType: 'HYBRID',
@@ -600,6 +617,10 @@ const form = ref({
   tel: '012-345-6789',
   email: 'nice.vct@mail.kmutt.ac.th'
 })
+
+const submitForm = () => {
+  setWorkTime()
+}
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <BaseLabel :id="radio" required> สถานที่ฝึกงาน </BaseLabel>
-    <fieldset class="mt-4">
+    <fieldset class="mt-2">
       <div class="space-y-4">
         <div
           v-for="choice in choices"

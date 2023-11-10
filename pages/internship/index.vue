@@ -1,11 +1,10 @@
 <template>
-  <BaseLoading v-if="loading" />
-  <div v-else class="grid items-start grid-cols-4 gap-6">
+  <div class="grid items-start grid-cols-4 gap-6">
     <!-- Filter -->
     <BaseSectionContent
       class="hidden col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col"
     >
-      <div class="flex flex-col gap-4">
+      <div class="space-y-4">
         <div class="flex items-center justify-between">
           <BaseTitleForm>Search</BaseTitleForm>
           <BaseItem
@@ -17,6 +16,7 @@
         </div>
         <BaseInput
           label="Search"
+          type="search"
           id="search"
           placeholder="name company, post"
           :iconInput="MagnifyingGlassIcon"
@@ -96,11 +96,14 @@
           <!-- total element -->
           <span class="text-sm text-gray-400">2 posts</span>
         </div>
-        <BaseButton :leadingIcon="PlusCircleIcon">New Post</BaseButton>
+        <NuxtLink :to="{ path: '/internship/form' }">
+          <BaseButton :leadingIcon="PlusCircleIcon">New Post</BaseButton>
+        </NuxtLink>
       </div>
 
       <!-- List -->
-      <div class="flex flex-col w-full col-span-4 gap-2 lg:col-span-3">
+      <BaseLoading v-if="loading" />
+      <div v-else class="flex flex-col w-full col-span-4 gap-2 lg:col-span-3">
         <BaseSectionContent class="px-5 py-5" v-for="(post, index) in listPost">
           <div class="flex items-start justify-between mb-3">
             <div class="flex gap-2 lg:gap-6">

@@ -11,7 +11,7 @@
 
   <button
     v-bind="$attrs"
-    class="px-3 py-1.5 font-medium ring-1 ring-inset text-sm rounded-md shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:text-white disabled:ring-0 disabled:bg-gray-300"
+    class="px-3 py-2 text-sm font-medium rounded-md shadow-sm ring-1 ring-inset focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:text-white disabled:ring-0 disabled:bg-gray-300"
     :class="[
       styleButton,
       { 'w-full': full },

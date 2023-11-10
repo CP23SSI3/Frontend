@@ -28,6 +28,10 @@ script
 
     <NuxtLink href="/test/map">Google Map</NuxtLink>
 
+    <input type="search" v-model="searchValue" />
+    {{ searchValue }}
+    <button @click="reset()">reset</button>
+
     <!-- <UPagination v-model="page" :page-count="5" :total="items.length" /> -->
   </div>
 </template>
@@ -69,6 +73,11 @@ const swalFunction = () => {
     }
     console.log(result)
   })
+}
+
+const searchValue = ref()
+const reset = () => {
+  searchValue.value = ''
 }
 </script>
 

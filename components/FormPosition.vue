@@ -58,7 +58,8 @@
         :leadingIcon="TrashIcon"
         negative
         @click="$emit('cancel', position)"
-        >ลบตำแหน่งงาน</BaseButton
+      >
+        {{ editmode ? 'ยกเลิกการแก้ไข' : 'ลบตำแหน่งงาน' }}</BaseButton
       >
     </div>
   </div>

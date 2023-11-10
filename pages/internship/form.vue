@@ -15,34 +15,90 @@
           {{ positionEditing }}
           <BaseLabel id="positions" required> ตำแหน่งงานที่เปิดรับ </BaseLabel>
           <!-- List Position -->
-          <div
-            v-for="(position, index) in form.positionList"
-            :class="
-              !statusEditPosition
-                ? 'flex'
-                : positionEditing.id != index
-                ? 'flex'
-                : 'hidden'
-            "
-            class="items-center justify-between px-6 py-2 mt-2 bg-white border-0 rounded-md ring-inset ring-1 ring-gray-200"
-          >
-            <BaseText :label="position.title">{{ position.desc }} </BaseText>
-            <div class="flex gap-6">
-              <BaseItem :icon="BriefcaseIcon">{{
-                position.workMonth
-              }}</BaseItem>
-              <BaseItem :icon="CurrencyDollarIcon">
-                {{ position.salary }}
-              </BaseItem>
-              <BaseItem :icon="UsersIcon">{{ position.num }}</BaseItem>
-              <BaseButton
-                :leadingIcon="PencilIcon"
-                outline
-                :disabled="statusEditPosition"
-                @click="editPosition(position, index)"
-                >Edit</BaseButton
-              >
+          <div v-for="(position, index) in form.positionList">
+            <div
+              :class="
+                !statusEditPosition
+                  ? 'flex'
+                  : positionEditing.id != index
+                  ? 'flex'
+                  : 'hidden'
+              "
+              class="items-center justify-between gap-2 px-5 py-2 mt-2 bg-white border-0 rounded-md ring-inset ring-1 ring-gray-200"
+            >
+              <BaseText :label="position.title">{{ position.desc }}</BaseText>
+              <div class="flex gap-6">
+                <BaseItem :icon="BriefcaseIcon">{{
+                  position.workMonth
+                }}</BaseItem>
+                <BaseItem :icon="CurrencyDollarIcon">
+                  {{ position.salary }}
+                </BaseItem>
+                <BaseItem :icon="UsersIcon">{{ position.num }}</BaseItem>
+                <Menu as="div" class="relative inline-block text-left">
+                  <div>
+                    <MenuButton
+                      class="flex items-center text-gray-400 rounded-full hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100"
+                    >
+                      <span class="sr-only">Open options</span>
+                      <EllipsisVerticalIcon
+                        class="w-8 h-8"
+                        aria-hidden="true"
+                      />
+                    </MenuButton>
+                  </div>
+
+                  <transition
+                    enter-active-class="transition duration-100 ease-out"
+                    enter-from-class="transform scale-95 opacity-0"
+                    enter-to-class="transform scale-100 opacity-100"
+                    leave-active-class="transition duration-75 ease-in"
+                    leave-from-class="transform scale-100 opacity-100"
+                    leave-to-class="transform scale-95 opacity-0"
+                  >
+                    <MenuItems
+                      class="absolute right-0 z-10 w-auto mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    >
+                      <div class="py-1">
+                        <MenuItem v-slot="{ active }">
+                          <BaseItem
+                            :class="[
+                              active
+                                ? 'bg-gray-100 text-gray-900'
+                                : 'text-gray-700',
+                              'block px-4 py-2 text-sm cursor-pointer hover:underline'
+                            ]"
+                            :icon="PencilIcon"
+                            @click="editPosition(position, index)"
+                            >Edit</BaseItem
+                          >
+                        </MenuItem>
+                        <MenuItem v-slot="{ active }">
+                          <BaseItem
+                            :class="[
+                              active
+                                ? 'bg-gray-100 text-gray-900'
+                                : 'text-gray-700',
+                              'block px-4 py-2 text-sm cursor-pointer hover:underline'
+                            ]"
+                            :icon="TrashIconSolid"
+                            @click="deletePosition(index)"
+                            >Delete</BaseItem
+                          >
+                        </MenuItem>
+                      </div>
+                    </MenuItems>
+                  </transition>
+                </Menu>
+              </div>
             </div>
+            <FormPosition
+              v-if="statusEditPosition && positionEditing.id == index"
+              :position="positionEditing"
+              @submit="savePosition()"
+              @cancel="hideEditPosition()"
+              editmode
+            />
           </div>
           <!-- Button add Position -->
           <BaseButton
@@ -65,13 +121,13 @@
           />
 
           <!-- Sub form edit position -->
-          <FormPosition
+          <!-- <FormPosition
             v-else-if="statusEditPosition"
             :position="positionEditing"
             @submit="savePosition()"
             @cancel="deletePosition()"
             editmode
-          />
+          /> -->
         </div>
       </ContainerField>
     </ContainerForm>
@@ -376,7 +432,15 @@
 </template>
 
 <script setup>
-import { PlusIcon, EyeIcon, PencilIcon } from '@heroicons/vue/24/solid'
+import {
+  PlusIcon,
+  EyeIcon,
+  PencilIcon,
+  EllipsisVerticalIcon,
+  TrashIcon as TrashIconSolid
+} from '@heroicons/vue/24/solid'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+
 import {
   TrashIcon,
   BriefcaseIcon,
@@ -386,7 +450,6 @@ import {
 import { Field, ErrorMessage, Form } from 'vee-validate'
 import moment from 'moment'
 const route = useRoute()
-const label = ref('checkbox1')
 
 // --- input : เพิ่มตำแหน่งงาน ---
 const statusAddPosition = ref(false)
@@ -432,7 +495,10 @@ const savePosition = () => {
 }
 
 const deletePosition = (index) => {
-  console.log(index)
+  if (index > -1) {
+    form.value.positionList.splice(index, 1)
+  }
+  hideEditPosition()
 }
 
 // --- checkbox : วันทำงาน ---
@@ -483,13 +549,20 @@ const closingDate = ref()
 const form = ref({
   title: '',
   positionList: [
-    // {
-    //   openPositionTitle: 'Frontend Developer',
-    //   openPositionNum: 4,
-    //   openPositionDesc: 'Working on Frontend mainly, using React',
-    //   workMonth: 6,
-    //   salary: 300
-    // }
+    {
+      title: 'Frontend Developer',
+      desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
+      workMonth: 6,
+      salary: 300,
+      num: 2
+    },
+    {
+      title: 'Backend Developer',
+      desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหลังบ้าน ออกแบบ service และ datastructure',
+      workMonth: 6,
+      salary: 300,
+      num: 2
+    }
   ],
   workTime: [
     { hours: 9, minutes: 30, seconds: 0 },

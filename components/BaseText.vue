@@ -1,6 +1,8 @@
 <template>
   <div class="border-gray-100 sm:col-span-1 sm:px-0">
-    <dt class="text-sm font-medium leading-5 text-gray-900">{{ label }}</dt>
+    <dt class="text-sm font-bold leading-5 text-gray-900">
+      {{ label }}
+    </dt>
     <dd class="mt-0.5 text-sm font-normal text-gray-500">
       <slot></slot>
     </dd>

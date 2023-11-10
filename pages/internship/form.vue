@@ -69,7 +69,7 @@
             v-else-if="statusEditPosition"
             :position="positionEditing"
             @submit="savePosition()"
-            @cancel="deletePosition(e)"
+            @cancel="deletePosition()"
             editmode
           />
         </div>

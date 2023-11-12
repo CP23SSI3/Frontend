@@ -40,10 +40,10 @@
           </div>
         </div>
       </div>
-      <div class="flex gap-2 sm:absolute sm:right-0">
+      <div class="flex items-center gap-2 sm:absolute sm:right-0">
         <BaseBadge
           :color="statusClosedDate(post.closedDate).color"
-          class="hidden sm:flex"
+          class="absolute top-0 right-0 sm:static sm:right-auto sm:top-auto"
         >
           {{ statusClosedDate(post.closedDate).text }}
         </BaseBadge>
@@ -64,7 +64,7 @@
     <!-- Content -->
     <div class="flex flex-col-reverse gap-6 lg:gap-8 lg:px-4 lg:flex-row">
       <!-- column 1  -->
-      <div class="flex flex-col gap-5">
+      <div class="flex flex-col gap-5 md:px-3">
         <BaseDescription label="สถานที่ฝึกงาน">
           {{
             `${post.address.area} ${post.address.subDistrict} ${post.address.district}, ${post.address.city} ${post.address.country} ${post.address.postalCode}`

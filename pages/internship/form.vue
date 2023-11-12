@@ -460,6 +460,7 @@ import moment from 'moment'
 import Swal from 'sweetalert2'
 
 const route = useRoute()
+const router = useRouter()
 
 // --- input : เพิ่มตำแหน่งงาน ---
 const statusAddPosition = ref(false)

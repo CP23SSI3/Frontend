@@ -16,7 +16,8 @@ export default defineNuxtConfig({
   // ใช้ต่อ api ใน .env
   runtimeConfig: {
     public: {
-      API_URL: process.env.API_URL
+      API_URL: process.env.API_URL,
+      KEY_API_MAP: process.env.KEY_API_GOOGLE_MAP
     }
   },
 

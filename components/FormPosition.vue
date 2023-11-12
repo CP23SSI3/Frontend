@@ -54,12 +54,8 @@
       <BaseButton :leadingIcon="CheckIcon" @click="$emit('submit')">
         {{ editmode ? 'บันทึกการแก้ไข' : 'เพิ่มตำแหน่งงาน' }}
       </BaseButton>
-      <BaseButton
-        :leadingIcon="TrashIcon"
-        negative
-        @click="$emit('cancel', position)"
-      >
-        {{ editmode ? 'ยกเลิกการแก้ไข' : 'ลบตำแหน่งงาน' }}</BaseButton
+      <BaseButton negative @click="$emit('cancel', position)">
+        ยกเลิก</BaseButton
       >
     </div>
   </div>
@@ -68,7 +64,6 @@
 <script setup>
 import { CheckIcon } from '@heroicons/vue/24/solid'
 import {
-  TrashIcon,
   BriefcaseIcon,
   CurrencyDollarIcon,
   UsersIcon

@@ -54,3 +54,28 @@ export async function getPostById(id: string) {
 
   return data
 }
+
+export async function createNewPost(newPost: any) {
+  const runtimeConfig = useRuntimeConfig()
+  const API_URL = runtimeConfig.public.API_URL
+  const url = `${API_URL}posts`
+  // const auth = useAuth()
+  // const token = auth.$storage.getUniversal('_token.local') as string
+  const { data, error } = await useFetch(url, {
+    headers: {
+      // Authorization: token,
+      'Content-Type': 'application/json'
+    },
+    method: 'POST',
+    body: JSON.stringify(newPost)
+  })
+
+  if (error.value) {
+    throw createError({
+      ...error.value,
+      statusMessage: `Could not fetch data from ${url}`
+    })
+  }
+
+  return data
+}

@@ -1,5 +1,4 @@
 <template>
-  {{ form }}
   <BaseSectionContent class="px-5 py-4 space-y-6 md:px-10 md:py-8">
     <ContainerForm>
       <BaseTitleForm> ประกาศฝึกงาน </BaseTitleForm>
@@ -14,7 +13,7 @@
         <div class="col-span-full">
           <BaseLabel id="positions" required> ตำแหน่งงานที่เปิดรับ </BaseLabel>
           <!-- List Position -->
-          <div v-for="(position, index) in form.positionList">
+          <div v-for="(position, index) in positionList">
             <div
               :class="
                 !statusEditPosition
@@ -138,7 +137,7 @@
           label="เวลาทำงาน"
           id="time-only"
           placeholder="Select Time"
-          v-model="form.workTime"
+          v-model="workTime"
           required
         >
         </BaseTimePicker>
@@ -158,7 +157,7 @@
                   :name="item.value"
                   type="checkbox"
                   :value="item.value"
-                  v-model="form.workDay"
+                  v-model="workDay"
                   class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
                 />
               </div>
@@ -180,11 +179,11 @@
                 class="flex items-center"
               >
                 <input
-                  :id="choice.id"
-                  :name="choice.id"
+                  :id="choice.value"
+                  :name="choice.value"
                   type="radio"
-                  :value="choice.id"
-                  v-model="selectedWorkDays"
+                  :value="choice.value"
+                  v-model="form.workType"
                   class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
                 />
                 <BaseLabel :id="choice.value" class="ml-3">
@@ -234,10 +233,10 @@
                 class="flex items-center"
               >
                 <input
-                  :id="choice.id"
-                  :name="choice.id"
+                  :id="choice.value"
+                  :name="choice.value"
                   type="radio"
-                  :value="choice.id"
+                  :value="choice.value"
                   v-model="selectedLocation"
                   class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
                 />
@@ -262,10 +261,11 @@
               id="country"
               name="country"
               autocomplete="country-name"
+              :disabled="selectedLocation == 'default'"
               v-model="form.address.country"
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 disabled:bg-gray-100 disabled:border-gray-200 disabled:textgray-400"
             >
-              <option>Thailand</option>
+              <option value="ประเทศไทย">Thailand</option>
             </select>
           </div>
         </div>
@@ -275,6 +275,7 @@
           id="postalCode"
           v-model="form.address.postalCode"
           required
+          :disabled="selectedLocation == 'default'"
         ></BaseInputField>
         <BaseInputField
           class="sm:col-span-2"
@@ -282,6 +283,7 @@
           id="city"
           v-model="form.address.city"
           required
+          :disabled="selectedLocation == 'default'"
         ></BaseInputField>
         <BaseInputField
           class="sm:col-span-2"
@@ -289,6 +291,7 @@
           id="district"
           v-model="form.address.district"
           required
+          :disabled="selectedLocation == 'default'"
         ></BaseInputField>
         <BaseInputField
           class="sm:col-span-2"
@@ -296,6 +299,7 @@
           id="subDistrict"
           v-model="form.address.subDistrict"
           required
+          :disabled="selectedLocation == 'default'"
         ></BaseInputField>
         <BaseInputField
           class="col-span-full"
@@ -303,6 +307,7 @@
           id="area"
           v-model="form.address.area"
           required
+          :disabled="selectedLocation == 'default'"
         ></BaseInputField>
       </ContainerField>
     </ContainerForm>
@@ -337,7 +342,7 @@
                   :name="item.value"
                   type="checkbox"
                   :value="item.value"
-                  v-model="form.documents"
+                  v-model="documents"
                   class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
                 />
               </div>
@@ -375,6 +380,7 @@
             </div>
           </fieldset>
         </div>
+
         <BaseDatePicker
           v-if="statusClosingDate"
           class="sm:col-span-3"
@@ -430,6 +436,7 @@
       <BaseButton :leadingIcon="TrashIcon" negative>Cancel</BaseButton>
     </div>
   </BaseSectionContent>
+  {{ form }}
 </template>
 
 <script setup>
@@ -450,6 +457,8 @@ import {
 } from '@heroicons/vue/24/outline'
 import { Field, ErrorMessage, Form } from 'vee-validate'
 import moment from 'moment'
+import Swal from 'sweetalert2'
+
 const route = useRoute()
 
 // --- input : เพิ่มตำแหน่งงาน ---
@@ -476,7 +485,7 @@ const resetPosition = () => {
   }
 }
 const addPosition = () => {
-  form.value.positionList.push(position.value)
+  positionList.value.push(position.value)
   hideAddPosition()
 }
 const statusEditPosition = computed(() =>
@@ -491,15 +500,54 @@ const editPosition = (position, index) => {
 }
 const savePosition = () => {
   const { id, title, num, workMonth, salary, desc } = positionEditing.value
-  form.value.positionList[id] = { title, num, workMonth, salary, desc }
+  positionList.value[id] = { title, num, workMonth, salary, desc }
   hideEditPosition()
 }
 
 const deletePosition = (index) => {
   if (index > -1) {
-    form.value.positionList.splice(index, 1)
+    positionList.value.splice(index, 1)
   }
   hideEditPosition()
+}
+
+const positionList = ref([
+  {
+    title: 'Frontend Developer',
+    desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
+    workMonth: 6,
+    salary: 300,
+    num: 2
+  },
+  {
+    title: 'Backend Developer',
+    desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหลังบ้าน ออกแบบ service และ datastructure',
+    workMonth: 6,
+    salary: 300,
+    num: 2
+  }
+])
+
+const setOpenPositionList = () => {
+  let openPositionList = form.value.openPositionList
+  positionList.value.forEach((p, index) => {
+    let position = {
+      openPositionTitle: p.title,
+      openPositionNum: p.num,
+      openPositionDesc: p.desc,
+      workMonth: p.workMonth,
+      salary: p.salary,
+
+      //*fix later backend แก้เพิ่ม position tag ใหม่ได้แล้ว
+      positionTag: {
+        positionTagId:
+          index == 0
+            ? '04a6ab2d-c1fc-44e2-b46c-b5193fb20bf7'
+            : 'a27c36fd-9ed4-4de7-ad8e-f5334953944d'
+      }
+    }
+    openPositionList.push(position)
+  })
 }
 
 // --- checkbox : วันทำงาน ---
@@ -522,18 +570,17 @@ const listDocs = [
 ]
 
 // --- radio : รูปแบบการทำงาน ---
-const selectedWorkDays = ref('style-1')
 const workTypes = [
-  { id: 'style-1', text: 'onsite', value: 'ONSITE' },
-  { id: 'style-2', text: 'online', value: 'ONLINE' },
-  { id: 'style-3', text: 'hybrid', value: 'HYBRID' }
+  { text: 'onsite', value: 'ONSITE' },
+  { text: 'online', value: 'ONLINE' },
+  { text: 'hybrid', value: 'HYBRID' }
 ]
 
 // --- radio : สถานที่ฝึกงาน ---
 const selectedLocation = ref('new')
 const choicesLocation = [
-  { id: 'new', text: 'เพิ่มที่อยู่ใหม่', value: 'new' },
-  { id: 'default', text: 'ใช้ที่อยู่เดียวกันกับบริษัท', value: 'default' }
+  { text: 'เพิ่มที่อยู่ใหม่', value: 'new' },
+  { text: 'ใช้ที่อยู่เดียวกันกับบริษัท', value: 'default' }
 ]
 
 // --- radio : ระยะที่เปิดรับสมัคร ---
@@ -543,84 +590,183 @@ const choicesClosedDate = [
 ]
 const statusClosingDate = ref(false)
 const closingDate = ref()
-
-// --- time-picker : เวลาเริ่ม-เลิกงาน ---
-const setWorkTime = () => {
-  if (form.value.workTime) {
-    let startTime = form.value.workTime[0]
-    let endTime = form.value.workTime[1]
-    console.log(startTime + ',' + endTime)
-    form.value.workStartTime = `${
-      startTime.hours < 10 ? '0' + startTime.hours : startTime.hours
-    }:${
-      startTime.minutes < 10 ? '0' + startTime.minutes : startTime.minutes
-    }:00`
-
-    form.value.workEndTime = `${
-      endTime.hours < 10 ? '0' + endTime.hours : endTime.hours
-    }:${endTime.minutes < 10 ? '0' + endTime.minutes : endTime.minutes}:00`
-
-    console.log(form.value.workStartTime + ',' + form.value.workEndTime)
+const setClosedDate = () => {
+  if (statusClosingDate.value) {
+    form.value.closedDate = moment(closingDate.value).format().substring(0, 19)
+  } else {
+    form.value.closedDate = null
   }
 }
 
+// --- time-picker : เวลาเริ่ม-เลิกงาน ---
+const workTime = ref([
+  { hours: 9, minutes: 0, seconds: 0 },
+  { hours: 18, minutes: 0, seconds: 0 }
+])
+const setWorkTime = () => {
+  if (workTime.value) {
+    let startTime = workTime.value[0]
+    let endTime = workTime.value[1]
+    form.value.workStartTime = `${
+      startTime.hours < 10 ? '0' + startTime.hours : startTime.hours
+    }:${startTime.minutes < 10 ? '0' + startTime.minutes : startTime.minutes}`
+
+    form.value.workEndTime = `${
+      endTime.hours < 10 ? '0' + endTime.hours : endTime.hours
+    }:${endTime.minutes < 10 ? '0' + endTime.minutes : endTime.minutes}`
+  }
+}
+
+// --- location: get latitude / longtitude ---
+const getGeoLication = async () => {
+  let address = form.value.address
+  let location = address.area.concat(
+    ' ',
+    address.subDistrict,
+    ' ',
+    address.district,
+    ' ',
+    address.city,
+    ' ',
+    address.country,
+    ' ',
+    address.postalCode
+  )
+
+  const runtimeConfig = useRuntimeConfig()
+  const KEY_API_MAP = runtimeConfig.public.KEY_API_MAP
+
+  await $fetch(
+    `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+      location
+    )}&key=${KEY_API_MAP}`
+  )
+    .then((response) => {
+      if (response.results[0].geometry) {
+        address.latitude = response.results[0].geometry.location.lat
+        address.longitude = response.results[0].geometry.location.lng
+      } else {
+        console.log('Unable to locate this location.')
+      }
+    })
+    .catch((error) => {
+      console.error('Error fetching location:', error)
+    })
+}
+const workDay = ref([])
+const documents = ref([])
+
 const form = ref({
-  title: '',
-  positionList: [
-    {
-      title: 'Frontend Developer',
-      desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
-      workMonth: 6,
-      salary: 300,
-      num: 2
-    },
-    {
-      title: 'Backend Developer',
-      desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหลังบ้าน ออกแบบ service และ datastructure',
-      workMonth: 6,
-      salary: 300,
-      num: 2
-    }
-  ],
-  workTime: [
-    { hours: 9, minutes: 0, seconds: 0 },
-    { hours: 18, minutes: 0, seconds: 0 }
-  ],
+  title: 'Title post -1',
+  closedDate: '', // *function setClosedDate()
+  coordinatorName: 'คุณHR แสนดี',
+  postDesc: 'description',
+  postWelfare: 'สวัสดีจ้า เอ้ย สวัสดิการ',
+  enrolling: 'เดินเข้ามาของาน',
+  // documents: [], //ส่ง array หรือ string ? *check value choices
+  documents: 'Resume',
+  tel: '012-345-6789',
+  email: 'nice.vct@mail.kmutt.ac.th',
+  address: {
+    country: 'Thailand',
+    postalCode: '10150',
+    city: 'กรุงเทพ',
+    district: 'บางบอน',
+    subDistrict: 'บองบอน',
+    area: 'หมู่บ้านดีเค',
+    latitude: null, // *function getGeoLication()
+    longitude: null
+  },
+  //*function setWorkTime()
   workStartTime: '',
   workEndTime: '',
-
-  workDay: ['mon', 'tue', 'wed', 'thu', 'fri'],
+  // workDay: ['mon', 'tue', 'wed', 'thu', 'fri'], //ส่ง array หรือ string ? *check value choices
+  workDay: 'mon,tue,wed,thu,fri',
   workType: 'HYBRID',
-  postDesc: '',
-  postWelfare: '',
-
-  address: {
-    country: '',
-    postalCode: '',
-    city: '',
-    district: '',
-    subDistrict: '',
-    area: '',
-
-    // *function get geolocation
-    latitude: 13.705368,
-    longitude: 100.5331527
+  comp: {
+    compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
   },
-
-  enrolling: '',
-  documents: [],
-
-  // *function return null / Date (get stuatusClosedDate, closingDate)
-  closedDate: '',
-
-  coordinatorName: '',
-  tel: '012-345-6789',
-  email: 'nice.vct@mail.kmutt.ac.th'
+  openPositionList: [], //*function setOpenPositionList()
+  url: 'www.google.com' //*backend ส่งได้เปล่า?
 })
 
-const submitForm = () => {
+const submitForm = async () => {
+  await getGeoLication()
+  setClosedDate()
   setWorkTime()
+  setOpenPositionList()
+  console.log(form.value)
+  await createPackage()
 }
+
+const createPackage = async () => {
+  try {
+    const res = await createNewPost(form.value)
+
+    if (res.value) {
+      Swal.fire({
+        title: 'Create Post',
+        text: 'สร้าง post สำเร็จ',
+        icon: 'success'
+      }).then((result) => {
+        if (result.value || result.dismiss) {
+          back()
+        }
+      })
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      icon: 'error',
+      title: 'Error',
+      text: 'ไม่สามารถสร้าง post ใหม่ได้'
+    })
+  }
+}
+
+const back = () => router.push({ path: '/internship' })
+
+// const request = {
+//   title: 'test',
+//   closedDate: '2023-12-04T13:30:00',
+//   postDesc: 'test test test',
+//   postWelfare: 'test welfare',
+//   enrolling: 'ส่ง ๆ มา จริง ๆ ก็รับให้หมด ๆ นั่นแหละ HR ขี้เกียจจา',
+//   documents: 'Resume',
+//   coordinatorName: 'Ms. Me Andyou',
+//   tel: '700-000-000',
+//   email: 'me@gmail.com',
+//   address: {
+//     country: 'Thailand',
+//     postalCode: '10500',
+//     city: 'Chiangmai',
+//     district: 'Bangrak',
+//     subDistrict: 'Bangmod',
+//     area: 'ซอยประชาอุทิศ 3 ล้าน',
+//     latitude: 13.7271846,
+//     longitude: 100.5141211
+//   },
+//   workStartTime: '09:30',
+//   workEndTime: '17:00',
+//   workDay: 'mon,web,sat',
+//   workType: 'HYBRID',
+//   comp: {
+//     compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
+//   },
+//   openPositionList: [
+//     {
+//       openPositionNum: 5,
+//       openPositionTitle: 'test',
+//       openPositionDesc: 'ทำงานแบบทดสอบ ทดสอบทำ ๆ ไป',
+//       workMonth: 4,
+//       salary: 400,
+//       positionTag: {
+//         positionTagId: '04a6ab2d-c1fc-44e2-b46c-b5193fb20bf7'
+//       }
+//     }
+//   ]
+// }
 </script>
 
 <style lang="scss" scoped></style>

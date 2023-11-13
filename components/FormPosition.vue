@@ -5,13 +5,29 @@
     <BaseTitleForm class="text-center col-span-full">
       {{ editmode ? 'แก้ไขตำแหน่งงาน' : 'เพิ่มตำแหน่งงาน' }}
     </BaseTitleForm>
-    <BaseInputField
+    <!-- <BaseInputField
       class="sm:col-span-4"
       label="ชื่อตำแหน่งงาน"
       id="title"
       v-model="position.title"
       required
-    ></BaseInputField>
+    ></BaseInputField> -->
+
+    <Multiselect
+      v-model="position.title"
+      placeholder=""
+      noOptionsText="..."
+      :filter-results="false"
+      :min-chars="1"
+      :resolve-on-load="false"
+      :delay="1"
+      :searchable="true"
+      :create-option="true"
+      :class="['searchselect-blue', 'sm:col-span-4']"
+      :options="
+        (query) => searchPositionName(query) // check JS block for implementation
+      "
+    />
 
     <BaseInputField
       class="sm:col-span-6"
@@ -76,9 +92,29 @@ const props = defineProps({
   editmode: {
     type: Boolean,
     default: false
+  },
+  listPositionTag: {
+    type: Array,
+    required: true
   }
 })
 defineEmits(['submit', 'cancel'])
+
+const searchPositionName = async (query) => {
+  console.log(query)
+  let result = props.listPositionTag.filter((item) => {
+    return item.toLowerCase().includes(query.toLowerCase())
+  })
+  console.log(result)
+  return result
+}
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.searchselect-blue {
+  --ms-option-bg-selected: #2563eb;
+  --ms-option-bg-selected-pointed: #2563eb;
+  --ms-ring-color: rgba(56, 189, 248, 0.2);
+  --ms-spinner-color: #60a5fa;
+}
+</style>

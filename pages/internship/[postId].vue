@@ -5,6 +5,7 @@
       // --- เอาไว้ย้อนกลับหน้า page เดิม ---
       // query: { page: route.query.page }
     }"
+    class="w-fit"
   >
     <BaseItem :icon="ChevronLeftIcon" class="mb-4 cursor-pointer"
       >back</BaseItem
@@ -117,7 +118,7 @@
           </BaseDescription>
           <div class="grid gap-5 lg:grid-cols-4">
             <BaseDescription label="เอกสารประกอบการสมัคร" class="lg:col-span-1">
-              {{ post.documents }}
+              {{ post.documents.length > 0 ? post.document : '-' }}
             </BaseDescription>
             <BaseDescription label="วิธีการสมัคร" class="lg:col-span-3">
               {{ post.enrolling }}

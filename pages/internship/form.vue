@@ -93,6 +93,7 @@
             <FormPosition
               v-if="statusEditPosition && positionEditing.id == index"
               :position="positionEditing"
+              :list-position-tag="listPositionNameTag"
               @submit="savePosition()"
               @cancel="hideEditPosition()"
               editmode
@@ -114,6 +115,7 @@
           <FormPosition
             v-else-if="statusAddPosition"
             :position="position"
+            :list-position-tag="listPositionNameTag"
             @submit="addPosition()"
             @cancel="hideAddPosition()"
           />
@@ -157,7 +159,7 @@
                   :name="item.value"
                   type="checkbox"
                   :value="item.value"
-                  v-model="workDay"
+                  v-model="form.workDay"
                   class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
                 />
               </div>
@@ -342,7 +344,7 @@
                   :name="item.value"
                   type="checkbox"
                   :value="item.value"
-                  v-model="documents"
+                  v-model="form.documents"
                   class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
                 />
               </div>
@@ -425,7 +427,7 @@
           class="sm:col-span-4"
           label="เว็บไซต์บริษัท"
           id="website"
-          v-model="form.url"
+          v-model="form.comp.compURL"
         ></BaseInputField>
       </ContainerField>
     </ContainerForm>
@@ -461,6 +463,30 @@ import Swal from 'sweetalert2'
 
 const route = useRoute()
 const router = useRouter()
+
+// --- GET : position-tag ---
+const listPositionTag = ref([])
+const listPositionNameTag = ref([])
+const getListPositionTag = async () => {
+  try {
+    const res = await usePositionTag()
+    if (res.value) {
+      listPositionTag.value = res.value
+      listPositionTag.value.forEach((item) => {
+        listPositionNameTag.value.push(item.positionName)
+      })
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      icon: 'error',
+      title: 'Error',
+      text: 'get /position-tag ใช้งานไม่ได้'
+    })
+  }
+}
+await getListPositionTag()
 
 // --- input : เพิ่มตำแหน่งงาน ---
 const statusAddPosition = ref(false)
@@ -513,23 +539,30 @@ const deletePosition = (index) => {
 }
 
 const positionList = ref([
-  {
-    title: 'Frontend Developer',
-    desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
-    workMonth: 6,
-    salary: 300,
-    num: 2
-  },
-  {
-    title: 'Backend Developer',
-    desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหลังบ้าน ออกแบบ service และ datastructure',
-    workMonth: 6,
-    salary: 300,
-    num: 2
-  }
+  // {
+  //   title: 'Frontend Developer',
+  //   desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
+  //   workMonth: 6,
+  //   salary: 300,
+  //   num: 2
+  // },
+  // {
+  //   title: 'Backend Developer',
+  //   desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหลังบ้าน ออกแบบ service และ datastructure',
+  //   workMonth: 6,
+  //   salary: 300,
+  //   num: 2
+  // }
 ])
+const getPositionTagId = (positionName) => {
+  let positionTag = listPositionTag.value.find(
+    (position) => position.positionName == positionName
+  )
+  return positionTag ? positionTag.positionTagId : null
+}
 
 const setOpenPositionList = () => {
+  form.value.openPositionList = []
   let openPositionList = form.value.openPositionList
   positionList.value.forEach((p, index) => {
     let position = {
@@ -538,13 +571,8 @@ const setOpenPositionList = () => {
       openPositionDesc: p.desc,
       workMonth: p.workMonth,
       salary: p.salary,
-
-      //*fix later backend แก้เพิ่ม position tag ใหม่ได้แล้ว
       positionTag: {
-        positionTagId:
-          index == 0
-            ? '04a6ab2d-c1fc-44e2-b46c-b5193fb20bf7'
-            : 'a27c36fd-9ed4-4de7-ad8e-f5334953944d'
+        positionTagId: getPositionTagId(p.title)
       }
     }
     openPositionList.push(position)
@@ -658,14 +686,13 @@ const workDay = ref([])
 const documents = ref([])
 
 const form = ref({
-  title: 'Title post -1',
+  title: '',
   closedDate: '', // *function setClosedDate()
   coordinatorName: 'คุณHR แสนดี',
   postDesc: 'description',
   postWelfare: 'สวัสดีจ้า เอ้ย สวัสดิการ',
   enrolling: 'เดินเข้ามาของาน',
-  // documents: [], //ส่ง array หรือ string ? *check value choices
-  documents: 'Resume',
+  documents: [], //ส่ง array หรือ string ? *check value choices
   tel: '012-345-6789',
   email: 'nice.vct@mail.kmutt.ac.th',
   address: {
@@ -681,14 +708,13 @@ const form = ref({
   //*function setWorkTime()
   workStartTime: '',
   workEndTime: '',
-  // workDay: ['mon', 'tue', 'wed', 'thu', 'fri'], //ส่ง array หรือ string ? *check value choices
-  workDay: 'mon,tue,wed,thu,fri',
+  workDay: ['mon', 'tue', 'wed', 'thu', 'fri'], //ส่ง array หรือ string ? *check value choices
   workType: 'HYBRID',
   comp: {
-    compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
+    compId: '8e20782f-2807-4f13-a11e-0fb9ff955488',
+    compURL: ''
   },
-  openPositionList: [], //*function setOpenPositionList()
-  url: 'www.google.com' //*backend ส่งได้เปล่า?
+  openPositionList: [] //*function setOpenPositionList()
 })
 
 const submitForm = async () => {
@@ -727,47 +753,6 @@ const createPackage = async () => {
 }
 
 const back = () => router.push({ path: '/internship' })
-
-// const request = {
-//   title: 'test',
-//   closedDate: '2023-12-04T13:30:00',
-//   postDesc: 'test test test',
-//   postWelfare: 'test welfare',
-//   enrolling: 'ส่ง ๆ มา จริง ๆ ก็รับให้หมด ๆ นั่นแหละ HR ขี้เกียจจา',
-//   documents: 'Resume',
-//   coordinatorName: 'Ms. Me Andyou',
-//   tel: '700-000-000',
-//   email: 'me@gmail.com',
-//   address: {
-//     country: 'Thailand',
-//     postalCode: '10500',
-//     city: 'Chiangmai',
-//     district: 'Bangrak',
-//     subDistrict: 'Bangmod',
-//     area: 'ซอยประชาอุทิศ 3 ล้าน',
-//     latitude: 13.7271846,
-//     longitude: 100.5141211
-//   },
-//   workStartTime: '09:30',
-//   workEndTime: '17:00',
-//   workDay: 'mon,web,sat',
-//   workType: 'HYBRID',
-//   comp: {
-//     compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
-//   },
-//   openPositionList: [
-//     {
-//       openPositionNum: 5,
-//       openPositionTitle: 'test',
-//       openPositionDesc: 'ทำงานแบบทดสอบ ทดสอบทำ ๆ ไป',
-//       workMonth: 4,
-//       salary: 400,
-//       positionTag: {
-//         positionTagId: '04a6ab2d-c1fc-44e2-b46c-b5193fb20bf7'
-//       }
-//     }
-//   ]
-// }
 </script>
 
 <style lang="scss" scoped></style>

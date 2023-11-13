@@ -391,20 +391,6 @@ const changeStarButton = () => {
   statusStar.value ? (statusStar.value = false) : (statusStar.value = true)
 }
 
-// -- แสดงค่า min - max ของระยะเวลาการฝึกงาน/ค่าตอบเทน --
-const rangeDate = ref({
-  workMonth: {
-    all: [],
-    min: 0,
-    max: 0
-  },
-  salary: {
-    all: [],
-    min: 0,
-    max: 0
-  }
-})
-
 // -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
 const statusClosedDate = (postCloseDate, postIdex) => {
   if (postCloseDate == null) {

@@ -12,22 +12,31 @@
       v-model="position.title"
       required
     ></BaseInputField> -->
-
-    <Multiselect
-      v-model="position.title"
-      placeholder=""
-      noOptionsText="..."
-      :filter-results="false"
-      :min-chars="1"
-      :resolve-on-load="false"
-      :delay="1"
-      :searchable="true"
-      :create-option="true"
-      :class="['searchselect-blue', 'sm:col-span-4']"
-      :options="
-        (query) => searchPositionName(query) // check JS block for implementation
-      "
-    />
+    <div class="sm:col-span-6">
+      <BaseLabel
+        id="position-title"
+        :icon="MusicalNoteIcon"
+        :required="required"
+      >
+        ชื่อตำแหน่งงาน
+      </BaseLabel>
+      <Multiselect
+        v-model="position.title"
+        for="position-title"
+        placeholder=""
+        noOptionsText="..."
+        :filter-results="false"
+        :min-chars="1"
+        :resolve-on-load="false"
+        :delay="1"
+        :searchable="true"
+        :create-option="true"
+        class="searchselect-blue"
+        :options="
+          (query) => searchPositionName(query) // check JS block for implementation
+        "
+      />
+    </div>
 
     <BaseInputField
       class="sm:col-span-6"

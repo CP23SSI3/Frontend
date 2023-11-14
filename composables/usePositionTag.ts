@@ -1,11 +1,9 @@
 import { ResponseList } from '~/types/Response'
 import { PositionTag } from '~/types/Post'
 
-// type ResponsePositionTagList = ResponseList & {
-//   data: PositionTag[]
-// }
-
-// type ResponsePositionTagList = PositionTag[]
+type ResponsePositionTagList = ResponseList & {
+  data: PositionTag[]
+}
 
 export default async () => {
   const runtimeConfig = useRuntimeConfig()
@@ -13,7 +11,7 @@ export default async () => {
   const url = `${API_URL}position-tags`
   // const auth = useAuth()
   // const token = auth.$storage.getUniversal('_token.local') as string
-  const { data, error } = await useFetch<PositionTag[]>(url, {
+  const { data, error } = await useFetch<ResponsePositionTagList>(url, {
     // params,
     // headers: {
     // Authorization: token

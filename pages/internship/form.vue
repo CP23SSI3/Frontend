@@ -471,12 +471,14 @@ const getListPositionTag = async () => {
   try {
     const res = await usePositionTag()
     if (res.value) {
-      listPositionTag.value = res.value
+      console.log(res.value.data)
+      listPositionTag.value = res.value.data
       listPositionTag.value.forEach((item) => {
         listPositionNameTag.value.push(item.positionName)
       })
     }
   } catch (error) {
+    // console.log(error)
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,
@@ -595,7 +597,7 @@ const listDocs = [
   { text: 'Portfolio', value: 'portfolio' },
   { text: 'Resume', value: 'resume' },
   { text: 'CV', value: 'cv' },
-  { text: 'Transcript', value: 'transcipt' }
+  { text: 'Transcript', value: 'transcript' }
 ]
 
 // --- radio : รูปแบบการทำงาน ---
@@ -711,10 +713,10 @@ const form = ref({
   workDay: ['mon', 'tue', 'wed', 'thu', 'fri'], //ส่ง array หรือ string ? *check value choices
   workType: 'HYBRID',
   comp: {
-    compId: '8e20782f-2807-4f13-a11e-0fb9ff955488',
-    compURL: ''
+    compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
   },
-  openPositionList: [] //*function setOpenPositionList()
+  openPositionList: [], //*function setOpenPositionList()
+  postUrl: ''
 })
 
 const submitForm = async () => {

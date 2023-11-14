@@ -59,4 +59,5 @@ export type Post = {
   workDay: string
   workType: string
   openPositionList: Position[]
+  postUrl: URL
 }

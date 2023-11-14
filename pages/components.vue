@@ -47,7 +47,7 @@
         </td>
         <td class="p-4 text-s">
           <BaseLabel
-            :id="labelIcon"
+            id="labelIcon"
             :icon="MusicalNoteIcon"
             :required="required"
           >

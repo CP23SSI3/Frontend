@@ -1,16 +1,18 @@
 <template>
-  <NuxtLink
-    :to="{
-      path: `/internship`
-      // --- เอาไว้ย้อนกลับหน้า page เดิม ---
-      // query: { page: route.query.page }
-    }"
-    class="w-fit"
-  >
-    <BaseItem :icon="ChevronLeftIcon" class="mb-4 cursor-pointer"
-      >back</BaseItem
+  <div>
+    <NuxtLink
+      :to="{
+        path: `/internship`
+        // --- เอาไว้ย้อนกลับหน้า page เดิม ---
+        // query: { page: route.query.page }
+      }"
+      class="max-w-fit"
     >
-  </NuxtLink>
+      <BaseItem :icon="ChevronLeftIcon" class="mb-4 cursor-pointer"
+        >back</BaseItem
+      >
+    </NuxtLink>
+  </div>
 
   <BaseSectionContent class="flex flex-col gap-6 px-4 py-4 sm:px-6 sm:py-7">
     <!-- Header -->
@@ -84,10 +86,14 @@
             <BaseItem :icon="PhoneIcon" class="text-gray-900">
               {{ post.tel }}
             </BaseItem>
-            <BaseItem :icon="LinkIcon" class="text-gray-900">
-              <a :href="post.comp.compUrl" target="_blank">{{
-                post.comp.compUrl
-              }}</a>
+            <BaseItem
+              :icon="LinkIcon"
+              class="text-gray-900"
+              v-show="post.Url == null"
+            >
+              <a :href="post.postUrl" target="_blank">
+                {{ post.comp.postUrl }}
+              </a>
             </BaseItem>
           </div>
         </BaseDescription>
@@ -100,8 +106,10 @@
             <BaseDescription label="รูปแบบการฝึกงาน" class="lg:col-span-1">
               {{ post.workType }}
             </BaseDescription>
-            <BaseDescription label="วัน-เวลาทำงาน" class="lg:col-span-3">
-              {{ post.workDay }},
+            <BaseDescription label="วันทำงาน" class="lg:col-span-1">
+              {{ getThaiWorkDays(post.workDay) }}
+            </BaseDescription>
+            <BaseDescription label="เวลาทำงาน" class="lg:col-span-1">
               {{
                 post.workStartTime.substring(0, 5) +
                 ' - ' +
@@ -118,7 +126,7 @@
           </BaseDescription>
           <div class="grid gap-5 lg:grid-cols-4">
             <BaseDescription label="เอกสารประกอบการสมัคร" class="lg:col-span-1">
-              {{ post.documents.length > 0 ? post.document : '-' }}
+              {{ getListDocs(post.documents) }}
             </BaseDescription>
             <BaseDescription label="วิธีการสมัคร" class="lg:col-span-3">
               {{ post.enrolling }}
@@ -207,6 +215,88 @@ const statusClosedDate = (postCloseDate, postIdex) => {
 const statusStar = ref(false)
 const changeStarButton = () => {
   statusStar.value ? (statusStar.value = false) : (statusStar.value = true)
+}
+
+// --- Format Documents ---
+const listDocs = [
+  { text: 'Portfolio', value: 'portfolio' },
+  { text: 'Resume', value: 'resume' },
+  { text: 'CV', value: 'cv' },
+  { text: 'Transcript', value: 'transcript' }
+]
+
+const getListDocs = (array) => {
+  let docuemnts
+  if (array.length > 0) {
+    array.forEach((element, index) => {
+      let text = listDocs.find((item) => item.value == element)
+      docuemnts = index == 0 ? text.text : docuemnts + ', ' + text.text
+    })
+  } else {
+    docuemnts = '-'
+  }
+  return docuemnts
+}
+
+// --- Format Workday ---
+const listDays = [
+  { text: 'อาทิตย์', value: 'sun' },
+  { text: 'จันทร์', value: 'mon' },
+  { text: 'อังคาร', value: 'tue' },
+  { text: 'พุธ', value: 'wed' },
+  { text: 'พฤหัส', value: 'thu' },
+  { text: 'ศุกร์', value: 'fri' },
+  { text: 'เสาร์', value: 'sat' }
+]
+function groupConsecutiveDays(days) {
+  const result = []
+  let currentGroup = [days[0]]
+
+  for (let i = 1; i < days.length; i++) {
+    const currentDay = days[i]
+    const previousDay = days[i - 1]
+
+    if (listDays.indexOf(currentDay) - listDays.indexOf(previousDay) === 1) {
+      // Days are consecutive
+      currentGroup.push(currentDay)
+    } else {
+      // Days are not consecutive, start a new group
+      result.push(currentGroup)
+      currentGroup = [currentDay]
+    }
+  }
+  result.push(currentGroup) // Add the last group
+
+  return result
+}
+
+function getThaiWorkDays(workDay) {
+  const thaiDays = listDays
+    .filter((day) => workDay.includes(day.value))
+    .map((day) => day.text)
+  if (thaiDays.length === 0) {
+    return ''
+  } else if (thaiDays.length === 1) {
+    return thaiDays[0]
+  } else if (thaiDays.length === 7) {
+    return 'ทุกวัน'
+  } else {
+    const selectedDays = listDays.filter((day) => workDay.includes(day.value))
+    // return thaiDays.join(', ')
+    const groupedDays = groupConsecutiveDays(selectedDays)
+
+    let result = groupedDays
+      .map((group) => {
+        if (group.length === 1) {
+          return group[0].text // Single day in the group
+        } else {
+          return `${group[0].text}-${group[group.length - 1].text}` // Multiple consecutive days in the group
+        }
+      })
+      .join(', ')
+
+    return result
+  }
 }
 </script>
 

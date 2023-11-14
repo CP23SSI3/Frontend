@@ -89,10 +89,10 @@
             <BaseItem
               :icon="LinkIcon"
               class="text-gray-900"
-              v-show="post.Url == null"
+              v-show="post.postUrl != null"
             >
               <a :href="post.postUrl" target="_blank">
-                {{ post.comp.postUrl }}
+                {{ post.postUrl }}
               </a>
             </BaseItem>
           </div>

@@ -286,7 +286,9 @@ const setMinMax = (positionList, postIndex) => {
   }
   positionList.forEach((num) => {
     rangeData.workMonth.all.push(num.workMonth)
-    rangeData.salary.all.push(num.salary)
+    if (num.salary) {
+      rangeData.salary.all.push(num.salary)
+    }
   })
   if (rangeData.workMonth.all.length > 1) {
     rangeData.workMonth.min = Math.min.apply(Math, rangeData.workMonth.all)

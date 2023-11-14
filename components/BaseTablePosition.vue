@@ -30,7 +30,7 @@
       </template>
       <template #item-salary="{ salary }">
         <div class="text-sm text-gray-500 whitespace-normal">
-          {{ salary }} บาท/วัน
+          {{ salary ? salary + ' บาท/วัน' : 'ไม่ระบุ' }}
         </div>
       </template>
       <template #item-openPositionNum="{ openPositionNum }">

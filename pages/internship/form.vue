@@ -29,8 +29,8 @@
                 <BaseItem :icon="BriefcaseIcon">{{
                   position.workMonth
                 }}</BaseItem>
-                <BaseItem :icon="CurrencyDollarIcon">
-                  {{ position.salary }}
+                <BaseItem :icon="CurrencyDollarIcon" class="min-w-fit">
+                  {{ position.salary ? position.salary : 'ไม่ระบุ' }}
                 </BaseItem>
                 <BaseItem :icon="UsersIcon">{{ position.num }}</BaseItem>
                 <Menu as="div" class="relative inline-block text-left">
@@ -427,24 +427,23 @@
           class="sm:col-span-4"
           label="เว็บไซต์บริษัท"
           id="website"
-          v-model="form.comp.compURL"
+          v-model="form.postUrl"
         ></BaseInputField>
       </ContainerField>
     </ContainerForm>
-    <div class="flex flex-row-reverse gap-2">
-      <BaseButton :trailingIcon="EyeIcon" @click="submitForm()"
-        >Preview</BaseButton
-      >
+    <div class="flex justify-between gap-2">
       <BaseButton :leadingIcon="TrashIcon" negative>Cancel</BaseButton>
+      <BaseButton :trailingIcon="ChevronRightIcon" @click="submitForm()"
+        >Post</BaseButton
+      >
     </div>
   </BaseSectionContent>
-  {{ form }}
 </template>
 
 <script setup>
 import {
   PlusIcon,
-  EyeIcon,
+  ChevronRightIcon,
   PencilIcon,
   EllipsisVerticalIcon,
   TrashIcon as TrashIconSolid
@@ -673,24 +672,31 @@ const getGeoLication = async () => {
     )}&key=${KEY_API_MAP}`
   )
     .then((response) => {
-      if (response.results[0].geometry) {
+      console.log(response)
+      if (response.results.length > 0) {
         address.latitude = response.results[0].geometry.location.lat
         address.longitude = response.results[0].geometry.location.lng
       } else {
         console.log('Unable to locate this location.')
+        return
       }
     })
     .catch((error) => {
       console.error('Error fetching location:', error)
+      Swal.fire({
+        showConfirmButton: true,
+        timerProgressBar: true,
+        icon: 'error',
+        title: 'ที่อยู่ไม่ถูกต้อง',
+        text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
+      })
     })
 }
-const workDay = ref([])
-const documents = ref([])
 
 const form = ref({
-  title: '',
-  closedDate: '', // *function setClosedDate()
-  coordinatorName: 'คุณHR แสนดี',
+  title: 'ประกาศรับฝึกงาน',
+  closedDate: null, // *function setClosedDate()
+  coordinatorName: 'คุณทรงกลด',
   postDesc: 'description',
   postWelfare: 'สวัสดีจ้า เอ้ย สวัสดิการ',
   enrolling: 'เดินเข้ามาของาน',
@@ -700,10 +706,10 @@ const form = ref({
   address: {
     country: 'Thailand',
     postalCode: '10150',
-    city: 'กรุงเทพ',
-    district: 'บางบอน',
-    subDistrict: 'บองบอน',
-    area: 'หมู่บ้านดีเค',
+    city: 'กรุงเทพมหานคร',
+    district: 'จอมทอง',
+    subDistrict: 'บางมด',
+    area: '351, 1 ถนน พุทธบูชา ',
     latitude: null, // *function getGeoLication()
     longitude: null
   },

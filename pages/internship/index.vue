@@ -26,7 +26,13 @@
       <!-- List -->
       <BaseLoading v-if="loading" />
       <div v-else class="flex flex-col w-full col-span-4 gap-2 lg:col-span-3">
-        <BaseSectionContent class="px-5 py-5" v-for="(post, index) in listPost">
+        <div v-if="listPost.length == 0">- ไม่มีพบข้อมูล -</div>
+
+        <BaseSectionContent
+          v-else
+          class="px-5 py-5"
+          v-for="(post, index) in listPost"
+        >
           <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-2 lg:gap-6">
               <!-- * add Logo Company -->
@@ -222,13 +228,14 @@ const getPost = async () => {
       listPost.value.forEach((post, index) => {
         setMinMax(post.openPositionList, index)
       })
-      console.log(listPost.value)
+      // console.log(listPost.value)
       loading.value = false
     }
   } catch (error) {
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,
+      confirmButtonColor: 'blue',
       icon: 'error',
       title: 'Error',
       text: 'ไม่สามารถเรียกดู list post ได้'

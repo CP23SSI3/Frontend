@@ -32,7 +32,7 @@ export type Position = {
 }
 
 export type PositionTag = {
-  positionName: string
+  positionTagName: string
 }
 
 export type Post = {

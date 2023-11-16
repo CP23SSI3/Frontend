@@ -11,6 +11,7 @@
           required
         ></BaseInputField>
         <div class="col-span-full">
+          {{ positionList }}
           <BaseLabel id="positions" required> ตำแหน่งงานที่เปิดรับ </BaseLabel>
           <!-- List Position -->
           <div v-for="(position, index) in positionList">
@@ -438,6 +439,7 @@
       >
     </div>
   </BaseSectionContent>
+  {{ form }}
 </template>
 
 <script setup>
@@ -472,16 +474,17 @@ const getListPositionTag = async () => {
   try {
     const res = await usePositionTag()
     if (res.value) {
-      console.log(res.value.data)
       res.value.data.forEach((item) => {
-        listPositionTag.value.push(item.positionName)
+        listPositionTag.value.push(item.positionTagName)
       })
+      // console.log(listPositionTag.value)
     }
   } catch (error) {
     // console.log(error)
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,
+      confirmButtonColor: 'blue',
       icon: 'error',
       title: 'Error',
       text: 'get /position-tag ใช้งานไม่ได้'
@@ -548,20 +551,7 @@ const positionList = ref([
   //   salary: 300,
   //   num: 2
   // },
-  // {
-  //   title: 'Backend Developer',
-  //   desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหลังบ้าน ออกแบบ service และ datastructure',
-  //   workMonth: 6,
-  //   salary: 300,
-  //   num: 2
-  // }
 ])
-// const getPositionTagId = (positionName) => {
-//   let positionTag = listPositionTag.value.find(
-//     (position) => position.positionName == positionName
-//   )
-//   return positionTag ? positionTag.positionTagId : null
-// }
 
 const setOpenPositionList = () => {
   form.value.openPositionList = []
@@ -572,10 +562,7 @@ const setOpenPositionList = () => {
       openPositionNum: p.num,
       openPositionDesc: p.desc,
       workMonth: p.workMonth,
-      salary: p.salary
-      // positionTag: {
-      //   positionTagId: getPositionTagId(p.title)
-      // }
+      salary: p.salary ? p.salary : null
     }
     openPositionList.push(position)
   })
@@ -674,12 +661,19 @@ const getGeoLication = async () => {
   )
     .then((response) => {
       console.log(response)
-      if (response.results.length > 0) {
+      if (response.status == 'OK') {
         address.latitude = response.results[0].geometry.location.lat
         address.longitude = response.results[0].geometry.location.lng
       } else {
-        console.log('Unable to locate this location.')
-        return
+        // console.log('Unable to locate this location.')
+        Swal.fire({
+          showConfirmButton: true,
+          timerProgressBar: true,
+          confirmButtonColor: 'blue',
+          icon: 'error',
+          title: 'ที่อยู่ไม่ถูกต้อง',
+          text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
+        })
       }
     })
     .catch((error) => {
@@ -687,6 +681,7 @@ const getGeoLication = async () => {
       Swal.fire({
         showConfirmButton: true,
         timerProgressBar: true,
+        confirmButtonColor: 'blue',
         icon: 'error',
         title: 'ที่อยู่ไม่ถูกต้อง',
         text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
@@ -696,12 +691,12 @@ const getGeoLication = async () => {
 
 const form = ref({
   title: 'ประกาศรับฝึกงาน',
-  closedDate: null, // *function setClosedDate()
+  closedDate: null, // function setClosedDate()
   coordinatorName: 'คุณทรงกลด',
   postDesc: 'description',
   postWelfare: 'สวัสดีจ้า เอ้ย สวัสดิการ',
   enrolling: 'เดินเข้ามาของาน',
-  documents: [], //ส่ง array หรือ string ? *check value choices
+  documents: [],
   tel: '012-345-6789',
   email: 'nice.vct@mail.kmutt.ac.th',
   address: {
@@ -710,11 +705,11 @@ const form = ref({
     city: 'กรุงเทพมหานคร',
     district: 'จอมทอง',
     subDistrict: 'บางมด',
-    area: '351, 1 ถนน พุทธบูชา ',
-    latitude: null, // *function getGeoLication()
+    area: '351, 1 ถนนพุทธบูชา ',
+    latitude: null, // function getGeoLication()
     longitude: null
   },
-  //*function setWorkTime()
+  //function setWorkTime()
   workStartTime: '',
   workEndTime: '',
   workDay: ['mon', 'tue', 'wed', 'thu', 'fri'], //ส่ง array หรือ string ? *check value choices
@@ -722,17 +717,28 @@ const form = ref({
   comp: {
     compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
   },
-  openPositionList: [], //*function setOpenPositionList()
-  postUrl: ''
+  openPositionList: [], //function setOpenPositionList()
+  postUrl: '',
+  postTagList: ['Frontend developer', 'Backend developer']
 })
 
 const submitForm = async () => {
-  await getGeoLication()
   setClosedDate()
   setWorkTime()
   setOpenPositionList()
+  await getGeoLication()
   console.log(form.value)
-  await createPackage()
+
+  form.value.address.latitude && form.value.address.longitude
+    ? await createPackage()
+    : Swal.fire({
+        showConfirmButton: true,
+        timerProgressBar: true,
+        confirmButtonColor: 'blue',
+        icon: 'error',
+        title: 'ที่อยู่ไม่ถูกต้อง',
+        text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
+      })
 }
 
 const createPackage = async () => {
@@ -742,6 +748,7 @@ const createPackage = async () => {
     if (res.value) {
       Swal.fire({
         title: 'Create Post',
+        confirmButtonColor: 'blue',
         text: 'สร้าง post สำเร็จ',
         icon: 'success'
       }).then((result) => {
@@ -754,6 +761,7 @@ const createPackage = async () => {
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,
+      confirmButtonColor: 'blue',
       icon: 'error',
       title: 'Error',
       text: 'ไม่สามารถสร้าง post ใหม่ได้'

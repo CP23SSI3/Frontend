@@ -1,63 +1,62 @@
 export type Address = {
   addressId: string
-  country: string
-  postalCode: string
-  city: string
-  district: string
-  subDistrict: string
   area: string
+  city: string
+  country: string
+  district: string
   latitude: number
   longitude: number
+  postalCode: string
+  subDistrict: string
 }
 
 export type Company = {
-  compId: string
-  compName: string
-  compLogoKey: URL
-  compDesc: string
-  defaultWelfare: string
-  createdDate: Date
-  lastUpdate: Date
-  lastActive: Date
-  compUrl: URL
   address: Address
+  compDesc: string
+  compId: string
+  compLogoKey: URL
+  compName: string
+  compUrl: URL
+  createdDate: Date
+  defaultWelfare: string
+  lastActive: Date
+  lastUpdate: Date
 }
 export type Position = {
-  openPositionId: string
-  openPositionTitle: string
-  openPositionNum: number
   openPositionDesc: string
-  positionTag: PositionTag
-  workMonth: 6
-  salary: 300
+  openPositionId: string
+  openPositionNum: number
+  openPositionTitle: string
+  salary: number | null
+  workMonth: number
 }
 
 export type PositionTag = {
-  positionId: string
   positionName: string
 }
 
 export type Post = {
-  postId: string
-  title: string
-  createdDate: Date
-  lastUpdateDate: Date
-  closedDate: string
-  totalView: number
-  status: string
-  postDesc: string
-  comp: Company
-  postWelfare: string
-  enrolling: string
-  documents: string
-  coordinatorName: string
-  tel: string
-  email: string
   address: Address
-  workStartTime: string
-  workEndTime: string
-  workDay: string
-  workType: string
+  closedDate: string
+  comp: Company
+  coordinatorName: string
+  createdDate: Date | null
+  documents: string[]
+  email: string
+  enrolling: string
+  lastUpdateDate: Date
   openPositionList: Position[]
-  postUrl: URL
+  postDesc: string
+  postId: string
+  postTagList: string[]
+  postUrl: URL | null
+  postWelfare: string
+  status: string
+  tel: string
+  title: string
+  totalView: number
+  workDay: string[]
+  workEndTime: string
+  workStartTime: string
+  workType: string
 }

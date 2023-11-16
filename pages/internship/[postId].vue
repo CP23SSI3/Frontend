@@ -38,7 +38,7 @@
               {{ post.comp.compName }}
             </div>
             <span class="text-xs text-gray-500">
-              {{ moment(new Date(post.createdDate)).format('DD/MM/YYYY') }}
+              {{ moment(new Date(post.lastUpdateDate)).format('DD/MM/YYYY') }}
             </span>
           </div>
         </div>
@@ -100,7 +100,16 @@
       </div>
       <!-- column 2  -->
       <div class="flex flex-col w-full gap-5">
-        <BaseTablePosition :list="post.openPositionList" :loading="loading" />
+        <div class="flex flex-col-reverse w-full gap-5 lg:flex-col">
+          <div class="flex flex-wrap gap-2 col-span-full">
+            <span
+              v-for="item in post.postTagList"
+              class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-md lg:text-sm"
+              >{{ item }}</span
+            >
+          </div>
+          <BaseTablePosition :list="post.openPositionList" :loading="loading" />
+        </div>
         <div class="flex flex-col gap-5 md:px-3">
           <div class="grid gap-5 lg:grid-cols-4">
             <BaseDescription label="รูปแบบการฝึกงาน" class="lg:col-span-1">

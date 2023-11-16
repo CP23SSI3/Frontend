@@ -13,13 +13,7 @@
       required
     ></BaseInputField> -->
     <div class="sm:col-span-6">
-      <BaseLabel
-        id="position-title"
-        :icon="MusicalNoteIcon"
-        :required="required"
-      >
-        ชื่อตำแหน่งงาน
-      </BaseLabel>
+      <BaseLabel id="position-title" required> ชื่อตำแหน่งงาน </BaseLabel>
       <Multiselect
         v-model="position.title"
         for="position-title"

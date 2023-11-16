@@ -150,6 +150,12 @@
 
 <script setup>
 import { MusicalNoteIcon } from '@heroicons/vue/20/solid'
+import TestBaseButton from '@/components/test-component/TestBaseButton.vue'
+import TestBaseDatePicker from '@/components/test-component/TestBaseDatePicker.vue'
+import TestBaseDropdown from '@/components/test-component/TestBaseDropdown.vue'
+import TestBaseInput from '@/components/test-component/TestBaseInput.vue'
+import TestBaseItem from '@/components/test-component/TestBaseItem.vue'
+import TestBaseTimePicker from '@/components/test-component/TestBaseTimePicker.vue'
 const data = ref({
   workMonth: { amount: null, unit: 'เดือน' }
 })

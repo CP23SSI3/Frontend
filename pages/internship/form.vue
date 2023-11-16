@@ -93,7 +93,7 @@
             <FormPosition
               v-if="statusEditPosition && positionEditing.id == index"
               :position="positionEditing"
-              :list-position-tag="listPositionNameTag"
+              :list-position-tag="listPositionTag"
               @submit="savePosition()"
               @cancel="hideEditPosition()"
               editmode
@@ -115,7 +115,7 @@
           <FormPosition
             v-else-if="statusAddPosition"
             :position="position"
-            :list-position-tag="listPositionNameTag"
+            :list-position-tag="listPositionTag"
             @submit="addPosition()"
             @cancel="hideAddPosition()"
           />
@@ -449,13 +449,15 @@ import {
   TrashIcon as TrashIconSolid
 } from '@heroicons/vue/24/solid'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
-
 import {
   TrashIcon,
   BriefcaseIcon,
   CurrencyDollarIcon,
   UsersIcon
 } from '@heroicons/vue/24/outline'
+import FormPosition from '@/components/form/FormPosition.vue'
+import ContainerForm from '@/components/form/ContainerForm.vue'
+import ContainerField from '@/components/form/ContainerField.vue'
 import { Field, ErrorMessage, Form } from 'vee-validate'
 import moment from 'moment'
 import Swal from 'sweetalert2'
@@ -465,15 +467,14 @@ const router = useRouter()
 
 // --- GET : position-tag ---
 const listPositionTag = ref([])
-const listPositionNameTag = ref([])
 const getListPositionTag = async () => {
+  listPositionTag.value = []
   try {
     const res = await usePositionTag()
     if (res.value) {
       console.log(res.value.data)
-      listPositionTag.value = res.value.data
-      listPositionTag.value.forEach((item) => {
-        listPositionNameTag.value.push(item.positionName)
+      res.value.data.forEach((item) => {
+        listPositionTag.value.push(item.positionName)
       })
     }
   } catch (error) {
@@ -555,12 +556,12 @@ const positionList = ref([
   //   num: 2
   // }
 ])
-const getPositionTagId = (positionName) => {
-  let positionTag = listPositionTag.value.find(
-    (position) => position.positionName == positionName
-  )
-  return positionTag ? positionTag.positionTagId : null
-}
+// const getPositionTagId = (positionName) => {
+//   let positionTag = listPositionTag.value.find(
+//     (position) => position.positionName == positionName
+//   )
+//   return positionTag ? positionTag.positionTagId : null
+// }
 
 const setOpenPositionList = () => {
   form.value.openPositionList = []
@@ -571,10 +572,10 @@ const setOpenPositionList = () => {
       openPositionNum: p.num,
       openPositionDesc: p.desc,
       workMonth: p.workMonth,
-      salary: p.salary,
-      positionTag: {
-        positionTagId: getPositionTagId(p.title)
-      }
+      salary: p.salary
+      // positionTag: {
+      //   positionTagId: getPositionTagId(p.title)
+      // }
     }
     openPositionList.push(position)
   })

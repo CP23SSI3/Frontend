@@ -26,6 +26,7 @@
     <NuxtLink href="/test/radio">Radio</NuxtLink> -->
 
     <NuxtLink href="/test/map">Google Map</NuxtLink>
+    <NuxtLink href="/test/pagination">Vue Anesome pagination</NuxtLink>
 
     <input type="search" v-model="searchValue" />
     {{ searchValue }}

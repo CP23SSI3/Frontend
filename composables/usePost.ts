@@ -3,18 +3,22 @@ import { Post } from '~/types/Post'
 
 type ResponsePostList = ResponseList & {
   data: {
+    number: number
+    size: number
+    totalPages: number
+    totalElements: number
     content: Post[]
   }
 }
 
-export default async () => {
+export default async (params: any) => {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}posts`
   // const auth = useAuth()
   // const token = auth.$storage.getUniversal('_token.local') as string
   const { data, error } = await useFetch<ResponsePostList>(url, {
-    // params,
+    params
     // headers: {
     // Authorization: token
     //   content: 'application/json'

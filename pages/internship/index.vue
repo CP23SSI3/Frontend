@@ -16,7 +16,7 @@
             Internship List
           </h1>
           <!-- total element -->
-          <span class="text-sm text-gray-400">2 posts</span>
+          <span class="text-sm text-gray-400">{{ totalItems }} posts</span>
         </div>
         <NuxtLink :to="{ path: '/internship/form' }">
           <BaseButton :leadingIcon="PlusCircleIcon">New Post</BaseButton>
@@ -89,18 +89,22 @@
               class="flex flex-col gap-2 md:items-end xl:items-center md:justify-between md:flex-row"
             >
               <div class="flex flex-col gap-1 xl:flex-row xl:space-x-6">
-                <BaseItem :icon="BriefcaseIcon">{{
-                  post.rangeData.workMonth.all.length > 1 &&
-                  post.rangeData.workMonth.min != post.rangeData.workMonth.max
-                    ? `${post.rangeData.workMonth.min} - ${post.rangeData.workMonth.max} เดือน`
-                    : `${post.rangeData.workMonth.all[0]} เดือน`
-                }}</BaseItem>
-                <BaseItem :icon="CurrencyDollarIcon">{{
-                  post.rangeData.salary.all.length > 1 &&
-                  post.rangeData.salary.min != post.rangeData.salary.max
-                    ? `${post.rangeData.salary.min} - ${post.rangeData.salary.max} บาทต่อวัน`
-                    : `${post.rangeData.salary.all[0]} บาท/วัน`
-                }}</BaseItem>
+                <BaseItem :icon="BriefcaseIcon">
+                  {{
+                    post.rangeData.workMonth.all.length > 1 &&
+                    post.rangeData.workMonth.min != post.rangeData.workMonth.max
+                      ? `${post.rangeData.workMonth.min} - ${post.rangeData.workMonth.max} เดือน`
+                      : `${post.rangeData.workMonth.all[0]} เดือน`
+                  }}
+                </BaseItem>
+                <BaseItem :icon="CurrencyDollarIcon">
+                  {{
+                    post.rangeData.salary.all.length > 1 &&
+                    post.rangeData.salary.min != post.rangeData.salary.max
+                      ? `${post.rangeData.salary.min} - ${post.rangeData.salary.max} บาทต่อวัน`
+                      : `${post.rangeData.salary.all[0]} บาท/วัน`
+                  }}
+                </BaseItem>
                 <BaseItem :icon="MapPinIcon">{{
                   `${post.address.subDistrict} ${post.address.district}, ${post.address.city} ${post.address.postalCode} `
                 }}</BaseItem>
@@ -120,65 +124,21 @@
       </div>
 
       <!-- Pagination -->
-      <nav
-        class="flex items-center justify-between px-4 border-t border-gray-200 sm:px-0"
-      >
-        <div class="flex flex-1 w-0 -mt-px">
-          <button
-            @click="prevPage()"
-            v-if="currentPage != 1"
-            class="inline-flex items-center pt-4 pr-1 text-sm font-medium text-gray-500 border-t-2 border-transparent hover:border-gray-300 hover:text-gray-700"
-          >
-            <ArrowLongLeftIcon
-              class="w-5 h-5 mr-3 text-gray-400"
-              aria-hidden="true"
-            />
-            Previous
-          </button>
-        </div>
-        <div class="hidden md:-mt-px md:flex">
-          <button
-            v-for="pageNumber in totalPage"
-            @click="goToThisPage(pageNumber)"
-            :class="[
-              currentPage == pageNumber
-                ? 'border-indigo-500 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-              'inline-flex items-center px-4 pt-4 text-sm font-medium border-t-2'
-            ]"
-          >
-            {{ pageNumber }}
-          </button>
-          <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" -->
-          <!-- 
-          <span
-            class="inline-flex items-center px-4 pt-4 text-sm font-medium text-gray-500 border-t-2 border-transparent"
-            >...</span
-          >-->
-        </div>
-        <div class="flex justify-end flex-1 w-0 -mt-px">
-          <button
-            @click="nextPage()"
-            v-if="currentPage != totalPage"
-            class="inline-flex items-center pt-4 pl-1 text-sm font-medium text-gray-500 border-t-2 border-transparent hover:border-gray-300 hover:text-gray-700"
-          >
-            Next
-            <ArrowLongRightIcon
-              class="w-5 h-5 ml-3 text-gray-400"
-              aria-hidden="true"
-            />
-          </button>
-        </div>
-      </nav>
+      <div class="p-4 bg-white">
+        <v-pagination
+          v-show="!loading"
+          v-model="pagination.currentPage"
+          :pages="pagination.totalPages"
+          :range-size="1"
+          active-color="#DBEAFE"
+          @update:modelValue="changePage"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-// definePageMeta({
-//   layout: 'filter'
-// })
-
 import {
   BriefcaseIcon,
   CurrencyDollarIcon,
@@ -208,23 +168,38 @@ const setMinMax = (positionList, postIndex) => {
       max: 0
     }
   }
-  positionList.forEach((num) => {
-    rangeData.workMonth.all.push(num.workMonth)
-    if (num.salary) {
-      rangeData.salary.all.push(num.salary)
+  if (positionList) {
+    positionList.forEach((num) => {
+      rangeData.workMonth.all.push(num.workMonth)
+      if (num.salary) {
+        rangeData.salary.all.push(num.salary)
+      }
+    })
+    if (rangeData.workMonth.all.length > 1) {
+      rangeData.workMonth.min = Math.min.apply(Math, rangeData.workMonth.all)
+      rangeData.workMonth.max = Math.max.apply(Math, rangeData.workMonth.all)
     }
-  })
-  if (rangeData.workMonth.all.length > 1) {
-    rangeData.workMonth.min = Math.min.apply(Math, rangeData.workMonth.all)
-    rangeData.workMonth.max = Math.max.apply(Math, rangeData.workMonth.all)
-  }
 
-  if (rangeData.salary.all.length > 1) {
-    rangeData.salary.min = Math.min.apply(Math, rangeData.salary.all)
-    rangeData.salary.max = Math.max.apply(Math, rangeData.salary.all)
+    if (rangeData.salary.all.length > 1) {
+      rangeData.salary.min = Math.min.apply(Math, rangeData.salary.all)
+      rangeData.salary.max = Math.max.apply(Math, rangeData.salary.all)
+    }
+    listPost.value[postIndex].rangeData = rangeData
+  } else {
+    listPost.value[postIndex].rangeData = rangeData
   }
-  listPost.value[postIndex].rangeData = rangeData
 }
+
+// --- Pagination ---
+const changePage = () => {
+  getPost()
+}
+const totalItems = ref()
+const pagination = ref({
+  currentPage: 1,
+  totalPages: 1,
+  itemPerPages: 10
+})
 
 // ---- GET : LIST POST ----
 const loading = ref(false)
@@ -233,9 +208,17 @@ const listPost = ref([])
 const getPost = async () => {
   loading.value = true
   try {
-    const res = await usePost({})
+    const res = await usePost({
+      page: pagination.value.currentPage - 1,
+      pageSize: pagination.value.itemPerPages
+    })
     if (res.value) {
-      listPost.value = res.value.data.content
+      let data = res.value.data
+      pagination.value.currentPage = data.number + 1
+      pagination.value.totalPages = data.totalPages
+      pagination.value.itemPerPages = data.size
+      totalItems.value = data.totalElements
+      listPost.value = data.content
       listPost.value.forEach((post, index) => {
         setMinMax(post.openPositionList, index)
       })
@@ -252,18 +235,7 @@ const getPost = async () => {
     })
   }
 }
-
 await getPost()
-
-const currentPage = ref(1)
-const totalPage = ref(10)
-
-const goToThisPage = (numberPage) => {
-  currentPage.value = numberPage
-}
-const prevPage = () => (currentPage.value > 1 ? currentPage.value-- : '')
-const nextPage = () =>
-  currentPage.value < totalPage.value ? currentPage.value++ : ''
 
 // --- Favorite Button ---
 const statusStar = ref(false)

@@ -659,34 +659,14 @@ const getGeoLication = async () => {
     ' ',
     address.postalCode
   )
-
-  const runtimeConfig = useRuntimeConfig()
-  const KEY_API_MAP = runtimeConfig.public.KEY_API_MAP
-
-  await $fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-      location
-    )}&key=${KEY_API_MAP}`
-  )
-    .then((response) => {
-      console.log(response)
-      if (response.status == 'OK') {
-        address.latitude = response.results[0].geometry.location.lat
-        address.longitude = response.results[0].geometry.location.lng
-      } else {
-        // console.log('Unable to locate this location.')
-        Swal.fire({
-          showConfirmButton: true,
-          timerProgressBar: true,
-          confirmButtonColor: 'blue',
-          icon: 'error',
-          title: 'ที่อยู่ไม่ถูกต้อง',
-          text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
-        })
-      }
-    })
-    .catch((error) => {
-      console.error('Error fetching location:', error)
+  try {
+    const res = await useGoogleMap(location)
+    let response = res.value
+    if (response.status == 'OK') {
+      address.latitude = response.results[0].geometry.location.lat
+      address.longitude = response.results[0].geometry.location.lng
+    } else {
+      // console.log('Unable to locate this location.')
       Swal.fire({
         showConfirmButton: true,
         timerProgressBar: true,
@@ -695,10 +675,21 @@ const getGeoLication = async () => {
         title: 'ที่อยู่ไม่ถูกต้อง',
         text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
       })
+    }
+  } catch (error) {
+    console.error('Error fetching location:', error)
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'ที่อยู่ไม่ถูกต้อง',
+      text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
     })
+  }
 }
 
-const form = ref({
+const form1 = ref({
   title: '',
   closedDate: null, // function setClosedDate()
   coordinatorName: '',
@@ -780,6 +771,42 @@ const createPackage = async () => {
 }
 
 const back = () => router.push({ path: '/internship' })
+
+const form = ref({
+  title: '[Test]:ประกาศฝึกงาน',
+  closedDate: null, // function setClosedDate()
+  coordinatorName: '[Test]คุณ HR แสนดี',
+  postDesc:
+    '[Test]Internship Opportunities at [Your Company]! Are you ready to embark on a journey of learning, growth, and hands-on experience? Look no further! [Your Company] is thrilled to announce exciting internship opportunities for dynamic individuals eager to dive into [industry/field]. Join us for an immersive experience where innovation meets impact. Why Intern with Us? Real-World Projects: Work on projects that matter and make a tangible impact.',
+  postWelfare:
+    '[Test]Competitive stipend/salary for the duration of the internship. Comprehensive mentorship program to guide your professional development. Networking opportunities with industry leaders.Access to [Company] resources and facilities.Inclusive and supportive work environment.',
+  enrolling:
+    '[Test]How to Apply:Send your resume and a brief cover letter highlighting your motivation and relevant skills to [email@example.com] by [Application Deadline]. Join us on this exciting journey of discovery and development. Your future career starts here!',
+  documents: ['portfolio', 'resume'],
+  tel: '012-345-6789',
+  email: 'email@example.com',
+  address: {
+    country: 'Thailand',
+    postalCode: '10150',
+    city: 'กรุงเทพมหานคร',
+    district: 'บางขุนเทียน',
+    subDistrict: 'แสมดำ',
+    area: '160 ถนนพระราม 2',
+    latitude: null, // function getGeoLication()
+    longitude: null
+  },
+  //function setWorkTime()
+  workStartTime: '',
+  workEndTime: '',
+  workDay: ['mon', 'tue', 'wed', 'thu', 'fri'], //ส่ง array หรือ string ? *check value choices
+  workType: 'HYBRID',
+  comp: {
+    compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
+  },
+  openPositionList: [], //function setOpenPositionList()
+  postUrl: '',
+  postTagList: [] //function setPostTag()
+})
 </script>
 
 <style lang="scss" scoped>

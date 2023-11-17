@@ -13,7 +13,7 @@
       >
         <div class="flex items-center gap-4">
           <h1 class="text-2xl font-bold leading-8 text-black">
-            Internship List
+            Internship program
           </h1>
           <!-- total element -->
           <span class="text-sm text-gray-400">{{ totalItems }} posts</span>
@@ -26,7 +26,9 @@
       <!-- List -->
       <BaseLoading v-if="loading" />
       <div v-else class="flex flex-col w-full col-span-4 gap-2 lg:col-span-3">
-        <div v-if="listPost.length == 0">- ไม่มีพบข้อมูล -</div>
+        <div v-if="listPost.length == 0" class="flex justify-center">
+          - ไม่พบข้อมูล -
+        </div>
 
         <BaseSectionContent
           v-else
@@ -83,6 +85,7 @@
             <h2 class="flex text-base font-semibold lg:hidden">
               {{ post.title }}
             </h2>
+            <div class="text-sm">{{ post.postDesc }}</div>
             <div class="flex flex-wrap gap-2">
               <span
                 v-if="post.postTagList.length > 0"
@@ -98,7 +101,6 @@
                 >{{ item.openPositionTitle }}</span
               > -->
             </div>
-            <div class="text-sm">{{ post.postDesc }}</div>
 
             <div
               class="flex flex-col gap-2 md:items-end xl:items-center md:justify-between md:flex-row"
@@ -146,6 +148,7 @@
           :pages="pagination.totalPages"
           :range-size="1"
           active-color="#DBEAFE"
+          class="flex justify-center"
           @update:modelValue="changePage"
         />
       </div>
@@ -241,6 +244,7 @@ const getPost = async () => {
       loading.value = false
     }
   } catch (error) {
+    console.log(error)
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,
@@ -249,6 +253,7 @@ const getPost = async () => {
       title: 'Error',
       text: 'ไม่สามารถเรียกดู list post ได้'
     })
+    loading.value = false
   }
 }
 await getPost()

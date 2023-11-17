@@ -57,10 +57,11 @@ export default defineComponent({
 // const location = ref({ lat: 0, long: 0 })
 // const api = 'AIzaSyD6ZM0YIEty5m93gpjqkwV6wc7s9rzh7fM'
 
-const getLocation = () => {
-  if (address.value) {
-    fetchGeoLocation(address.value)
-  }
+const getLocation = async () => {
+  // if (address.value) {
+  //   fetchGeoLocation(address.value)
+  // }
+  await getGeoLication(address.value)
 }
 
 const fetchGeoLocation = async (address) => {
@@ -77,6 +78,23 @@ const fetchGeoLocation = async (address) => {
     .catch((error) => {
       console.error('Error fetching location:', error)
     })
+}
+
+const getGeoLication = async (address) => {
+  try {
+    const res = await useGoogleMap(address)
+    console.log(res.value)
+  } catch (error) {
+    console.error('Error fetching location:', error)
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'ที่อยู่ไม่ถูกต้อง',
+      text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
+    })
+  }
 }
 </script>
 

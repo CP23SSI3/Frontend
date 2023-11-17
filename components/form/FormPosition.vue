@@ -5,32 +5,32 @@
     <BaseTitleForm class="text-center col-span-full">
       {{ editmode ? 'แก้ไขตำแหน่งงาน' : 'เพิ่มตำแหน่งงาน' }}
     </BaseTitleForm>
-    <!-- <BaseInputField
+    <BaseInputField
       class="sm:col-span-4"
       label="ชื่อตำแหน่งงาน"
       id="title"
       v-model="position.title"
       required
-    ></BaseInputField> -->
-    <div class="sm:col-span-6">
+    ></BaseInputField>
+    <!-- <div class="sm:col-span-6">
       <BaseLabel id="position-title" required> ชื่อตำแหน่งงาน </BaseLabel>
       <Multiselect
         v-model="position.title"
         for="position-title"
         placeholder=""
         noOptionsText="..."
+        :create-option="true"
+        :delay="1"
         :filter-results="false"
         :min-chars="1"
-        :resolve-on-load="false"
-        :delay="1"
         :searchable="true"
-        :create-option="true"
+        :resolve-on-load="false"
         class="searchselect-blue"
         :options="
           (query) => searchPositionName(query) // check JS block for implementation
         "
       />
-    </div>
+    </div> -->
 
     <BaseInputField
       class="sm:col-span-6"
@@ -95,22 +95,20 @@ const props = defineProps({
   editmode: {
     type: Boolean,
     default: false
-  },
-  listPositionTag: {
-    type: Array,
-    required: true
   }
+  // listPositionTag: {
+  //   type: Array,
+  //   required: true
+  // }
 })
 defineEmits(['submit', 'cancel'])
 
-const searchPositionName = async (query) => {
-  console.log(query)
-  let result = props.listPositionTag.filter((item) => {
-    return item.toLowerCase().includes(query.toLowerCase())
-  })
-  console.log(result)
-  return result
-}
+// const searchPositionName = async (query) => {
+//   let result = props.listPositionTag.filter((item) => {
+//     return item.toLowerCase().includes(query.toLowerCase())
+//   })
+//   return result
+// }
 </script>
 
 <style lang="scss" scoped>

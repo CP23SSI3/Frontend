@@ -30,8 +30,12 @@
 </template>
 
 <script setup>
-const value = ref([])
-const value2 = ref([])
+const value = ref(['Frontend'])
+const nameWithLang = (name) => {
+  return 'devdd'
+}
+
+const value2 = ref('')
 const options = [
   'Frontend',
   'Backend',
@@ -40,6 +44,10 @@ const options = [
   'Dev',
   'Full stack'
 ]
+onMounted(() => {
+  // Set default value after the component is mounted
+  value2.value = 'Database'
+})
 const fetchLanguages = async (query) => {
   console.log(query)
   let result = options.filter((item) =>

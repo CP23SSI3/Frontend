@@ -35,6 +35,11 @@ export type PositionTag = {
   positionTagName: string
 }
 
+export type PostTag = {
+  postPositionTagId: string
+  positionTag: string
+}
+
 export type Post = {
   address: Address
   closedDate: string

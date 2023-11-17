@@ -85,11 +85,20 @@
             </h2>
             <div class="flex flex-wrap gap-2">
               <span
+                v-if="post.postTagList.length > 0"
                 v-for="item in post.postTagList"
                 class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-md lg:text-sm"
                 >{{ item }}</span
               >
+
+              <!-- <span
+                v-else
+                v-for="item in post.openPositionList"
+                class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-md lg:text-sm"
+                >{{ item.openPositionTitle }}</span
+              > -->
             </div>
+            <div class="text-sm">{{ post.postDesc }}</div>
 
             <div
               class="flex flex-col gap-2 md:items-end xl:items-center md:justify-between md:flex-row"
@@ -323,24 +332,24 @@ const data = {
       // enrolling:
       //   'ติดต่อไนซ์ วิชชุตา พิภพภิญโญสำหรับข้อมูลเพิ่มเติม กรุณาติดต่อผ่านอีเมลที่ระบุเอาไว้เท่านั้น',
       lastUpdateDate: '2023-10-05T13:30:00',
-      // openPositionList: [
-      //   {
-      //     openPositionDesc: 'Working on Frontend mainly, using React',
-      //     openPositionId: '24526070-68cf-48ff-8d02-29e9d05aeda2',
-      //     openPositionNum: 4,
-      //     openPositionTitle: 'Frontend Developer',
-      //     salary: 300,
-      //     workMonth: 6
-      //   },
-      //   {
-      //     openPositionDesc: 'Open position - for Java or Kotlin',
-      //     openPositionId: '72d02945-9f1b-401a-9809-b10aff9406cc',
-      //     openPositionNum: 2,
-      //     openPositionTitle: 'Backend developer',
-      //     salary: 250,
-      //     workMonth: 4
-      //   }
-      // ],
+      openPositionList: [
+        {
+          // openPositionDesc: 'Working on Frontend mainly, using React',
+          //     openPositionId: '24526070-68cf-48ff-8d02-29e9d05aeda2',
+          // openPositionNum: 4,
+          openPositionTitle: 'Frontend Developer',
+          salary: 300,
+          workMonth: 6
+        },
+        {
+          //     openPositionDesc: 'Open position - for Java or Kotlin',
+          //     openPositionId: '72d02945-9f1b-401a-9809-b10aff9406cc',
+          //     openPositionNum: 2,
+          openPositionTitle: 'Backend developer',
+          salary: 250,
+          workMonth: 4
+        }
+      ],
       // postDesc:
       //   'ประกาศรับฝึกงานด่วนที่สุดแต่ตลอดทั้งปี นี่คือส่วนหนึ่งของตัวอย่างรายละเอียดข้อมูล',
       postId: 'eba83fe4-937b-4054-a420-d977534feebe',
@@ -355,32 +364,6 @@ const data = {
       // workEndTime: '17:30:00',
       // workStartTime: '09:30:00',
       workType: 'HYBRID'
-    }
-  ],
-  content: [
-    {
-      address: {
-        city: 'Bangkok',
-        country: 'Thailand',
-        district: 'Sathorn',
-        postalCode: '10120',
-        subDistrict: 'ThungWatDon'
-      },
-      closedDate: null,
-      comp: {
-        compId: '8e20782f-2807-4f13-a11e-0fb9ff955488',
-        compLogoKey: 'https://www.google.com',
-        compName: 'Test company',
-        compUrl: 'https://www.google.com'
-      },
-      createdDate: '2023-10-04T13:30:00',
-      lastUpdateDate: '2023-10-05T13:30:00',
-      postId: 'eba83fe4-937b-4054-a420-d977534feebe',
-      postTagList: ['Backend developer', 'Frontend developer'],
-      postUrl: 'https://www.wikipedia.org/',
-      status: 'OPENED',
-      title: 'ประกาศรับฝึกงาน ด่วนที่สุด บริษัทตามใจฉัน'
-      // workType: 'HYBRID' //filter
     }
   ]
 }

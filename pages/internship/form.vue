@@ -11,7 +11,6 @@
           required
         ></BaseInputField>
         <div class="col-span-full">
-          {{ positionList }}
           <BaseLabel id="positions" required> ตำแหน่งงานที่เปิดรับ </BaseLabel>
           <!-- List Position -->
           <div v-for="(position, index) in positionList">
@@ -91,10 +90,11 @@
                 </Menu>
               </div>
             </div>
+            <!-- Sub form for edit positionList -->
+            <!-- เอา :list-position-tag="listPositionTag" ออก-->
             <FormPosition
               v-if="statusEditPosition && positionEditing.id == index"
               :position="positionEditing"
-              :list-position-tag="listPositionTag"
               @submit="savePosition()"
               @cancel="hideEditPosition()"
               editmode
@@ -113,22 +113,25 @@
           </BaseButton>
 
           <!-- Sub form add position -->
+          <!-- เอา :list-position-tag="listPositionTag" ออก-->
           <FormPosition
             v-else-if="statusAddPosition"
             :position="position"
-            :list-position-tag="listPositionTag"
             @submit="addPosition()"
             @cancel="hideAddPosition()"
           />
-
-          <!-- Sub form edit position -->
-          <!-- <FormPosition
-            v-else-if="statusEditPosition"
-            :position="positionEditing"
-            @submit="savePosition()"
-            @cancel="deletePosition()"
-            editmode
-          /> -->
+        </div>
+        <div class="sm:col-span-6">
+          <BaseLabel id="post-tag"> tag </BaseLabel>
+          <Multiselect
+            v-model="postTag"
+            mode="tags"
+            :close-on-select="false"
+            :searchable="true"
+            :create-option="true"
+            :options="listPositionTag"
+            class="multiselect-blue"
+          />
         </div>
       </ContainerField>
     </ContainerForm>
@@ -439,7 +442,6 @@
       >
     </div>
   </BaseSectionContent>
-  {{ form }}
 </template>
 
 <script setup>
@@ -467,13 +469,15 @@ import Swal from 'sweetalert2'
 const route = useRoute()
 const router = useRouter()
 
-// --- GET : position-tag ---
+// --- GET : position-tag (postTag) ---
 const listPositionTag = ref([])
+const postTag = ref([])
 const getListPositionTag = async () => {
   listPositionTag.value = []
   try {
     const res = await usePositionTag()
-    if (res.value) {
+    if (res.value.status === 200) {
+      console.log(res.value.message)
       res.value.data.forEach((item) => {
         listPositionTag.value.push(item.positionTagName)
       })
@@ -492,6 +496,10 @@ const getListPositionTag = async () => {
   }
 }
 await getListPositionTag()
+
+const setPostTag = () => {
+  form.value.postTagList = postTag.value
+}
 
 // --- input : เพิ่มตำแหน่งงาน ---
 const statusAddPosition = ref(false)
@@ -528,6 +536,7 @@ const hideEditPosition = () => {
   positionEditing.value = null
 }
 const editPosition = (position, index) => {
+  console.log(positionEditing)
   positionEditing.value = { ...position, id: index }
 }
 const savePosition = () => {
@@ -690,22 +699,22 @@ const getGeoLication = async () => {
 }
 
 const form = ref({
-  title: 'ประกาศรับฝึกงาน',
+  title: '',
   closedDate: null, // function setClosedDate()
-  coordinatorName: 'คุณทรงกลด',
-  postDesc: 'description',
-  postWelfare: 'สวัสดีจ้า เอ้ย สวัสดิการ',
-  enrolling: 'เดินเข้ามาของาน',
+  coordinatorName: '',
+  postDesc: '',
+  postWelfare: '',
+  enrolling: '',
   documents: [],
-  tel: '012-345-6789',
-  email: 'nice.vct@mail.kmutt.ac.th',
+  tel: '',
+  email: '',
   address: {
-    country: 'Thailand',
-    postalCode: '10150',
-    city: 'กรุงเทพมหานคร',
-    district: 'จอมทอง',
-    subDistrict: 'บางมด',
-    area: '351, 1 ถนนพุทธบูชา ',
+    country: '',
+    postalCode: '',
+    city: '',
+    district: '',
+    subDistrict: '',
+    area: '',
     latitude: null, // function getGeoLication()
     longitude: null
   },
@@ -719,13 +728,14 @@ const form = ref({
   },
   openPositionList: [], //function setOpenPositionList()
   postUrl: '',
-  postTagList: ['Frontend developer', 'Backend developer']
+  postTagList: [] //function setPostTag()
 })
 
 const submitForm = async () => {
   setClosedDate()
   setWorkTime()
   setOpenPositionList()
+  setPostTag()
   await getGeoLication()
   console.log(form.value)
 
@@ -772,4 +782,10 @@ const createPackage = async () => {
 const back = () => router.push({ path: '/internship' })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.multiselect-blue {
+  --ms-tag-bg: #dbeafe;
+  --ms-tag-color: #2563eb;
+  --ms-ring-color: rgba(56, 189, 248, 0.2);
+}
+</style>

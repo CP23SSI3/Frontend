@@ -1,7 +1,7 @@
 <template>
   <div>
     <BaseLabel :id="radio" required> สถานที่ฝึกงาน </BaseLabel>
-    <fieldset class="mt-4">
+    <fieldset class="mt-2">
       <div class="space-y-4">
         <div
           v-for="choice in choices"
@@ -14,11 +14,11 @@
             type="radio"
             :value="choice.id"
             v-model="selected"
-            class="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-600"
+            class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
           />
           <label
             :for="choice.id"
-            class="ml-3 block text-sm font-medium leading-6 text-gray-900"
+            class="block ml-3 text-sm font-medium leading-6 text-gray-900"
             >{{ choice.title }}</label
           >
         </div>

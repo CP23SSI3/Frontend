@@ -7,6 +7,14 @@
     >
       {{ data.category }}
     </BaseDropdown>
+    <BaseDropdown
+      :option-lists="categoryLists"
+      label="หมวดหมู่งาน"
+      disabled
+      v-model="data.category"
+    >
+      {{ data.category }}
+    </BaseDropdown>
   </div>
 </template>
 

@@ -23,30 +23,36 @@
         :id="id"
         :name="id"
         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 disabled:bg-gray-100 disabled:boder-gray-200 disabled:text-gray-500"
+        @input="
+          $emit('update:amount', ($event.target as HTMLInputElement).value)
+        "
         :class="styleInputPadding"
-        @update:modelValue="$emit('update:modelValue', $event)"
         :type="type"
-        :value="modelValue"
+        :value="amount"
         v-bind="$attrs"
         aria-describedby="price-currency"
       />
 
-      <!-- @input="
-        $emit('update:modelValue', ($event.target as HTMLInputElement).value)
-      " -->
-      <!-- Unit in Input  -->
-      <div
-        v-if="unit"
-        class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
-      >
-        <span class="text-gray-500 sm:text-sm" id="price-currency">
-          {{ unit }}
-        </span>
+      <!-- Unit dropdown  -->
+      <div class="absolute inset-y-0 right-0 flex items-center">
+        <select
+          :id="id"
+          :name="id"
+          @change="
+            $emit('update:unit', ($event.target as HTMLSelectElement).value)
+          "
+          class="h-full py-0 pl-2 text-gray-500 bg-transparent border-0 rounded-md pr-7 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+        >
+          <option value="เดือน">เดือน</option>
+          <option value="ปี">ปี</option>
+        </select>
       </div>
     </div>
     <!-- Error Message -->
     <div class="pl-2 text-xs text-red-500"><ErrorMessage :name="id" /></div>
-    <slot></slot>
+
+    <!-- slot -->
+    <div class="pl-2 text-xs"><slot></slot></div>
   </div>
 </template>
 
@@ -74,18 +80,16 @@ const props = defineProps({
   },
   type: {
     type: String,
-    default: 'text'
-  },
-  modelValue: {
-    type: null,
-    required: true
+    default: 'number'
   },
   unit: {
-    type: String,
-    default: null
+    type: String
+  },
+  amount: {
+    type: Number
   }
 })
-defineEmits(['update:modelValue'])
+defineEmits(['update:amount', 'update:unit'])
 
 // const styleInput = computed(() => {
 //   if (props.disabled) {
@@ -98,22 +102,16 @@ const styleInputPadding = computed(() => {
     return 'pl-10'
   } else if (props.unit) {
     return 'pr-16'
-    // } else if (props.imgIcon != null) {
-    //   //ถ้าเป็น duo-coin
-    //   return 'pl-16'
   } else {
     return ''
   }
-  // else if (props.imgIcon != null) {
-  //   return 'pl-14'
-  // }
 })
 </script>
 
 <style scoped>
-input[type='number']::-webkit-inner-spin-button,
+/* input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
+} */
 </style>

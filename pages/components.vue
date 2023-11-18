@@ -43,6 +43,20 @@
       </tr>
       <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
+          BaseLabel
+        </td>
+        <td class="p-4 text-s">
+          <BaseLabel
+            id="labelIcon"
+            :icon="MusicalNoteIcon"
+            :required="required"
+          >
+            label
+          </BaseLabel>
+        </td>
+      </tr>
+      <tr class="divide-x divide-gray-400">
+        <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseInput
         </td>
         <td class="p-4 text-sm text-gray-500">
@@ -51,10 +65,26 @@
       </tr>
       <tr class="divide-x divide-gray-400">
         <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
+          BaseInputGroup
+        </td>
+        <td class="grid grid-cols-4 gap-4 p-4 text-sm text-gray-500">
+          <BaseInputGroup
+            label="ระยะเวลาที่ทำงาน"
+            id="price"
+            type="number"
+            v-model:amount="data.workMonth.amount"
+            v-model:unit="data.workMonth.unit"
+            unitSelect
+            >{{ data.workMonth }}</BaseInputGroup
+          >
+        </td>
+      </tr>
+      <tr class="divide-x divide-gray-400">
+        <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
           BaseSectionContent
         </td>
         <td class="p-4 text-sm text-gray-500">
-          <BaseSectionContent :h-padding="6" :v-padding="4">
+          <BaseSectionContent class="px-6 py-4">
             Content...
           </BaseSectionContent>
         </td>
@@ -88,7 +118,7 @@
           BaseBadge
         </td>
         <td class="p-4 text-sm text-gray-500">
-          <BaseSectionContent :h-padding="6" :v-padding="4">
+          <BaseSectionContent class="px-6 py-4">
             <div class="flex gap-2">
               <BaseBadge color="green">เปิดรับตลอด</BaseBadge>
               <BaseBadge>ปิดรับสมัคร 19/09/2023</BaseBadge>
@@ -98,10 +128,37 @@
           </BaseSectionContent>
         </td>
       </tr>
+      <tr class="divide-x divide-gray-400">
+        <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
+          BaseItem
+        </td>
+        <td class="p-4 text-sm text-gray-500">
+          <TestBaseItem></TestBaseItem>
+        </td>
+      </tr>
+      <tr class="divide-x divide-gray-400">
+        <td class="py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
+          BaseDescription
+        </td>
+        <td class="p-4 text-sm text-gray-500">
+          <BaseDescription label="Topic">Description</BaseDescription>
+        </td>
+      </tr>
     </tbody>
   </table>
 </template>
 
-<script setup></script>
+<script setup>
+import { MusicalNoteIcon } from '@heroicons/vue/20/solid'
+import TestBaseButton from '@/components/test-component/TestBaseButton.vue'
+import TestBaseDatePicker from '@/components/test-component/TestBaseDatePicker.vue'
+import TestBaseDropdown from '@/components/test-component/TestBaseDropdown.vue'
+import TestBaseInput from '@/components/test-component/TestBaseInput.vue'
+import TestBaseItem from '@/components/test-component/TestBaseItem.vue'
+import TestBaseTimePicker from '@/components/test-component/TestBaseTimePicker.vue'
+const data = ref({
+  workMonth: { amount: null, unit: 'เดือน' }
+})
+</script>
 
 <style lang="scss" scoped></style>

@@ -76,7 +76,7 @@ const selectedDateCustom = ref()
 const expireAt = ref()
 
 const myFormat = (date) => {
-  return moment(date).format('LL')
+  return moment(date).format('DD/MM/YYYY')
 }
 
 const submitForm = () => {}

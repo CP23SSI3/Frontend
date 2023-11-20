@@ -553,13 +553,13 @@ const deletePosition = (index) => {
 }
 
 const positionList = ref([
-  // {
-  //   title: 'Frontend Developer',
-  //   desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
-  //   workMonth: 6,
-  //   salary: 300,
-  //   num: 2
-  // },
+  {
+    title: '[Test] Frontend Developer',
+    desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
+    workMonth: 6,
+    salary: 300,
+    num: 2
+  }
 ])
 
 const setOpenPositionList = () => {

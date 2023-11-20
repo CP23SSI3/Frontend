@@ -89,7 +89,7 @@
             <BaseItem
               :icon="LinkIcon"
               class="text-gray-900"
-              v-show="post.postUrl != null"
+              v-show="post.postUrl"
             >
               <a :href="post.postUrl" target="_blank">
                 {{ post.postUrl }}
@@ -147,7 +147,9 @@
     <BaseLine />
     <!-- Footer -->
     <div class="flex justify-end gap-3 mb-3 lg:px-4">
-      <BaseButton :leadingIcon="TrashIcon" negative>Delete</BaseButton>
+      <BaseButton :leadingIcon="TrashIcon" negative @click="removePost()"
+        >Delete</BaseButton
+      >
       <BaseButton :leadingIcon="PencilIcon" secondary>Edit</BaseButton>
     </div>
   </BaseSectionContent>
@@ -172,6 +174,8 @@ import moment from 'moment'
 
 const route = useRoute()
 const postId = route.params.postId
+const router = useRouter()
+const back = () => router.push({ path: '/internship' })
 
 // ---- GET : LIST POST ----
 const loading = ref(false)
@@ -306,6 +310,38 @@ function getThaiWorkDays(workDay) {
 
     return result
   }
+}
+
+const removePost = async () => {
+  Swal.fire({
+    title: 'Are you sure remove this post?',
+    text: 'คุณต้องการลบโพสต์นี้หรือไม่?',
+    icon: 'warning',
+    confirmButtonText: 'Comfirm',
+    confirmButtonColor: 'red',
+    showCancelButton: true,
+    cancelButtonText: 'Cancel',
+    cancelButtonColor: 'gray',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetchDeletePost()
+    }
+  })
+}
+
+const fetchDeletePost = async () => {
+  try {
+    const res = await deletePost(postId)
+    if (res.value.status == 200) {
+      Swal.fire({
+        title: 'Deleted',
+        text: 'ลบโพสต์เรียบร้อยแล้ว',
+        icon: 'success',
+        confirmButtonColor: 'blue'
+      }).then(() => back())
+    }
+  } catch (error) {}
 }
 </script>
 

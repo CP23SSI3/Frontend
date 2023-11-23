@@ -121,18 +121,6 @@
             @cancel="hideAddPosition()"
           />
         </div>
-        <div class="sm:col-span-6">
-          <BaseLabel id="post-tag"> tag </BaseLabel>
-          <Multiselect
-            v-model="postTag"
-            mode="tags"
-            :close-on-select="false"
-            :searchable="true"
-            :create-option="true"
-            :options="listPositionTag"
-            class="multiselect-blue"
-          />
-        </div>
       </ContainerField>
     </ContainerForm>
     <ContainerForm>
@@ -223,6 +211,90 @@
             />
           </div>
         </div>
+      </ContainerField>
+    </ContainerForm>
+    <ContainerForm>
+      <BaseTitleForm>การสมัคร</BaseTitleForm>
+      <ContainerField>
+        <div class="col-span-full">
+          <BaseLabel id="enrolling" required>วิธีการสมัคร</BaseLabel>
+          <div class="mt-1">
+            <textarea
+              id="about"
+              name="about"
+              rows="3"
+              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              v-model="form.enrolling"
+            />
+          </div>
+        </div>
+        <div class="sm:col-span-full">
+          <BaseLabel id="docuemnts" required>เอกสารประกอบการสมัคร</BaseLabel>
+          <div
+            class="mt-1 space-y-2 sm:flex sm:items-center sm:space-x-5 sm:space-y-0"
+          >
+            <div
+              class="relative flex items-start"
+              v-for="(item, index) in listDocs"
+              :key="index"
+            >
+              <div class="flex items-center h-6">
+                <input
+                  :id="item.value"
+                  :name="item.value"
+                  type="checkbox"
+                  :value="item.value"
+                  v-model="form.documents"
+                  class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
+                />
+              </div>
+              <div class="ml-2 text-sm leading-6">
+                <BaseLabel :id="item.value">{{ item.text }}</BaseLabel>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sm:col-span-3 sm:mb-3">
+          <BaseLabel id="closedDate" required>
+            ระยะเวลาที่เปิดรับสมัคร
+          </BaseLabel>
+          <fieldset class="mt-2">
+            <div
+              class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0"
+            >
+              <div
+                v-for="choice in choicesClosedDate"
+                :key="choice.id"
+                class="flex items-center"
+              >
+                <input
+                  :id="choice.id"
+                  :name="choice.id"
+                  type="radio"
+                  :value="choice.value"
+                  v-model="statusClosingDate"
+                  class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
+                />
+                <BaseLabel :id="choice.id" class="ml-3">
+                  {{ choice.text }}
+                </BaseLabel>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <BaseDatePicker
+          v-if="statusClosingDate"
+          class="sm:col-span-3"
+          label="วันที่ปิดรับสมัคร"
+          id="date-only"
+          placeholder="Select Closing Date"
+          :enable-time-picker="false"
+          v-model="closingDate"
+          :format="(date) => moment(date).format('DD/MM/YYYY')"
+          required
+        >
+        </BaseDatePicker>
       </ContainerField>
     </ContainerForm>
     <ContainerForm>
@@ -317,90 +389,7 @@
         ></BaseInputField>
       </ContainerField>
     </ContainerForm>
-    <ContainerForm>
-      <BaseTitleForm>การสมัคร</BaseTitleForm>
-      <ContainerField>
-        <div class="col-span-full">
-          <BaseLabel id="enrolling" required>วิธีการสมัคร</BaseLabel>
-          <div class="mt-1">
-            <textarea
-              id="about"
-              name="about"
-              rows="3"
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              v-model="form.enrolling"
-            />
-          </div>
-        </div>
-        <div class="sm:col-span-full">
-          <BaseLabel id="docuemnts" required>เอกสารประกอบการสมัคร</BaseLabel>
-          <div
-            class="mt-1 space-y-2 sm:flex sm:items-center sm:space-x-5 sm:space-y-0"
-          >
-            <div
-              class="relative flex items-start"
-              v-for="(item, index) in listDocs"
-              :key="index"
-            >
-              <div class="flex items-center h-6">
-                <input
-                  :id="item.value"
-                  :name="item.value"
-                  type="checkbox"
-                  :value="item.value"
-                  v-model="form.documents"
-                  class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
-                />
-              </div>
-              <div class="ml-2 text-sm leading-6">
-                <BaseLabel :id="item.value">{{ item.text }}</BaseLabel>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="sm:col-span-3 sm:mb-3">
-          <BaseLabel id="closedDate" required>
-            ระยะเวลาที่เปิดรับสมัคร
-          </BaseLabel>
-          <fieldset class="mt-2">
-            <div
-              class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0"
-            >
-              <div
-                v-for="choice in choicesClosedDate"
-                :key="choice.id"
-                class="flex items-center"
-              >
-                <input
-                  :id="choice.id"
-                  :name="choice.id"
-                  type="radio"
-                  :value="choice.value"
-                  v-model="statusClosingDate"
-                  class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
-                />
-                <BaseLabel :id="choice.id" class="ml-3">
-                  {{ choice.text }}
-                </BaseLabel>
-              </div>
-            </div>
-          </fieldset>
-        </div>
 
-        <BaseDatePicker
-          v-if="statusClosingDate"
-          class="sm:col-span-3"
-          label="วันที่ปิดรับสมัคร"
-          id="date-only"
-          placeholder="Select Closing Date"
-          :enable-time-picker="false"
-          v-model="closingDate"
-          :format="(date) => moment(date).format('DD/MM/YYYY')"
-          required
-        >
-        </BaseDatePicker>
-      </ContainerField>
-    </ContainerForm>
     <ContainerForm>
       <BaseTitleForm>ช่องทางการติดต่อ</BaseTitleForm>
       <ContainerField>
@@ -435,8 +424,26 @@
         ></BaseInputField>
       </ContainerField>
     </ContainerForm>
+    <ContainerForm>
+      <BaseTitleForm>tag</BaseTitleForm>
+      <ContainerField>
+        <div class="sm:col-span-6">
+          <!-- <BaseLabel id="post-tag"> tag </BaseLabel> -->
+          <Multiselect
+            v-model="postTag"
+            mode="tags"
+            :close-on-select="false"
+            :searchable="true"
+            :create-option="true"
+            :options="listPositionTag"
+            class="multiselect-blue"
+          /></div></ContainerField
+    ></ContainerForm>
+
     <div class="flex justify-between gap-2">
-      <BaseButton :leadingIcon="TrashIcon" negative>Cancel</BaseButton>
+      <BaseButton :leadingIcon="TrashIcon" negative @click="gotoBack()"
+        >Cancel</BaseButton
+      >
       <BaseButton :trailingIcon="ChevronRightIcon" @click="submitForm()"
         >Post</BaseButton
       >
@@ -468,6 +475,23 @@ import Swal from 'sweetalert2'
 
 const route = useRoute()
 const router = useRouter()
+const gotoBack = () => {
+  Swal.fire({
+    title: 'Cancel create this post',
+    text: 'คุณแน่ใจจะยกเลิกการสร้าง Post นี้?',
+    icon: 'warning',
+    confirmButtonText: 'Comfirm',
+    confirmButtonColor: 'red',
+    showCancelButton: true,
+    cancelButtonText: 'Cancel',
+    cancelButtonColor: 'gray',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      router.push({ path: '/internship' })
+    }
+  })
+}
 
 // --- GET : position-tag (postTag) ---
 const listPositionTag = ref([])

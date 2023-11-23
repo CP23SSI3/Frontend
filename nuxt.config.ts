@@ -25,7 +25,8 @@ export default defineNuxtConfig({
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
-      title: 'InternHub'
+      title: 'InternHub',
+      link: [{ rel: 'icon', type: 'svg', href: '/internhub-icon.svg' }]
     }
   }
 })

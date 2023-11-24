@@ -24,7 +24,9 @@
               "
               class="items-center justify-between gap-2 px-5 py-2 mt-2 bg-white border-0 rounded-md ring-inset ring-1 ring-gray-200"
             >
-              <BaseText :label="position.title">{{ position.desc }}</BaseText>
+              <BaseText :label="position.openPositionTitle">{{
+                position.openPositionDesc
+              }}</BaseText>
               <div class="flex gap-6">
                 <BaseItem :icon="BriefcaseIcon">{{
                   position.workMonth
@@ -32,7 +34,9 @@
                 <BaseItem :icon="CurrencyDollarIcon" class="min-w-fit">
                   {{ position.salary ? position.salary : 'ไม่ระบุ' }}
                 </BaseItem>
-                <BaseItem :icon="UsersIcon">{{ position.num }}</BaseItem>
+                <BaseItem :icon="UsersIcon">{{
+                  position.openPositionNum
+                }}</BaseItem>
                 <Menu as="div" class="relative inline-block text-left">
                   <div>
                     <MenuButton
@@ -533,19 +537,19 @@ const hideAddPosition = () => {
   resetPosition()
 }
 const position = ref({
-  title: '',
-  desc: '',
-  workMonth: null,
+  openPositionDesc: '',
+  openPositionTitle: '',
+  openPositionNum: null,
   salary: null,
-  num: null
+  workMonth: null
 })
 const resetPosition = () => {
   position.value = {
-    title: '',
-    desc: '',
-    workMonth: null,
+    openPositionDesc: '',
+    openPositionTitle: '',
+    openPositionNum: null,
     salary: null,
-    num: null
+    workMonth: null
   }
 }
 const addPosition = () => {
@@ -564,8 +568,21 @@ const editPosition = (position, index) => {
   positionEditing.value = { ...position, id: index }
 }
 const savePosition = () => {
-  const { id, title, num, workMonth, salary, desc } = positionEditing.value
-  positionList.value[id] = { title, num, workMonth, salary, desc }
+  const {
+    id,
+    openPositionTitle,
+    openPositionNum,
+    workMonth,
+    salary,
+    openPositionDesc
+  } = positionEditing.value
+  positionList.value[id] = {
+    openPositionDesc,
+    openPositionTitle,
+    openPositionNum,
+    workMonth,
+    salary
+  }
   hideEditPosition()
 }
 
@@ -578,11 +595,11 @@ const deletePosition = (index) => {
 
 const positionList = ref([
   {
-    title: '[Test] Frontend Developer',
-    desc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
+    openPositionTitle: '[Test] Frontend Developer',
+    openPositionDesc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
+    openPositionNum: 2,
     workMonth: 6,
-    salary: 300,
-    num: 2
+    salary: 300
   }
 ])
 
@@ -591,9 +608,9 @@ const setOpenPositionList = () => {
   let openPositionList = form.value.openPositionList
   positionList.value.forEach((p, index) => {
     let position = {
-      openPositionTitle: p.title,
-      openPositionNum: p.num,
-      openPositionDesc: p.desc,
+      openPositionTitle: p.openPositionTitle,
+      openPositionNum: p.openPositionNum,
+      openPositionDesc: p.openPositionDesc,
       workMonth: p.workMonth,
       salary: p.salary ? p.salary : null
     }
@@ -755,7 +772,7 @@ const submitForm = async () => {
   console.log(form.value)
 
   form.value.address.latitude && form.value.address.longitude
-    ? await createPackage()
+    ? await createPost()
     : Swal.fire({
         showConfirmButton: true,
         timerProgressBar: true,
@@ -766,7 +783,7 @@ const submitForm = async () => {
       })
 }
 
-const createPackage = async () => {
+const createPost = async () => {
   try {
     const res = await createNewPost(form.value)
 

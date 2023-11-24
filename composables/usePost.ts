@@ -107,3 +107,29 @@ export async function deletePost(id: string) {
 
   return data
 }
+
+export async function updatePost(postId: string, editPost: any) {
+  const runtimeConfig = useRuntimeConfig()
+  const API_URL = runtimeConfig.public.API_URL
+  const url = `${API_URL}posts/${postId}`
+  // const auth = useAuth()
+  // const token = auth.$storage.getUniversal('_token.local') as string
+  const { data, error } = await useFetch(url, {
+    headers: {
+      // Authorization: token,
+      'Content-Type': 'application/json'
+    },
+    method: 'PUT',
+    body: JSON.stringify(editPost)
+  })
+
+  if (error.value) {
+    console.log(error.value)
+    throw createError({
+      ...error.value,
+      statusMessage: `Could not fetch data from ${url}`
+    })
+  }
+
+  return data
+}

@@ -1,458 +1,480 @@
 <template>
-  <BaseSectionContent class="px-5 py-4 space-y-6 md:px-10 md:py-8">
-    <ContainerForm>
-      <BaseTitleForm> ประกาศฝึกงาน </BaseTitleForm>
-      <ContainerField>
-        <BaseInputField
-          class="sm:col-span-4"
-          label="หัวข้อประกาศ"
-          id="title"
-          v-model="form.title"
-          required
-        ></BaseInputField>
-        <div class="col-span-full">
-          <BaseLabel id="positions" required> ตำแหน่งงานที่เปิดรับ </BaseLabel>
-          <!-- List Position -->
-          <div v-for="(position, index) in positionList">
-            <div
-              :class="
-                !statusEditPosition
-                  ? 'flex'
-                  : positionEditing.id != index
-                  ? 'flex'
-                  : 'hidden'
-              "
-              class="items-center justify-between gap-2 px-5 py-2 mt-2 bg-white border-0 rounded-md ring-inset ring-1 ring-gray-200"
-            >
-              <BaseText :label="position.openPositionTitle">{{
-                position.openPositionDesc
-              }}</BaseText>
-              <div class="flex gap-6">
-                <BaseItem :icon="BriefcaseIcon">{{
-                  position.workMonth
-                }}</BaseItem>
-                <BaseItem :icon="CurrencyDollarIcon" class="min-w-fit">
-                  {{ position.salary ? position.salary : 'ไม่ระบุ' }}
-                </BaseItem>
-                <BaseItem :icon="UsersIcon">{{
-                  position.openPositionNum
-                }}</BaseItem>
-                <Menu as="div" class="relative inline-block text-left">
-                  <div>
-                    <MenuButton
-                      class="flex items-center text-gray-400 rounded-full hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100"
-                    >
-                      <span class="sr-only">Open options</span>
-                      <EllipsisVerticalIcon
-                        class="w-8 h-8"
-                        aria-hidden="true"
-                      />
-                    </MenuButton>
-                  </div>
+  <Form @submit="submitForm" v-slot="{ meta }" :validation-schema="schema">
+    <BaseSectionContent class="px-5 py-4 space-y-6 md:px-10 md:py-8">
+      {{ meta }}
+      <ContainerForm>
+        <BaseTitleForm> ประกาศฝึกงาน </BaseTitleForm>
+        <ContainerField>
+          <BaseInputField
+            class="sm:col-span-4"
+            label="หัวข้อประกาศ"
+            id="title"
+            v-model="form.title"
+            required
+          ></BaseInputField>
+          <div class="col-span-full">
+            <BaseLabel id="positions" required>
+              ตำแหน่งงานที่เปิดรับ
+            </BaseLabel>
+            <!-- List Position -->
+            <div v-for="(position, index) in positionList">
+              <div
+                :class="
+                  !statusEditPosition
+                    ? 'flex'
+                    : positionEditing.id != index
+                    ? 'flex'
+                    : 'hidden'
+                "
+                class="flex-col items-end justify-between gap-2 px-5 py-2 mt-2 bg-white border-0 rounded-md lg:items-center ring-inset ring-1 ring-gray-200 lg:flex-row"
+              >
+                <BaseText
+                  :label="position.openPositionTitle"
+                  class="w-full lg:max-w-sm"
+                >
+                  {{ position.openPositionDesc }}
+                </BaseText>
+                <div class="flex items-center gap-4">
+                  <BaseItem :icon="BriefcaseIcon" class="min-w-fit">{{
+                    position.workMonth ? position.workMonth : 'ไม่ระบุ'
+                  }}</BaseItem>
+                  <BaseItem :icon="CurrencyDollarIcon" class="min-w-fit">
+                    {{ position.salary ? position.salary : 'ไม่ระบุ' }}
+                  </BaseItem>
+                  <BaseItem :icon="UsersIcon" class="min-w-fit">{{
+                    position.openPositionNum ? position.salary : 'ไม่ระบุ'
+                  }}</BaseItem>
+                  <Menu as="div" class="relative inline-block -ml-2 text-left">
+                    <div>
+                      <MenuButton
+                        class="flex items-center text-gray-400 rounded-full hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100"
+                      >
+                        <span class="sr-only">Open options</span>
+                        <EllipsisVerticalIcon
+                          class="w-7 h-7"
+                          aria-hidden="true"
+                        />
+                      </MenuButton>
+                    </div>
 
-                  <transition
-                    enter-active-class="transition duration-100 ease-out"
-                    enter-from-class="transform scale-95 opacity-0"
-                    enter-to-class="transform scale-100 opacity-100"
-                    leave-active-class="transition duration-75 ease-in"
-                    leave-from-class="transform scale-100 opacity-100"
-                    leave-to-class="transform scale-95 opacity-0"
-                  >
-                    <MenuItems
-                      class="absolute right-0 z-10 w-auto mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    <transition
+                      enter-active-class="transition duration-100 ease-out"
+                      enter-from-class="transform scale-95 opacity-0"
+                      enter-to-class="transform scale-100 opacity-100"
+                      leave-active-class="transition duration-75 ease-in"
+                      leave-from-class="transform scale-100 opacity-100"
+                      leave-to-class="transform scale-95 opacity-0"
                     >
-                      <div class="py-1">
-                        <MenuItem v-slot="{ active }">
-                          <BaseItem
-                            :class="[
-                              active
-                                ? 'bg-gray-100 text-gray-900'
-                                : 'text-gray-700',
-                              'block px-4 py-2 text-sm cursor-pointer hover:underline'
-                            ]"
-                            :icon="PencilIcon"
-                            @click="editPosition(position, index)"
-                            >Edit</BaseItem
-                          >
-                        </MenuItem>
-                        <MenuItem v-slot="{ active }">
-                          <BaseItem
-                            :class="[
-                              active
-                                ? 'bg-gray-100 text-gray-900'
-                                : 'text-gray-700',
-                              'block px-4 py-2 text-sm cursor-pointer hover:underline'
-                            ]"
-                            :icon="TrashIconSolid"
-                            @click="deletePosition(index)"
-                            >Delete</BaseItem
-                          >
-                        </MenuItem>
-                      </div>
-                    </MenuItems>
-                  </transition>
-                </Menu>
+                      <MenuItems
+                        class="absolute right-0 z-10 w-auto mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                      >
+                        <div class="py-1">
+                          <MenuItem v-slot="{ active }">
+                            <BaseItem
+                              :class="[
+                                active
+                                  ? 'bg-gray-100 text-gray-900'
+                                  : 'text-gray-700',
+                                'block px-4 py-2 text-sm cursor-pointer hover:underline'
+                              ]"
+                              :icon="PencilIcon"
+                              @click="editPosition(position, index)"
+                              >Edit</BaseItem
+                            >
+                          </MenuItem>
+                          <MenuItem v-slot="{ active }">
+                            <BaseItem
+                              :class="[
+                                active
+                                  ? 'bg-gray-100 text-gray-900'
+                                  : 'text-gray-700',
+                                'block px-4 py-2 text-sm cursor-pointer hover:underline'
+                              ]"
+                              :icon="TrashIconSolid"
+                              @click="deletePosition(index)"
+                              >Delete</BaseItem
+                            >
+                          </MenuItem>
+                        </div>
+                      </MenuItems>
+                    </transition>
+                  </Menu>
+                </div>
               </div>
+              <!-- Sub form for edit positionList -->
+              <FormPosition
+                v-if="statusEditPosition && positionEditing.id == index"
+                :position="positionEditing"
+                @submit="savePosition()"
+                @cancel="hideEditPosition()"
+                editmode
+                :statusButton="
+                  !(
+                    positionEditing.openPositionTitle &&
+                    positionEditing.openPositionDesc
+                  )
+                "
+              />
             </div>
-            <!-- Sub form for edit positionList -->
-            <!-- เอา :list-position-tag="listPositionTag" ออก-->
+            <!-- Button add Position -->
+            <BaseButton
+              v-if="!statusAddPosition && !statusEditPosition"
+              class="mt-1"
+              type="button"
+              :leadingIcon="PlusIcon"
+              full
+              secondary
+              @click="showAddPosition()"
+              :disabled="statusEditPosition"
+              >เพิ่มตำแหน่งงาน
+            </BaseButton>
+
+            <!-- Sub form add position -->
             <FormPosition
-              v-if="statusEditPosition && positionEditing.id == index"
-              :position="positionEditing"
-              @submit="savePosition()"
-              @cancel="hideEditPosition()"
-              editmode
+              v-else-if="statusAddPosition"
+              :position="position"
+              @submit="addPosition()"
+              @cancel="hideAddPosition()"
+              :statusButton="
+                !(position.openPositionTitle && position.openPositionDesc)
+              "
             />
           </div>
-          <!-- Button add Position -->
-          <BaseButton
-            v-if="!statusAddPosition && !statusEditPosition"
-            class="mt-1"
-            type="button"
-            :leadingIcon="PlusIcon"
-            full
-            secondary
-            @click="showAddPosition()"
-            >เพิ่มตำแหน่งงาน
-          </BaseButton>
-
-          <!-- Sub form add position -->
-          <!-- เอา :list-position-tag="listPositionTag" ออก-->
-          <FormPosition
-            v-else-if="statusAddPosition"
-            :position="position"
-            @submit="addPosition()"
-            @cancel="hideAddPosition()"
-          />
-        </div>
-      </ContainerField>
-    </ContainerForm>
-    <ContainerForm>
-      <BaseTitleForm> ข้อมูลการฝึกงาน </BaseTitleForm>
-      <ContainerField>
-        <BaseTimePicker
-          class="sm:col-span-3"
-          label="เวลาทำงาน"
-          id="time-only"
-          placeholder="Select Time"
-          v-model="workTime"
-          required
-        >
-        </BaseTimePicker>
-        <div class="sm:col-span-4">
-          <BaseLabel id="workDays" required>วันทำงาน</BaseLabel>
-          <div
-            class="mt-1 space-y-2 sm:flex sm:items-center sm:space-x-5 sm:space-y-0"
+        </ContainerField>
+      </ContainerForm>
+      <ContainerForm>
+        <BaseTitleForm> ข้อมูลการฝึกงาน </BaseTitleForm>
+        <ContainerField>
+          <BaseTimePicker
+            class="sm:col-span-3"
+            label="เวลาทำงาน"
+            id="time-only"
+            placeholder="Select Time"
+            v-model="workTime"
+            required
           >
+          </BaseTimePicker>
+          <div class="sm:col-span-4">
+            <BaseLabel id="workDays" required>วันทำงาน</BaseLabel>
             <div
-              class="relative flex items-start"
-              v-for="(item, index) in listDays"
-              :key="index"
-            >
-              <div class="flex items-center h-6">
-                <input
-                  :id="item.value"
-                  :name="item.value"
-                  type="checkbox"
-                  :value="item.value"
-                  v-model="form.workDay"
-                  class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
-                />
-              </div>
-              <div class="ml-2 text-sm leading-6">
-                <BaseLabel :id="item.value">{{ item.text }}</BaseLabel>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="sm:col-span-3">
-          <BaseLabel id="workType" required> รูปแบบการฝึกงาน </BaseLabel>
-          <fieldset class="mt-2">
-            <div
-              class="space-y-4 md:flex md:items-center md:space-x-10 md:space-y-0"
+              class="mt-1 space-y-2 sm:flex sm:items-center sm:space-x-5 sm:space-y-0"
             >
               <div
-                v-for="choice in workTypes"
-                :key="choice.id"
-                class="flex items-center"
+                class="relative flex items-start"
+                v-for="(item, index) in listDays"
+                :key="index"
               >
-                <input
-                  :id="choice.value"
-                  :name="choice.value"
-                  type="radio"
-                  :value="choice.value"
-                  v-model="form.workType"
-                  class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
-                />
-                <BaseLabel :id="choice.value" class="ml-3">
-                  {{ choice.text }}
-                </BaseLabel>
+                <div class="flex items-center h-6">
+                  <input
+                    :id="item.value"
+                    :name="item.value"
+                    type="checkbox"
+                    :value="item.value"
+                    v-model="form.workDay"
+                    class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
+                  />
+                </div>
+                <div class="ml-2 text-sm leading-6">
+                  <BaseLabel :id="item.value">{{ item.text }}</BaseLabel>
+                </div>
               </div>
             </div>
-          </fieldset>
-        </div>
-        <div class="col-span-full">
-          <BaseLabel id="postDesc" required>รายละเอียดงานที่จะให้ทำ</BaseLabel>
-          <div class="mt-1">
-            <textarea
-              id="about"
-              name="about"
-              rows="4"
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              v-model="form.postDesc"
-            />
           </div>
-        </div>
-        <div class="col-span-full">
-          <BaseLabel id="postWelfare" required>สวัสดิการอื่นๆ</BaseLabel>
-          <div class="mt-1">
-            <textarea
-              id="about"
-              name="about"
-              rows="3"
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              v-model="form.postWelfare"
-            />
+          <div class="sm:col-span-3">
+            <BaseLabel id="workType" required> รูปแบบการฝึกงาน </BaseLabel>
+            <fieldset class="mt-2">
+              <div
+                class="space-y-4 md:flex md:items-center md:space-x-10 md:space-y-0"
+              >
+                <div
+                  v-for="choice in workTypes"
+                  :key="choice.id"
+                  class="flex items-center"
+                >
+                  <input
+                    :id="choice.value"
+                    :name="choice.value"
+                    type="radio"
+                    :value="choice.value"
+                    v-model="form.workType"
+                    class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
+                  />
+                  <BaseLabel :id="choice.value" class="ml-3">
+                    {{ choice.text }}
+                  </BaseLabel>
+                </div>
+              </div>
+            </fieldset>
           </div>
-        </div>
-      </ContainerField>
-    </ContainerForm>
-    <ContainerForm>
-      <BaseTitleForm>การสมัคร</BaseTitleForm>
-      <ContainerField>
-        <div class="col-span-full">
-          <BaseLabel id="enrolling" required>วิธีการสมัคร</BaseLabel>
-          <div class="mt-1">
-            <textarea
-              id="about"
-              name="about"
-              rows="3"
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              v-model="form.enrolling"
-            />
-          </div>
-        </div>
-        <div class="sm:col-span-full">
-          <BaseLabel id="docuemnts" required>เอกสารประกอบการสมัคร</BaseLabel>
-          <div
-            class="mt-1 space-y-2 sm:flex sm:items-center sm:space-x-5 sm:space-y-0"
-          >
-            <div
-              class="relative flex items-start"
-              v-for="(item, index) in listDocs"
-              :key="index"
+          <div class="col-span-full">
+            <BaseLabel id="postDesc" required
+              >รายละเอียดงานที่จะให้ทำ</BaseLabel
             >
-              <div class="flex items-center h-6">
-                <input
-                  :id="item.value"
-                  :name="item.value"
-                  type="checkbox"
-                  :value="item.value"
-                  v-model="form.documents"
-                  class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
-                />
-              </div>
-              <div class="ml-2 text-sm leading-6">
-                <BaseLabel :id="item.value">{{ item.text }}</BaseLabel>
-              </div>
+            <div class="mt-1">
+              <textarea
+                id="about"
+                name="about"
+                rows="4"
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                v-model="form.postDesc"
+              />
             </div>
           </div>
-        </div>
-        <div class="sm:col-span-3 sm:mb-3">
-          <BaseLabel id="closedDate" required>
-            ระยะเวลาที่เปิดรับสมัคร
-          </BaseLabel>
-          <fieldset class="mt-2">
+          <div class="col-span-full">
+            <BaseLabel id="postWelfare" required>สวัสดิการอื่นๆ</BaseLabel>
+            <div class="mt-1">
+              <textarea
+                id="about"
+                name="about"
+                rows="3"
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                v-model="form.postWelfare"
+              />
+            </div>
+          </div>
+        </ContainerField>
+      </ContainerForm>
+      <ContainerForm>
+        <BaseTitleForm>การสมัคร</BaseTitleForm>
+        <ContainerField>
+          <div class="col-span-full">
+            <BaseLabel id="enrolling" required>วิธีการสมัคร</BaseLabel>
+            <div class="mt-1">
+              <textarea
+                id="about"
+                name="about"
+                rows="3"
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                v-model="form.enrolling"
+              />
+            </div>
+          </div>
+          <div class="sm:col-span-full">
+            <BaseLabel id="docuemnts" required>เอกสารประกอบการสมัคร</BaseLabel>
             <div
-              class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0"
+              class="mt-1 space-y-2 sm:flex sm:items-center sm:space-x-5 sm:space-y-0"
             >
               <div
-                v-for="choice in choicesClosedDate"
-                :key="choice.id"
-                class="flex items-center"
+                class="relative flex items-start"
+                v-for="(item, index) in listDocs"
+                :key="index"
               >
-                <input
-                  :id="choice.id"
-                  :name="choice.id"
-                  type="radio"
-                  :value="choice.value"
-                  v-model="statusClosingDate"
-                  class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
-                />
-                <BaseLabel :id="choice.id" class="ml-3">
-                  {{ choice.text }}
-                </BaseLabel>
+                <div class="flex items-center h-6">
+                  <input
+                    :id="item.value"
+                    :name="item.value"
+                    type="checkbox"
+                    :value="item.value"
+                    v-model="form.documents"
+                    class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
+                  />
+                </div>
+                <div class="ml-2 text-sm leading-6">
+                  <BaseLabel :id="item.value">{{ item.text }}</BaseLabel>
+                </div>
               </div>
             </div>
-          </fieldset>
-        </div>
+          </div>
+          <div class="sm:col-span-3 sm:mb-3">
+            <BaseLabel id="closedDate" required>
+              ระยะเวลาที่เปิดรับสมัคร
+            </BaseLabel>
+            <fieldset class="mt-2">
+              <div
+                class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0"
+              >
+                <div
+                  v-for="choice in choicesClosedDate"
+                  :key="choice.id"
+                  class="flex items-center"
+                >
+                  <input
+                    :id="choice.id"
+                    :name="choice.id"
+                    type="radio"
+                    :value="choice.value"
+                    v-model="statusClosingDate"
+                    class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
+                  />
+                  <BaseLabel :id="choice.id" class="ml-3">
+                    {{ choice.text }}
+                  </BaseLabel>
+                </div>
+              </div>
+            </fieldset>
+          </div>
 
-        <BaseDatePicker
-          v-if="statusClosingDate"
-          class="sm:col-span-3"
-          label="วันที่ปิดรับสมัคร"
-          id="date-only"
-          placeholder="Select Closing Date"
-          :enable-time-picker="false"
-          v-model="closingDate"
-          :format="(date) => moment(date).format('DD/MM/YYYY')"
-          required
-        >
-        </BaseDatePicker>
-      </ContainerField>
-    </ContainerForm>
-    <ContainerForm>
-      <BaseTitleForm>สถานที่ฝึกงาน</BaseTitleForm>
-      <ContainerField>
-        <div class="col-span-full">
-          <fieldset class="mt-2">
-            <div
-              class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0"
-            >
+          <BaseDatePicker
+            v-if="statusClosingDate"
+            class="sm:col-span-3"
+            label="วันที่ปิดรับสมัคร"
+            id="date-only"
+            placeholder="Select Closing Date"
+            :enable-time-picker="false"
+            v-model="closingDate"
+            :format="(date) => moment(date).format('DD/MM/YYYY')"
+            required
+          >
+          </BaseDatePicker>
+        </ContainerField>
+      </ContainerForm>
+      <ContainerForm>
+        <BaseTitleForm>สถานที่ฝึกงาน</BaseTitleForm>
+        <ContainerField>
+          <div class="col-span-full">
+            <fieldset class="mt-2">
               <div
-                v-for="choice in choicesLocation"
-                :key="choice.id"
-                class="flex items-center"
+                class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0"
               >
-                <input
-                  :id="choice.value"
-                  :name="choice.value"
-                  type="radio"
-                  :value="choice.value"
-                  v-model="selectedLocation"
-                  class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
-                />
-                <BaseLabel :id="choice.value" class="ml-3">
-                  {{ choice.text }}
-                </BaseLabel>
+                <div
+                  v-for="choice in choicesLocation"
+                  :key="choice.id"
+                  class="flex items-center"
+                >
+                  <input
+                    :id="choice.value"
+                    :name="choice.value"
+                    type="radio"
+                    :value="choice.value"
+                    v-model="selectedLocation"
+                    class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
+                  />
+                  <BaseLabel :id="choice.value" class="ml-3">
+                    {{ choice.text }}
+                  </BaseLabel>
+                </div>
               </div>
-            </div>
-          </fieldset>
-        </div>
-        <!-- <BaseInputField
+            </fieldset>
+          </div>
+          <!-- <BaseInputField
             class="sm:col-span-4"
             label="ประเทศ"
             id="country"
             v-model="form.address.country"
             required
           ></BaseInputField> -->
-        <div class="sm:col-span-4">
-          <BaseLabel id="country" required>ประเทศ</BaseLabel>
-          <div class="mt-1">
-            <select
-              id="country"
-              name="country"
-              autocomplete="country-name"
-              :disabled="selectedLocation == 'default'"
-              v-model="form.address.country"
-              class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 disabled:bg-gray-100 disabled:border-gray-200 disabled:textgray-400"
-            >
-              <option value="ประเทศไทย">Thailand</option>
-            </select>
+          <div class="sm:col-span-4">
+            <BaseLabel id="country" required>ประเทศ</BaseLabel>
+            <div class="mt-1">
+              <select
+                id="country"
+                name="country"
+                autocomplete="country-name"
+                :disabled="selectedLocation == 'default'"
+                v-model="form.address.country"
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 disabled:bg-gray-100 disabled:border-gray-200 disabled:textgray-400"
+              >
+                <option value="ประเทศไทย">Thailand</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <BaseInputField
-          class="sm:col-span-2"
-          label="รหัสไปรณีย์"
-          id="postalCode"
-          v-model="form.address.postalCode"
-          required
-          :disabled="selectedLocation == 'default'"
-        ></BaseInputField>
-        <BaseInputField
-          class="sm:col-span-2"
-          label="จังหวัด"
-          id="city"
-          v-model="form.address.city"
-          required
-          :disabled="selectedLocation == 'default'"
-        ></BaseInputField>
-        <BaseInputField
-          class="sm:col-span-2"
-          label="เขต"
-          id="district"
-          v-model="form.address.district"
-          required
-          :disabled="selectedLocation == 'default'"
-        ></BaseInputField>
-        <BaseInputField
-          class="sm:col-span-2"
-          label="แขวง"
-          id="subDistrict"
-          v-model="form.address.subDistrict"
-          required
-          :disabled="selectedLocation == 'default'"
-        ></BaseInputField>
-        <BaseInputField
-          class="col-span-full"
-          label="ที่อยู่"
-          id="area"
-          v-model="form.address.area"
-          required
-          :disabled="selectedLocation == 'default'"
-        ></BaseInputField>
-      </ContainerField>
-    </ContainerForm>
+          <BaseInputField
+            class="sm:col-span-2"
+            label="รหัสไปรณีย์"
+            id="postalCode"
+            v-model="form.address.postalCode"
+            required
+            :disabled="selectedLocation == 'default'"
+          ></BaseInputField>
+          <BaseInputField
+            class="sm:col-span-2"
+            label="จังหวัด"
+            id="city"
+            v-model="form.address.city"
+            required
+            :disabled="selectedLocation == 'default'"
+          ></BaseInputField>
+          <BaseInputField
+            class="sm:col-span-2"
+            label="เขต"
+            id="district"
+            v-model="form.address.district"
+            required
+            :disabled="selectedLocation == 'default'"
+          ></BaseInputField>
+          <BaseInputField
+            class="sm:col-span-2"
+            label="แขวง"
+            id="subDistrict"
+            v-model="form.address.subDistrict"
+            required
+            :disabled="selectedLocation == 'default'"
+          ></BaseInputField>
+          <BaseInputField
+            class="col-span-full"
+            label="ที่อยู่"
+            id="area"
+            v-model="form.address.area"
+            required
+            :disabled="selectedLocation == 'default'"
+          ></BaseInputField>
+        </ContainerField>
+      </ContainerForm>
 
-    <ContainerForm>
-      <BaseTitleForm>ช่องทางการติดต่อ</BaseTitleForm>
-      <ContainerField>
-        <BaseInputField
-          class="sm:col-span-3"
-          label="ชื่อผู้ประสานงาน"
-          id="area"
-          v-model="form.coordinatorName"
-          required
-        ></BaseInputField>
-        <BaseInputField
-          class="sm:col-span-2"
-          label="เบอร์โทร"
-          id="tel"
-          type="tel"
-          v-model="form.tel"
-          required
-        ></BaseInputField>
-        <BaseInputField
-          class="sm:col-span-4"
-          label="อีเมล"
-          id="email"
-          type="email"
-          v-model="form.email"
-          required
-        ></BaseInputField>
-        <BaseInputField
-          class="sm:col-span-4"
-          label="เว็บไซต์บริษัท"
-          id="website"
-          v-model="form.postUrl"
-        ></BaseInputField>
-      </ContainerField>
-    </ContainerForm>
-    <ContainerForm>
-      <BaseTitleForm>tag</BaseTitleForm>
-      <ContainerField>
-        <div class="sm:col-span-6">
-          <!-- <BaseLabel id="post-tag"> tag </BaseLabel> -->
-          <Multiselect
-            v-model="postTag"
-            mode="tags"
-            :close-on-select="false"
-            :searchable="true"
-            :create-option="true"
-            :options="listPositionTag"
-            class="multiselect-blue"
-          /></div></ContainerField
-    ></ContainerForm>
+      <ContainerForm>
+        <BaseTitleForm>ช่องทางการติดต่อ</BaseTitleForm>
+        <ContainerField>
+          <BaseInputField
+            class="sm:col-span-3"
+            label="ชื่อผู้ประสานงาน"
+            id="area"
+            v-model="form.coordinatorName"
+            required
+          ></BaseInputField>
+          <BaseInputField
+            class="sm:col-span-2"
+            label="เบอร์โทร"
+            id="tel"
+            type="tel"
+            v-model="form.tel"
+            required
+          ></BaseInputField>
+          <BaseInputField
+            class="sm:col-span-4"
+            label="อีเมล"
+            id="email"
+            type="email"
+            v-model="form.email"
+            required
+          ></BaseInputField>
+          <BaseInputField
+            class="sm:col-span-4"
+            label="เว็บไซต์บริษัท"
+            id="website"
+            v-model="form.postUrl"
+          ></BaseInputField>
+        </ContainerField>
+      </ContainerForm>
+      <ContainerForm>
+        <BaseTitleForm>tag</BaseTitleForm>
+        <ContainerField>
+          <div class="sm:col-span-6">
+            <!-- <BaseLabel id="post-tag"> tag </BaseLabel> -->
+            <Multiselect
+              v-model="postTag"
+              mode="tags"
+              :close-on-select="false"
+              :searchable="true"
+              :create-option="true"
+              :options="listPositionTag"
+              class="multiselect-blue"
+            /></div></ContainerField
+      ></ContainerForm>
 
-    <div class="flex justify-between gap-2">
-      <BaseButton :leadingIcon="TrashIcon" negative @click="gotoBack()"
-        >Cancel</BaseButton
-      >
-      <BaseButton :trailingIcon="ChevronRightIcon" @click="submitForm()"
-        >Post</BaseButton
-      >
-    </div>
-  </BaseSectionContent>
+      <div class="flex justify-between gap-2">
+        <BaseButton :leadingIcon="TrashIcon" negative @click="gotoBack()"
+          >Cancel</BaseButton
+        >
+        <BaseButton
+          :trailingIcon="ChevronRightIcon"
+          @click="submitForm()"
+          type="submit"
+          :disabled="!meta.dirty || !meta.valid"
+          >Post</BaseButton
+        >
+      </div>
+    </BaseSectionContent>
+  </Form>
 </template>
 
 <script setup>
@@ -474,6 +496,8 @@ import FormPosition from '@/components/form/FormPosition.vue'
 import ContainerForm from '@/components/form/ContainerForm.vue'
 import ContainerField from '@/components/form/ContainerField.vue'
 import { Field, ErrorMessage, Form } from 'vee-validate'
+// import * as yup from 'yup'
+import yup from '@/assets/yup-error.js'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 
@@ -564,8 +588,9 @@ const hideEditPosition = () => {
   positionEditing.value = null
 }
 const editPosition = (position, index) => {
-  console.log(positionEditing)
-  positionEditing.value = { ...position, id: index }
+  if (!statusAddPosition.value) {
+    positionEditing.value = { ...position, id: index }
+  }
 }
 const savePosition = () => {
   const {
@@ -594,13 +619,13 @@ const deletePosition = (index) => {
 }
 
 const positionList = ref([
-  {
-    openPositionTitle: '[Test] Frontend Developer',
-    openPositionDesc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
-    openPositionNum: 2,
-    workMonth: 6,
-    salary: 300
-  }
+  // {
+  //   openPositionTitle: '[Test] Frontend Developer',
+  //   openPositionDesc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
+  //   openPositionNum: 2,
+  //   workMonth: 6,
+  //   salary: 300
+  // }
 ])
 
 const setOpenPositionList = () => {
@@ -730,7 +755,7 @@ const getGeoLication = async () => {
   }
 }
 
-const form1 = ref({
+const form = ref({
   title: '',
   closedDate: null, // function setClosedDate()
   coordinatorName: '',
@@ -761,6 +786,30 @@ const form1 = ref({
   openPositionList: [], //function setOpenPositionList()
   postUrl: '',
   postTagList: [] //function setPostTag()
+})
+// yup.setLocale()
+// --- check validate ---
+// yup.setLocale({
+//   string: {
+//     min: 'เกิน ${min} ตัวอักษร'
+//   },
+//   number: {
+//     typeError: 'Number only',
+//     min: 'Deve ser maior que ${min}'
+//   }
+// })
+
+const schema = yup.object({
+  title: yup.string().trim().required('โปรดระบุ หัวข้อตำแหน่งงาน').max(100),
+  openPositionTitle: yup
+    .string()
+    .trim()
+    .required('โปรดระบุ ชื่อตำแหน่งงาน')
+    .max(50),
+  openPositionDesc: yup.string().trim().required('โปรดระบุ คำอธิบาย').max(300),
+  workMonth: yup.number().typeError('').positive().nullable(),
+  salary: yup.number().typeError('').nullable().positive(),
+  openPositionNum: yup.number().typeError('').nullable().positive().integer()
 })
 
 const submitForm = async () => {
@@ -813,7 +862,7 @@ const createPost = async () => {
 
 const back = () => router.push({ path: '/internship' })
 
-const form = ref({
+const form1 = ref({
   title: '[Test]:ประกาศฝึกงาน',
   closedDate: null, // function setClosedDate()
   coordinatorName: '[Test]คุณ HR แสนดี',
@@ -857,3 +906,4 @@ const form = ref({
   --ms-ring-color: rgba(56, 189, 248, 0.2);
 }
 </style>
+~/assets/yup-error.js

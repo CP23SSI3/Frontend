@@ -27,6 +27,9 @@
 
     <NuxtLink href="/test/map">Google Map</NuxtLink>
     <NuxtLink href="/test/pagination">Vue Anesome pagination</NuxtLink>
+    <NuxtLink href="/test/addressDropdown"
+      >Address Dropdown จังหวัด/เขต/แขวงประเทศไทย
+    </NuxtLink>
 
     <input type="search" v-model="searchValue" />
     {{ searchValue }}

@@ -95,7 +95,6 @@
               </div>
             </div>
             <!-- Sub form for edit positionList -->
-            <!-- เอา :list-position-tag="listPositionTag" ออก-->
             <FormPosition
               v-if="statusEditPosition && positionEditing.id == index"
               :position="positionEditing"
@@ -117,7 +116,6 @@
           </BaseButton>
 
           <!-- Sub form add position -->
-          <!-- เอา :list-position-tag="listPositionTag" ออก-->
           <FormPosition
             v-else-if="statusAddPosition"
             :position="position"
@@ -434,7 +432,7 @@
         <div class="sm:col-span-6">
           <!-- <BaseLabel id="post-tag"> tag </BaseLabel> -->
           <Multiselect
-            v-model="postTag"
+            v-model="form.postTagList"
             mode="tags"
             :close-on-select="false"
             :searchable="true"
@@ -449,7 +447,7 @@
         >Cancel</BaseButton
       >
       <BaseButton :trailingIcon="ChevronRightIcon" @click="submitForm()"
-        >Post</BaseButton
+        >Save</BaseButton
       >
     </div>
   </BaseSectionContent>
@@ -478,11 +476,12 @@ import moment from 'moment'
 import Swal from 'sweetalert2'
 
 const route = useRoute()
+const postId = route.params.postId
 const router = useRouter()
 const gotoBack = () => {
   Swal.fire({
     title: 'Cancel create this post',
-    text: 'คุณแน่ใจจะยกเลิกการสร้าง Post นี้?',
+    text: 'คุณแน่ใจจะยกเลิกการแก้ไข Post นี้?',
     icon: 'warning',
     confirmButtonText: 'Comfirm',
     confirmButtonColor: 'red',
@@ -492,14 +491,13 @@ const gotoBack = () => {
     reverseButtons: true
   }).then((result) => {
     if (result.isConfirmed) {
-      router.push({ path: '/internship' })
+      router.back()
     }
   })
 }
 
 // --- GET : position-tag (postTag) ---
 const listPositionTag = ref([])
-const postTag = ref([])
 const getListPositionTag = async () => {
   listPositionTag.value = []
   try {
@@ -524,10 +522,6 @@ const getListPositionTag = async () => {
   }
 }
 await getListPositionTag()
-
-const setPostTag = () => {
-  form.value.postTagList = postTag.value
-}
 
 // --- input : เพิ่มตำแหน่งงาน ---
 const statusAddPosition = ref(false)
@@ -570,18 +564,18 @@ const editPosition = (position, index) => {
 const savePosition = () => {
   const {
     id,
+    openPositionDesc,
+    openPositionNum,
+    openPositionTitle,
+    salary,
+    workMonth
+  } = positionEditing.value
+  positionList.value[id] = {
     openPositionTitle,
     openPositionNum,
     workMonth,
     salary,
     openPositionDesc
-  } = positionEditing.value
-  positionList.value[id] = {
-    openPositionDesc,
-    openPositionTitle,
-    openPositionNum,
-    workMonth,
-    salary
   }
   hideEditPosition()
 }
@@ -594,13 +588,13 @@ const deletePosition = (index) => {
 }
 
 const positionList = ref([
-  {
-    openPositionTitle: '[Test] Frontend Developer',
-    openPositionDesc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
-    openPositionNum: 2,
-    workMonth: 6,
-    salary: 300
-  }
+  // {
+  //   openPositionTitle: '[Test] Frontend Developer',
+  //   openPositionDesc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
+  //   workMonth: 6,
+  //   salary: 300,
+  //   openPositionNum: 2
+  // }
 ])
 
 const setOpenPositionList = () => {
@@ -665,12 +659,39 @@ const setClosedDate = () => {
     form.value.closedDate = null
   }
 }
+const setupClosedDate = () => {
+  if (props?.post.closedDate !== null) {
+    closingDate.value = new Date(props?.post.closedDate)
+    statusClosingDate.value = true
+  }
+}
 
 // --- time-picker : เวลาเริ่ม-เลิกงาน ---
 const workTime = ref([
-  { hours: 9, minutes: 0, seconds: 0 },
-  { hours: 18, minutes: 0, seconds: 0 }
+  // { hours: 9, minutes: 0, seconds: 0 },
+  // { hours: 18, minutes: 0, seconds: 0 }
 ])
+const setupWorkTime = () => {
+  let startTime = props?.post.workStartTime
+  let endTime = props?.post.workEndTime
+
+  let arrStartTime = startTime.split(':')
+  let arrEndTime = endTime.split(':')
+
+  workTime.value = [
+    {
+      hours: Number(arrStartTime[0]),
+      minutes: Number(arrStartTime[1]),
+      seconds: Number(arrStartTime[2])
+    },
+    {
+      hours: Number(arrEndTime[0]),
+      minutes: Number(arrEndTime[1]),
+      seconds: Number(arrEndTime[2])
+    }
+  ]
+}
+
 const setWorkTime = () => {
   if (workTime.value) {
     let startTime = workTime.value[0]
@@ -730,7 +751,7 @@ const getGeoLication = async () => {
   }
 }
 
-const form1 = ref({
+const form = ref({
   title: '',
   closedDate: null, // function setClosedDate()
   coordinatorName: '',
@@ -763,16 +784,28 @@ const form1 = ref({
   postTagList: [] //function setPostTag()
 })
 
+const props = defineProps({
+  post: {
+    type: Object
+  }
+})
+
+form.value = props?.post
+positionList.value = props?.post.openPositionList
+setupWorkTime()
+setupClosedDate()
+
+console.log(props.post)
+// console.log(form.value)
+
 const submitForm = async () => {
   setClosedDate()
   setWorkTime()
   setOpenPositionList()
-  setPostTag()
   await getGeoLication()
-  console.log(form.value)
 
   form.value.address.latitude && form.value.address.longitude
-    ? await createPost()
+    ? await savePost()
     : Swal.fire({
         showConfirmButton: true,
         timerProgressBar: true,
@@ -783,37 +816,36 @@ const submitForm = async () => {
       })
 }
 
-const createPost = async () => {
+const savePost = async () => {
+  console.log(form.value)
   try {
-    const res = await createNewPost(form.value)
-
+    const res = await updatePost(postId, form.value)
     if (res.value) {
       Swal.fire({
-        title: 'Create Post',
+        title: 'Update Post',
         confirmButtonColor: 'blue',
-        text: 'สร้าง post สำเร็จ',
+        text: 'บันทึกการแก้ไข post สำเร็จ',
         icon: 'success'
       }).then((result) => {
         if (result.value || result.dismiss) {
-          back()
+          router.push({ path: `/internship/${postId}` })
         }
       })
     }
   } catch (error) {
+    console.log(error)
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,
       confirmButtonColor: 'blue',
       icon: 'error',
       title: 'Error',
-      text: 'ไม่สามารถสร้าง post ใหม่ได้'
+      text: 'ไม่สามารถแก้ไข post นี้ได้'
     })
   }
 }
 
-const back = () => router.push({ path: '/internship' })
-
-const form = ref({
+const form1 = ref({
   title: '[Test]:ประกาศฝึกงาน',
   closedDate: null, // function setClosedDate()
   coordinatorName: '[Test]คุณ HR แสนดี',

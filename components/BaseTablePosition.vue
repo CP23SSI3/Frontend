@@ -4,7 +4,6 @@
       :headers="headers"
       :items="items"
       :header-item-class-name="headerItemClassNameFunction"
-      :loading="loading"
       hide-footer
       table-class-name="customize-table"
       class="rounded-md shadow-sm h-fit"
@@ -53,10 +52,6 @@ const props = defineProps({
   list: {
     type: Array,
     required: true
-  },
-  loading: {
-    type: Boolean,
-    required: true
   }
 })
 
@@ -88,5 +83,7 @@ const headerItemClassNameFunction: HeaderItemClassNameFunction = (
   --easy-table-body-row-font-color: #111827;
   --easy-table-body-font-size: 14px;
   --da0d4328: 50px !important;
+
+  --easy-table-body-row-hover-background-color: #fff;
 }
 </style>

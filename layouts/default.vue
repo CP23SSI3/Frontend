@@ -185,12 +185,18 @@
       </Disclosure>
       <div
         class="flex items-center justify-center w-full h-20 bg-gray-900"
-        v-if="route.fullPath == '/internship/form'"
+        v-if="
+          route.fullPath.includes('/form') || route.fullPath.includes('/edit')
+        "
       >
         <h2
           class="text-xl font-bold leading-7 text-center text-white sm:truncate sm:text-2xl sm:tracking-tight"
         >
-          แบบฟอร์มสร้างประกาศรับสมัครฝึกงาน
+          {{
+            route.fullPath.includes('/edit')
+              ? 'แก้ไขโพสต์ประกาศฝึกงาน'
+              : 'แบบฟอร์มสร้างประกาศรับสมัครฝึกงาน'
+          }}
         </h2>
       </div>
     </div>

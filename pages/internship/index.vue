@@ -19,7 +19,7 @@
           <span class="text-sm text-gray-400">{{ totalItems }} posts</span>
         </div>
         <NuxtLink :to="{ path: '/internship/form' }">
-          <BaseButton :leadingIcon="PlusCircleIcon">New Post</BaseButton>
+          <BaseButton :leadingIcon="PlusCircleIcon">Add Post</BaseButton>
         </NuxtLink>
       </div>
 
@@ -85,46 +85,48 @@
             <h2 class="flex text-base font-semibold lg:hidden">
               {{ post.title }}
             </h2>
-            <div class="text-sm">{{ post.postDesc }}</div>
-            <div class="flex flex-wrap gap-2">
-              <span
-                v-if="post.postTagList.length > 0"
-                v-for="item in post.postTagList"
-                class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-md lg:text-sm"
-                >{{ item }}</span
-              >
+            <div class="flex flex-col gap-1 xl:flex-row xl:space-x-6">
+              <BaseItem :icon="BriefcaseIcon">
+                {{
+                  post.rangeData.workMonth.all.length > 1 &&
+                  post.rangeData.workMonth.min != post.rangeData.workMonth.max
+                    ? `${post.rangeData.workMonth.min} - ${post.rangeData.workMonth.max} เดือน`
+                    : `${post.rangeData.workMonth.all[0]} เดือน`
+                }}
+              </BaseItem>
+              <BaseItem :icon="CurrencyDollarIcon">
+                {{
+                  post.rangeData.salary.all.length > 1 &&
+                  post.rangeData.salary.min != post.rangeData.salary.max
+                    ? `${post.rangeData.salary.min} - ${post.rangeData.salary.max} บาทต่อวัน`
+                    : `${post.rangeData.salary.all[0]} บาท/วัน`
+                }}
+              </BaseItem>
+              <BaseItem :icon="MapPinIcon">{{
+                `${post.address.subDistrict} ${post.address.district}, ${post.address.city} ${post.address.postalCode} `
+              }}</BaseItem>
+            </div>
+            <div class="hidden text-sm text-gray-400 sm:flex">
+              {{ cutDescription(post.postDesc, 200) }}
+            </div>
 
-              <!-- <span
+            <div
+              class="flex flex-col gap-2 sm:items-center sm:justify-between sm:flex-row"
+            >
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-if="post.postTagList.length > 0"
+                  v-for="item in post.postTagList"
+                  class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-md lg:text-sm"
+                  >{{ item }}</span
+                >
+
+                <!-- <span
                 v-else
                 v-for="item in post.openPositionList"
                 class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-md lg:text-sm"
                 >{{ item.openPositionTitle }}</span
               > -->
-            </div>
-
-            <div
-              class="flex flex-col gap-2 md:items-end xl:items-center md:justify-between md:flex-row"
-            >
-              <div class="flex flex-col gap-1 xl:flex-row xl:space-x-6">
-                <BaseItem :icon="BriefcaseIcon">
-                  {{
-                    post.rangeData.workMonth.all.length > 1 &&
-                    post.rangeData.workMonth.min != post.rangeData.workMonth.max
-                      ? `${post.rangeData.workMonth.min} - ${post.rangeData.workMonth.max} เดือน`
-                      : `${post.rangeData.workMonth.all[0]} เดือน`
-                  }}
-                </BaseItem>
-                <BaseItem :icon="CurrencyDollarIcon">
-                  {{
-                    post.rangeData.salary.all.length > 1 &&
-                    post.rangeData.salary.min != post.rangeData.salary.max
-                      ? `${post.rangeData.salary.min} - ${post.rangeData.salary.max} บาทต่อวัน`
-                      : `${post.rangeData.salary.all[0]} บาท/วัน`
-                  }}
-                </BaseItem>
-                <BaseItem :icon="MapPinIcon">{{
-                  `${post.address.subDistrict} ${post.address.district}, ${post.address.city} ${post.address.postalCode} `
-                }}</BaseItem>
               </div>
               <NuxtLink
                 :to="{
@@ -283,6 +285,14 @@ const statusClosedDate = (postCloseDate, postIdex) => {
       }
       return { text: 'ปิดรับสมัคร ' + closedDate }
     }
+  }
+}
+// --- แสดง text description ---
+function cutDescription(description, maxLength) {
+  if (description.length > maxLength) {
+    return description.substring(0, maxLength) + '...'
+  } else {
+    return description
   }
 }
 

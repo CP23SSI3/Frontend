@@ -9,7 +9,7 @@
       class="sm:col-span-4"
       label="ชื่อตำแหน่งงาน"
       id="title"
-      v-model="position.title"
+      v-model="position.openPositionTitle"
       required
     ></BaseInputField>
     <!-- <div class="sm:col-span-6">
@@ -36,7 +36,7 @@
       class="sm:col-span-6"
       label="คำอธิบาย"
       id="desc"
-      v-model="position.desc"
+      v-model="position.openPositionDesc"
       required
     ></BaseInputField>
     <BaseInputField
@@ -64,7 +64,7 @@
       :icon="UsersIcon"
       label="จำนวนที่เปิดรับ"
       id="num"
-      v-model="position.num"
+      v-model="position.openPositionNum"
       type="number"
       unit="คน"
       required

@@ -787,17 +787,7 @@ const form = ref({
   postUrl: '',
   postTagList: [] //function setPostTag()
 })
-// yup.setLocale()
 // --- check validate ---
-// yup.setLocale({
-//   string: {
-//     min: 'เกิน ${min} ตัวอักษร'
-//   },
-//   number: {
-//     typeError: 'Number only',
-//     min: 'Deve ser maior que ${min}'
-//   }
-// })
 
 const schema = yup.object({
   title: yup.string().trim().required('โปรดระบุ หัวข้อตำแหน่งงาน').max(100),

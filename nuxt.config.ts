@@ -20,6 +20,14 @@ export default defineNuxtConfig({
       KEY_API_MAP: process.env.KEY_API_GOOGLE_MAP
     }
   },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) =>
+        ['OtherComponents', 'QuillEditor', 'Dialog', 'DialogPanel'].includes(
+          tag
+        )
+    }
+  },
 
   app: {
     head: {

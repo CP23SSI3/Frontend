@@ -238,14 +238,35 @@
             <BaseLabel id="postDesc" required
               >รายละเอียดงานที่จะให้ทำ</BaseLabel
             >
+            {{ form.postDesc }}
             <div class="mt-1">
-              <textarea
+              <!-- <textarea
                 id="about"
                 name="about"
                 rows="4"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 v-model="form.postDesc"
-              />
+              /> -->
+              <div v-html="form.postDesc"></div>
+              <Field v-slot="{ field, errors }" name="postDesc">
+                <quill-editor
+                  v-bind="field"
+                  content-type="html"
+                  theme="snow"
+                  :toolbar="[
+                    { size: ['small', false, 'large', 'huge'] },
+                    'bold',
+                    'italic',
+                    'underline',
+                    'strike',
+                    { list: 'ordered' },
+                    { list: 'bullet' }
+                  ]"
+                  class="h-full"
+                  v-model:content="form.postDesc"
+                />
+                <div class="pl-2 text-xs text-red-500">{{ errors[0] }}</div>
+              </Field>
             </div>
           </div>
           <div class="col-span-full">
@@ -840,7 +861,8 @@ const schema = yup.object({
     .array()
     .of(yup.string())
     .min(1, 'Array must have at least one item'),
-  workTime: yup.array().required('โปรดเลือก เวลาทำงาน')
+  workTime: yup.array().required('โปรดเลือก เวลาทำงาน'),
+  postDesc: yup.string().required('โปรดระบุ รายละเอียดงานที่จะให้ทำ')
 })
 
 const submitForm = async () => {
@@ -898,7 +920,7 @@ const form1 = ref({
   closedDate: null, // function setClosedDate()
   coordinatorName: '[Test]คุณ HR แสนดี',
   postDesc:
-    '[Test]Internship Opportunities at [Your Company]! Are you ready to embark on a journey of learning, growth, and hands-on experience? Look no further! [Your Company] is thrilled to announce exciting internship opportunities for dynamic individuals eager to dive into [industry/field]. Join us for an immersive experience where innovation meets impact. Why Intern with Us? Real-World Projects: Work on projects that matter and make a tangible impact.',
+    '<h2><strong>หัวเรื่อง</strong></h2><ol><li>งานที่จะให้ทำสำหรับ Frontend</li><li>งานที่จะให้ทำสำหรับ Backend</li></ol>',
   postWelfare:
     '[Test]Competitive stipend/salary for the duration of the internship. Comprehensive mentorship program to guide your professional development. Networking opportunities with industry leaders.Access to [Company] resources and facilities.Inclusive and supportive work environment.',
   enrolling:
@@ -937,4 +959,3 @@ const form1 = ref({
   --ms-ring-color: rgba(56, 189, 248, 0.2);
 }
 </style>
-~/assets/yup-error.js

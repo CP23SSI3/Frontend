@@ -1,7 +1,10 @@
 <template>
-  <Form @submit="submitForm" v-slot="{ meta }" :validation-schema="schema">
+  <Form
+    @submit="submitForm"
+    v-slot="{ meta, values, errors }"
+    :validation-schema="schema"
+  >
     <BaseSectionContent class="px-5 py-4 space-y-6 md:px-10 md:py-8">
-      {{ meta }}
       <ContainerForm>
         <BaseTitleForm> ประกาศฝึกงาน </BaseTitleForm>
         <ContainerField>
@@ -42,7 +45,9 @@
                     {{ position.salary ? position.salary : 'ไม่ระบุ' }}
                   </BaseItem>
                   <BaseItem :icon="UsersIcon" class="min-w-fit">{{
-                    position.openPositionNum ? position.salary : 'ไม่ระบุ'
+                    position.openPositionNum
+                      ? position.openPositionNum
+                      : 'ไม่ระบุ'
                   }}</BaseItem>
                   <Menu as="div" class="relative inline-block -ml-2 text-left">
                     <div>
@@ -79,7 +84,7 @@
                               ]"
                               :icon="PencilIcon"
                               @click="editPosition(position, index)"
-                              >Edit</BaseItem
+                              >แก้ไข</BaseItem
                             >
                           </MenuItem>
                           <MenuItem v-slot="{ active }">
@@ -92,7 +97,7 @@
                               ]"
                               :icon="TrashIconSolid"
                               @click="deletePosition(index)"
-                              >Delete</BaseItem
+                              >ลบ</BaseItem
                             >
                           </MenuItem>
                         </div>
@@ -112,7 +117,12 @@
                   !(
                     positionEditing.openPositionTitle &&
                     positionEditing.openPositionDesc
-                  )
+                  ) ||
+                  errors.openPositionTitle ||
+                  errors.openPositionDesc ||
+                  errors.salary ||
+                  errors.workMonth ||
+                  errors.openPositionNum
                 "
               />
             </div>
@@ -136,7 +146,12 @@
               @submit="addPosition()"
               @cancel="hideAddPosition()"
               :statusButton="
-                !(position.openPositionTitle && position.openPositionDesc)
+                !(position.openPositionTitle && position.openPositionDesc) ||
+                errors.openPositionTitle ||
+                errors.openPositionDesc ||
+                errors.salary ||
+                errors.workMonth ||
+                errors.openPositionNum
               "
             />
           </div>
@@ -145,15 +160,6 @@
       <ContainerForm>
         <BaseTitleForm> ข้อมูลการฝึกงาน </BaseTitleForm>
         <ContainerField>
-          <BaseTimePicker
-            class="sm:col-span-3"
-            label="เวลาทำงาน"
-            id="time-only"
-            placeholder="Select Time"
-            v-model="workTime"
-            required
-          >
-          </BaseTimePicker>
           <div class="sm:col-span-4">
             <BaseLabel id="workDays" required>วันทำงาน</BaseLabel>
             <div
@@ -165,12 +171,13 @@
                 :key="index"
               >
                 <div class="flex items-center h-6">
-                  <input
+                  <Field
                     :id="item.value"
                     :name="item.value"
                     type="checkbox"
                     :value="item.value"
                     v-model="form.workDay"
+                    rules="required|array|min:1"
                     class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
                   />
                 </div>
@@ -179,8 +186,29 @@
                 </div>
               </div>
             </div>
+            <!-- Error Message : workDay -->
+            <div
+              class="pl-2 text-xs text-red-500"
+              v-show="form.workDay.length == 0"
+            >
+              โปรดเลือก วันทำงานอย่างน้อย 1 วัน
+            </div>
           </div>
-          <div class="sm:col-span-3">
+          <Field v-slot="{ field, errors }" name="workTime">
+            <BaseTimePicker
+              class="sm:col-span-3"
+              label="เวลาทำงาน"
+              id="time-only"
+              placeholder="Select Time"
+              v-bind="field"
+              v-model="workTime"
+              required
+            >
+              <template v-slot:error-message> {{ errors[0] }}</template>
+            </BaseTimePicker>
+          </Field>
+
+          <div class="sm:col-start-1 sm:col-span-3">
             <BaseLabel id="workType" required> รูปแบบการฝึกงาน </BaseLabel>
             <fieldset class="mt-2">
               <div
@@ -469,7 +497,7 @@
           :trailingIcon="ChevronRightIcon"
           @click="submitForm()"
           type="submit"
-          :disabled="!meta.dirty || !meta.valid"
+          :disabled="!meta.dirty || !meta.valid || form.workDay.length == 0"
           >Post</BaseButton
         >
       </div>
@@ -567,6 +595,13 @@ const position = ref({
   salary: null,
   workMonth: null
 })
+const checkNull = () => {
+  console.log('check null')
+  position.value.workMonth ? '' : (position.value.workMonth = null)
+  position.value.salary ? '' : (position.value.salary = null)
+  position.value.openPositionNum ? '' : (position.value.openPositionNum = null)
+}
+
 const resetPosition = () => {
   position.value = {
     openPositionDesc: '',
@@ -577,6 +612,7 @@ const resetPosition = () => {
   }
 }
 const addPosition = () => {
+  checkNull()
   positionList.value.push(position.value)
   hideAddPosition()
 }
@@ -693,8 +729,8 @@ const setClosedDate = () => {
 
 // --- time-picker : เวลาเริ่ม-เลิกงาน ---
 const workTime = ref([
-  { hours: 9, minutes: 0, seconds: 0 },
-  { hours: 18, minutes: 0, seconds: 0 }
+  { hours: 8, minutes: 30, seconds: 0 },
+  { hours: 17, minutes: 30, seconds: 0 }
 ])
 const setWorkTime = () => {
   if (workTime.value) {
@@ -797,9 +833,14 @@ const schema = yup.object({
     .required('โปรดระบุ ชื่อตำแหน่งงาน')
     .max(50),
   openPositionDesc: yup.string().trim().required('โปรดระบุ คำอธิบาย').max(300),
-  workMonth: yup.number().typeError('').positive().nullable(),
-  salary: yup.number().typeError('').nullable().positive(),
-  openPositionNum: yup.number().typeError('').nullable().positive().integer()
+  workMonth: yup.number().typeError().nullable().positive(),
+  salary: yup.number().typeError().nullable().positive(),
+  openPositionNum: yup.number().typeError().nullable().positive().integer(),
+  workDay: yup
+    .array()
+    .of(yup.string())
+    .min(1, 'Array must have at least one item'),
+  workTime: yup.array().required('โปรดเลือก เวลาทำงาน')
 })
 
 const submitForm = async () => {

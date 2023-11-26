@@ -43,7 +43,7 @@
       class="sm:col-span-2"
       :icon="BriefcaseIcon"
       label="ระยะเวลาการฝึกงาน"
-      id="workMounth"
+      id="workMonth"
       v-model="position.workMonth"
       type="number"
       unit="เดือน"

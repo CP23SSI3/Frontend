@@ -357,7 +357,7 @@
                     :name="item.value"
                     type="checkbox"
                     :value="item.value"
-                    v-model="form.documents"
+                    v-model="documents"
                     class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
                   />
                 </div>
@@ -540,23 +540,25 @@
             id="postUrl"
             v-model="form.postUrl"
           ></BaseInputField>
+          <div class="sm:col-span-5">
+            <BaseLabel id="postTag" :icon="TagIcon" required>Tags</BaseLabel>
+            <Field v-slot="{ field, errors }" name="postTag">
+              <Multiselect
+                v-bind="field"
+                v-model="postTag"
+                mode="tags"
+                name="postTag"
+                :close-on-select="false"
+                :searchable="true"
+                :create-option="true"
+                :options="listPositionTag"
+                class="multiselect-blue"
+              />
+              <div class="pl-2 text-xs text-red-500">{{ errors[0] }}</div>
+            </Field>
+          </div>
         </ContainerField>
       </ContainerForm>
-      <ContainerForm>
-        <BaseTitleForm>tag</BaseTitleForm>
-        <ContainerField>
-          <div class="sm:col-span-6">
-            <!-- <BaseLabel id="post-tag"> tag </BaseLabel> -->
-            <Multiselect
-              v-model="postTag"
-              mode="tags"
-              :close-on-select="false"
-              :searchable="true"
-              :create-option="true"
-              :options="listPositionTag"
-              class="multiselect-blue"
-            /></div></ContainerField
-      ></ContainerForm>
 
       <div class="flex justify-between gap-2">
         <BaseButton :leadingIcon="TrashIcon" negative @click="gotoBack()"
@@ -594,7 +596,8 @@ import {
   TrashIcon,
   BriefcaseIcon,
   CurrencyDollarIcon,
-  UsersIcon
+  UsersIcon,
+  TagIcon
 } from '@heroicons/vue/24/outline'
 import FormPosition from '@/components/form/FormPosition.vue'
 import ContainerForm from '@/components/form/ContainerForm.vue'
@@ -822,6 +825,14 @@ const setWorkTime = () => {
   }
 }
 
+// --- document ---
+const documents = ref([])
+const setDocument = () => {
+  documents.value.length == 0
+    ? (form.value.documents = null)
+    : (form.value.documents = documents.value)
+}
+
 // --- location: get latitude / longtitude ---
 const getGeoLication = async () => {
   let address = form.value.address
@@ -874,7 +885,7 @@ const form = ref({
   postDesc: '',
   postWelfare: '',
   enrolling: '',
-  documents: [],
+  documents: null, // function setDocuments()
   tel: '',
   email: '',
   address: {
@@ -967,13 +978,15 @@ const schema = yup.object({
     .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
     .max(10),
   email: yup.string().email().required('โปรดระบุ อีเมล').max(320),
-  postUrl: yup.string().url('url ไม่ถูกต้อง').nullable().max(300)
+  postUrl: yup.string().url('url ไม่ถูกต้อง').nullable().max(300),
+  postTag: yup.array().min(1, 'โปรดระบุ อย่างน้อย 1 tag')
 })
 
 const submitForm = async () => {
   setClosedDate()
   setWorkTime()
   setOpenPositionList()
+  setDocument()
   setPostTag()
   await getGeoLication()
   console.log(form.value)

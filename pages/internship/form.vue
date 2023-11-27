@@ -514,7 +514,7 @@
           <BaseInputField
             class="sm:col-span-3"
             label="ชื่อผู้ประสานงาน"
-            id="coordinationName"
+            id="coordinatorName"
             v-model="form.coordinatorName"
             required
           ></BaseInputField>
@@ -537,7 +537,7 @@
           <BaseInputField
             class="sm:col-span-4"
             label="เว็บไซต์บริษัท"
-            id="website"
+            id="postUrl"
             v-model="form.postUrl"
           ></BaseInputField>
         </ContainerField>
@@ -931,6 +931,8 @@ const checkStringEnrolling = computed(() => {
 })
 
 // --- check validate : yup ---
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 const schema = yup.object({
   title: yup.string().trim().required('โปรดระบุ หัวข้อตำแหน่งงาน').max(100),
   openPositionTitle: yup
@@ -947,11 +949,25 @@ const schema = yup.object({
   postDesc: yup.string().trim().required('โปรดระบุ รายละเอียดงานที่จะให้ทำ'),
   postWelfare: yup.string().trim().required('โปรดระบุ สวัสดิการ'),
   enrolling: yup.string().trim().required('โปรดระบุ วิธีการสมัคร'),
-  // documents : null or []
+  // documents : null
   closingDate: yup
     .date()
     .min(new Date())
-    .required('โปรลเลือก วันที่ปิดรับสมัคร')
+    .required('โปรดเลือก วันที่ปิดรับสมัคร'),
+  //location
+  coordinatorName: yup
+    .string()
+    .trim()
+    .required('โปรดระบุ ชื่อผู้ประสานงาน')
+    .max(100),
+  tel: yup
+    .string()
+    .trim()
+    .required('โปรดระบุ เบอร์โทร')
+    .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
+    .max(10),
+  email: yup.string().email().required('โปรดระบุ อีเมล').max(320),
+  postUrl: yup.string().url('url ไม่ถูกต้อง').nullable().max(300)
 })
 
 const submitForm = async () => {

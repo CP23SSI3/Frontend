@@ -107,7 +107,7 @@
               }}</BaseItem>
             </div>
             <div class="hidden text-sm text-gray-400 sm:flex">
-              {{ cutDescription(post.postDesc, 200) }}
+              {{ cutDescription(post.postDesc.replace(/<[^>]*>/g, ' '), 200) }}
             </div>
 
             <div

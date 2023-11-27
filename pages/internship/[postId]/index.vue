@@ -75,7 +75,7 @@
             </div>
 
             <BaseDescription label="รายละเอียดงาน">
-              {{ post.postDesc }}
+              <div v-html="post.postDesc"></div>
             </BaseDescription>
             <BaseDescription label="สวัสดิการอื่นๆ">
               {{ post.postWelfare }}

@@ -4,6 +4,7 @@
     v-slot="{ meta, values, errors }"
     :validation-schema="schema"
   >
+    {{ meta }}
     <BaseSectionContent class="px-5 py-4 space-y-6 md:px-10 md:py-8">
       <ContainerForm>
         <BaseTitleForm> ประกาศฝึกงาน </BaseTitleForm>
@@ -171,13 +172,12 @@
                 :key="index"
               >
                 <div class="flex items-center h-6">
-                  <Field
+                  <input
                     :id="item.value"
                     :name="item.value"
                     type="checkbox"
                     :value="item.value"
                     v-model="form.workDay"
-                    rules="required|array|min:1"
                     class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-600"
                   />
                 </div>
@@ -216,7 +216,7 @@
               >
                 <div
                   v-for="choice in workTypes"
-                  :key="choice.id"
+                  :key="choice.value"
                   class="flex items-center"
                 >
                   <input
@@ -238,7 +238,7 @@
             <BaseLabel id="postDesc" required
               >รายละเอียดงานที่จะให้ทำ</BaseLabel
             >
-            {{ form.postDesc }}
+            <!-- {{ form.postDesc }} -->
             <div class="mt-1">
               <!-- <textarea
                 id="about"
@@ -247,38 +247,60 @@
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 v-model="form.postDesc"
               /> -->
-              <div v-html="form.postDesc"></div>
               <Field v-slot="{ field, errors }" name="postDesc">
-                <quill-editor
-                  v-bind="field"
-                  content-type="html"
-                  theme="snow"
-                  :toolbar="[
-                    { size: ['small', false, 'large', 'huge'] },
-                    'bold',
-                    'italic',
-                    'underline',
-                    'strike',
-                    { list: 'ordered' },
-                    { list: 'bullet' }
-                  ]"
-                  class="h-full"
-                  v-model:content="form.postDesc"
-                />
-                <div class="pl-2 text-xs text-red-500">{{ errors[0] }}</div>
+                <ClientOnly>
+                  <quill-editor
+                    v-bind="field"
+                    content-type="html"
+                    theme="snow"
+                    :toolbar="quillToolbar"
+                    class="h-full"
+                    v-model:content="form.postDesc"
+                  />
+                </ClientOnly>
+                <div class="pl-2 text-xs text-red-500">
+                  {{
+                    !checkStringPostDesc
+                      ? errors[0]
+                      : checkStringPostDesc?.length <= 750
+                      ? ''
+                      : 'ไม่เกิน 750 ตัวอักษร'
+                  }}
+                </div>
               </Field>
             </div>
           </div>
           <div class="col-span-full">
             <BaseLabel id="postWelfare" required>สวัสดิการอื่นๆ</BaseLabel>
             <div class="mt-1">
-              <textarea
+              <!-- <textarea
                 id="about"
                 name="about"
                 rows="3"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 v-model="form.postWelfare"
-              />
+              /> -->
+              <Field v-slot="{ field, errors }" name="postWelfare">
+                <ClientOnly>
+                  <quill-editor
+                    v-bind="field"
+                    content-type="html"
+                    theme="snow"
+                    :toolbar="quillToolbar"
+                    class="h-full"
+                    v-model:content="form.postWelfare"
+                  />
+                </ClientOnly>
+                <div class="pl-2 text-xs text-red-500">
+                  {{
+                    !checkStringPostWelfare
+                      ? errors[0]
+                      : checkStringPostWelfare?.length <= 750
+                      ? ''
+                      : 'ไม่เกิน 750 ตัวอักษร'
+                  }}
+                </div>
+              </Field>
             </div>
           </div>
         </ContainerField>
@@ -289,17 +311,38 @@
           <div class="col-span-full">
             <BaseLabel id="enrolling" required>วิธีการสมัคร</BaseLabel>
             <div class="mt-1">
-              <textarea
+              <!-- <textarea
                 id="about"
                 name="about"
                 rows="3"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 v-model="form.enrolling"
-              />
+              /> -->
+              <Field v-slot="{ field, errors }" name="enrolling">
+                <ClientOnly>
+                  <quill-editor
+                    v-bind="field"
+                    content-type="html"
+                    theme="snow"
+                    :toolbar="quillToolbar"
+                    class="h-full"
+                    v-model:content="form.enrolling"
+                  />
+                </ClientOnly>
+                <div class="pl-2 text-xs text-red-500">
+                  {{
+                    !checkStringEnrolling
+                      ? errors[0]
+                      : checkStringEnrolling?.length <= 750
+                      ? ''
+                      : 'ไม่เกิน 750 ตัวอักษร'
+                  }}
+                </div>
+              </Field>
             </div>
           </div>
           <div class="sm:col-span-full">
-            <BaseLabel id="docuemnts" required>เอกสารประกอบการสมัคร</BaseLabel>
+            <BaseLabel id="docuemnts">เอกสารประกอบการสมัคร</BaseLabel>
             <div
               class="mt-1 space-y-2 sm:flex sm:items-center sm:space-x-5 sm:space-y-0"
             >
@@ -352,19 +395,24 @@
               </div>
             </fieldset>
           </div>
-
-          <BaseDatePicker
-            v-if="statusClosingDate"
-            class="sm:col-span-3"
-            label="วันที่ปิดรับสมัคร"
-            id="date-only"
-            placeholder="Select Closing Date"
-            :enable-time-picker="false"
-            v-model="closingDate"
-            :format="(date) => moment(date).format('DD/MM/YYYY')"
-            required
-          >
-          </BaseDatePicker>
+          <Field v-slot="{ field, errors }" name="closingDate">
+            <BaseDatePicker
+              v-if="statusClosingDate"
+              class="sm:col-span-3"
+              label="วันที่ปิดรับสมัคร"
+              id="closingDate"
+              placeholder="Select Closing Date"
+              :enable-time-picker="false"
+              v-bind="field"
+              v-model="closingDate"
+              :format="(date) => moment(date).format('DD/MM/YYYY')"
+              :min-date="new Date()"
+              fixed-start
+              required
+            >
+              <template v-slot:error-message> {{ errors[0] }}</template>
+            </BaseDatePicker>
+          </Field>
         </ContainerField>
       </ContainerForm>
       <ContainerForm>
@@ -466,7 +514,7 @@
           <BaseInputField
             class="sm:col-span-3"
             label="ชื่อผู้ประสานงาน"
-            id="area"
+            id="coordinationName"
             v-model="form.coordinatorName"
             required
           ></BaseInputField>
@@ -518,9 +566,16 @@
           :trailingIcon="ChevronRightIcon"
           @click="submitForm()"
           type="submit"
-          :disabled="!meta.dirty || !meta.valid || form.workDay.length == 0"
+          :disabled="
+            form.workDay.length == 0 ||
+            checkStringPostDesc ||
+            checkStringPostDesc?.length > 750 ||
+            checkStringPostWelfare?.length > 750 ||
+            checkStringEnrolling?.length > 750
+          "
           >Post</BaseButton
         >
+        <!-- !meta.dirty || !meta.valid  -->
       </div>
     </BaseSectionContent>
   </Form>
@@ -844,8 +899,38 @@ const form = ref({
   postUrl: '',
   postTagList: [] //function setPostTag()
 })
-// --- check validate ---
+// -- quill editor ---
+const quillToolbar = [
+  { size: ['small', false, 'large'] },
+  'bold',
+  'italic',
+  'underline',
+  'strike',
+  { list: 'ordered' },
+  { list: 'bullet' }
+]
 
+// --- check validate : length quill-editor ---
+const checkStringPostDesc = computed(() => {
+  if (form.value.postDesc != '') {
+    let str = form.value.postDesc.replace(/<[^>]*>/g, '')
+    return str
+  }
+})
+const checkStringPostWelfare = computed(() => {
+  if (form.value.postWelfare != '') {
+    let str = form.value.postWelfare.replace(/<[^>]*>/g, '')
+    return str
+  }
+})
+const checkStringEnrolling = computed(() => {
+  if (form.value.enrolling != '') {
+    let str = form.value.enrolling.replace(/<[^>]*>/g, '')
+    return str
+  }
+})
+
+// --- check validate : yup ---
 const schema = yup.object({
   title: yup.string().trim().required('โปรดระบุ หัวข้อตำแหน่งงาน').max(100),
   openPositionTitle: yup
@@ -857,12 +942,16 @@ const schema = yup.object({
   workMonth: yup.number().typeError().nullable().positive(),
   salary: yup.number().typeError().nullable().positive(),
   openPositionNum: yup.number().typeError().nullable().positive().integer(),
-  workDay: yup
-    .array()
-    .of(yup.string())
-    .min(1, 'Array must have at least one item'),
+  // workDay: form.workDay.length != 0
   workTime: yup.array().required('โปรดเลือก เวลาทำงาน'),
-  postDesc: yup.string().required('โปรดระบุ รายละเอียดงานที่จะให้ทำ')
+  postDesc: yup.string().trim().required('โปรดระบุ รายละเอียดงานที่จะให้ทำ'),
+  postWelfare: yup.string().trim().required('โปรดระบุ สวัสดิการ'),
+  enrolling: yup.string().trim().required('โปรดระบุ วิธีการสมัคร'),
+  // documents : null or []
+  closingDate: yup
+    .date()
+    .min(new Date())
+    .required('โปรลเลือก วันที่ปิดรับสมัคร')
 })
 
 const submitForm = async () => {

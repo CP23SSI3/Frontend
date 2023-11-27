@@ -30,6 +30,7 @@
     <NuxtLink href="/test/addressDropdown"
       >Address Dropdown จังหวัด/เขต/แขวงประเทศไทย
     </NuxtLink>
+    <NuxtLink href="/test/mention">Mention </NuxtLink>
 
     <input type="search" v-model="searchValue" />
     {{ searchValue }}

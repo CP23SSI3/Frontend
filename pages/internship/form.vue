@@ -156,6 +156,23 @@
               "
             />
           </div>
+          <div class="sm:col-span-5">
+            <BaseLabel id="postTag" :icon="TagIcon" required>Tags</BaseLabel>
+            <Field v-slot="{ field, errors }" name="postTag">
+              <Multiselect
+                v-bind="field"
+                v-model="postTag"
+                mode="tags"
+                name="postTag"
+                :close-on-select="false"
+                :searchable="true"
+                :create-option="true"
+                :options="listPositionTag"
+                class="multiselect-blue"
+              />
+              <div class="pl-2 text-xs text-red-500">{{ errors[0] }}</div>
+            </Field>
+          </div>
         </ContainerField>
       </ContainerForm>
       <ContainerForm>
@@ -238,7 +255,7 @@
             <BaseLabel id="postDesc" required
               >รายละเอียดงานที่จะให้ทำ</BaseLabel
             >
-            <!-- {{ form.postDesc }} -->
+            {{ form.postDesc }}
             <div class="mt-1">
               <!-- <textarea
                 id="about"
@@ -251,6 +268,11 @@
                 <ClientOnly>
                   <quill-editor
                     v-bind="field"
+                    style="
+                      height: 150px;
+                      border-bottom-right-radius: 0.375rem;
+                      border-bottom-left-radius: 0.375rem;
+                    "
                     content-type="html"
                     theme="snow"
                     :toolbar="quillToolbar"
@@ -289,6 +311,11 @@
                     :toolbar="quillToolbar"
                     class="h-full"
                     v-model:content="form.postWelfare"
+                    style="
+                      height: 100px;
+                      border-bottom-right-radius: 0.375rem;
+                      border-bottom-left-radius: 0.375rem;
+                    "
                   />
                 </ClientOnly>
                 <div class="pl-2 text-xs text-red-500">
@@ -327,6 +354,11 @@
                     :toolbar="quillToolbar"
                     class="h-full"
                     v-model:content="form.enrolling"
+                    style="
+                      height: 100px;
+                      border-bottom-right-radius: 0.375rem;
+                      border-bottom-left-radius: 0.375rem;
+                    "
                   />
                 </ClientOnly>
                 <div class="pl-2 text-xs text-red-500">
@@ -540,23 +572,6 @@
             id="postUrl"
             v-model="form.postUrl"
           ></BaseInputField>
-          <div class="sm:col-span-5">
-            <BaseLabel id="postTag" :icon="TagIcon" required>Tags</BaseLabel>
-            <Field v-slot="{ field, errors }" name="postTag">
-              <Multiselect
-                v-bind="field"
-                v-model="postTag"
-                mode="tags"
-                name="postTag"
-                :close-on-select="false"
-                :searchable="true"
-                :create-option="true"
-                :options="listPositionTag"
-                class="multiselect-blue"
-              />
-              <div class="pl-2 text-xs text-red-500">{{ errors[0] }}</div>
-            </Field>
-          </div>
         </ContainerField>
       </ContainerForm>
 
@@ -966,6 +981,7 @@ const schema = yup.object({
     .min(new Date())
     .required('โปรดเลือก วันที่ปิดรับสมัคร'),
   //location
+
   coordinatorName: yup
     .string()
     .trim()

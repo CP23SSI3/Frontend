@@ -482,7 +482,7 @@
             v-model="form.address.country"
             required
           ></BaseInputField> -->
-          <div class="sm:col-span-4">
+          <!-- <div class="sm:col-span-4">
             <BaseLabel id="country" required>ประเทศ</BaseLabel>
             <div class="mt-1">
               <select
@@ -496,23 +496,16 @@
                 <option value="ประเทศไทย">Thailand</option>
               </select>
             </div>
-          </div>
-          <BaseInputField
-            class="sm:col-span-2"
-            label="รหัสไปรณีย์"
-            id="postalCode"
-            v-model="form.address.postalCode"
-            required
-            :disabled="selectedLocation == 'default'"
-          ></BaseInputField>
-          <BaseInputField
+          </div> -->
+
+          <!-- <BaseInputField
             class="sm:col-span-2"
             label="จังหวัด"
             id="city"
             v-model="form.address.city"
             required
             :disabled="selectedLocation == 'default'"
-          ></BaseInputField>
+          ></BaseInputField> 
           <BaseInputField
             class="sm:col-span-2"
             label="เขต"
@@ -528,7 +521,46 @@
             v-model="form.address.subDistrict"
             required
             :disabled="selectedLocation == 'default'"
-          ></BaseInputField>
+          ></BaseInputField>-->
+          <div class="sm:col-span-full">{{ myAddress }}</div>
+
+          <BaseDropdown
+            class="z-40 sm:col-span-2"
+            :option-lists="provinceList"
+            label="จังหวัด"
+            v-model="myAddress.province"
+            required
+            @click="getAmphure(myAddress.province.id)"
+          >
+          </BaseDropdown>
+          <BaseDropdown
+            class="z-30 sm:col-span-2"
+            :option-lists="amphureList"
+            label="เขต"
+            v-model="myAddress.amphure"
+            :disabled="!(amphureList.length > 0)"
+            required
+            @click="getTambon(myAddress.province.id, myAddress.amphure.id)"
+          >
+          </BaseDropdown>
+          <BaseDropdown
+            class="z-20 sm:col-span-2"
+            :option-lists="tambonList"
+            label="แขวง"
+            v-model="myAddress.tambon"
+            :disabled="!(tambonList.length > 0)"
+            required
+            @click="() => (myAddress.zip_code = myAddress.tambon.zip_code)"
+          >
+          </BaseDropdown>
+          <!-- <BaseInputField
+            class="sm:col-span-2"
+            label="รหัสไปรณีย์"
+            id="postalCode"
+            type="number"
+            v-model="myAddress.zip_code"
+            required
+          ></BaseInputField> -->
           <BaseInputField
             class="col-span-full"
             label="ที่อยู่"
@@ -847,6 +879,79 @@ const setDocument = () => {
     ? (form.value.documents = null)
     : (form.value.documents = documents.value)
 }
+
+// --- location: province > amphure > tambon ---
+const sortingThai = (a, b) => {
+  return a.text.localeCompare(b.text, 'th')
+}
+const myAddress = ref({
+  province: { id: 0, text: 'เลือก จังหวัด' },
+  amphure: { id: 0, text: 'เลือก เขต' },
+  tambon: { id: 0, text: 'เลือก แขวง' }
+})
+const { data } = await useFetch('/api/locations-thai')
+// const dataThai = ref()
+console.log(data.value)
+const provinceList = ref([])
+const getProvince = () => {
+  let list = []
+  let province
+  data.value.forEach((city) => {
+    province = {
+      id: city.id,
+      text: city.name_th
+    }
+    list.push(province)
+  })
+  list.sort(sortingThai)
+  provinceList.value = list
+}
+getProvince()
+
+const amphureList = ref([])
+const getAmphure = (provinceId) => {
+  amphureList.value = []
+  myAddress.value.amphure = { id: 0, text: 'เลือก เขต' }
+  tambonList.value = []
+  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง' }
+  let list = []
+  let result = data.value.find((city) => city.id === provinceId)
+  let amphure
+  result.amphure.forEach((district) => {
+    amphure = {
+      id: district.id,
+      text: district.name_th
+    }
+    list.push(amphure)
+  })
+  list.sort(sortingThai)
+  amphureList.value = list
+}
+
+const tambonList = ref([])
+const getTambon = (provinceId, amphureId) => {
+  tambonList.value = []
+  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง' }
+  let province = data.value.find((city) => city.id === provinceId)
+  let amphure = province.amphure.find((district) => district.id === amphureId)
+  let list = []
+  let tambon
+  amphure.tambon.forEach((subDistrict) => {
+    tambon = {
+      id: subDistrict.id,
+      text: subDistrict.name_th,
+      zip_code: subDistrict.zip_code
+    }
+    list.push(tambon)
+  })
+  list.sort(sortingThai)
+  tambonList.value = list
+}
+
+// onMounted(async () => {
+//   const { data } = await useFetch('/api/locations-thai')
+//   dataThai.value = data.value
+// })
 
 // --- location: get latitude / longtitude ---
 const getGeoLication = async () => {

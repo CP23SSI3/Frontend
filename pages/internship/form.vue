@@ -4,7 +4,6 @@
     v-slot="{ meta, values, errors }"
     :validation-schema="schema"
   >
-    {{ meta }}
     <BaseSectionContent class="px-5 py-4 space-y-6 md:px-10 md:py-8">
       <ContainerForm>
         <BaseTitleForm> ประกาศฝึกงาน </BaseTitleForm>
@@ -256,13 +255,6 @@
               >รายละเอียดงานที่จะให้ทำ</BaseLabel
             >
             <div class="mt-1">
-              <!-- <textarea
-                id="about"
-                name="about"
-                rows="4"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                v-model="form.postDesc"
-              /> -->
               <ClientOnly>
                 <quill-editor
                   content-type="html"
@@ -433,28 +425,6 @@
               </div>
             </fieldset>
           </div>
-          <!-- <BaseInputField
-            class="sm:col-span-4"
-            label="ประเทศ"
-            id="country"
-            v-model="form.address.country"
-            required
-          ></BaseInputField> -->
-          <!-- <div class="sm:col-span-4">
-            <BaseLabel id="country" required>ประเทศ</BaseLabel>
-            <div class="mt-1">
-              <select
-                id="country"
-                name="country"
-                autocomplete="country-name"
-                :disabled="selectedLocation == 'default'"
-                v-model="form.address.country"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 disabled:bg-gray-100 disabled:border-gray-200 disabled:textgray-400"
-              >
-                <option value="ประเทศไทย">Thailand</option>
-              </select>
-            </div>
-          </div> -->
           <BaseDropdown
             class="z-40 sm:col-span-2"
             :option-lists="provinceList"
@@ -549,7 +519,8 @@
             !(form.workDay.length > 0) ||
             checkTextOnly(form.postDesc, 'รายละเอียดงานที่จะให้ทำ') != '' ||
             checkTextOnly(form.postWelfare, 'สวัสดิการ') != '' ||
-            checkTextOnly(form.enrolling, 'วิธีการสมัคร') != ''
+            checkTextOnly(form.enrolling, 'วิธีการสมัคร') != '' ||
+            !meta.valid
           "
           >Post</BaseButton
         >
@@ -615,10 +586,8 @@ const getListPositionTag = async () => {
       res.value.data.forEach((item) => {
         listPositionTag.value.push(item.positionTagName)
       })
-      // console.log(listPositionTag.value)
     }
   } catch (error) {
-    // console.log(error)
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,
@@ -708,15 +677,7 @@ const deletePosition = (index) => {
   hideEditPosition()
 }
 
-const positionList = ref([
-  // {
-  //   openPositionTitle: '[Test] Frontend Developer',
-  //   openPositionDesc: 'ทำงานเกี่ยวกับการพัฒนาระบบหน้าบ้าน ออกแบบหน้าเว็บ',
-  //   openPositionNum: 2,
-  //   workMonth: 6,
-  //   salary: 300
-  // }
-])
+const positionList = ref([])
 
 const setOpenPositionList = () => {
   form.value.openPositionList = []
@@ -930,18 +891,18 @@ const getGeoLication = async () => {
   }
 }
 
-const form1 = ref({
+const form = ref({
   title: '',
-  closedDate: null, // function setClosedDate()
+  closedDate: null, // closingDate --> function setClosedDate()
   coordinatorName: '',
   postDesc: '',
   postWelfare: '',
   enrolling: '',
-  documents: null, // function setDocuments()
+  documents: null, // documents --> function setDocuments()
   tel: '',
   email: '',
   address: {
-    // function setAddress() inner getGeoLication()
+    // myAddress --> function setAddress() inner getGeoLication()
     country: 'Thailand',
     postalCode: '',
     city: '',
@@ -951,7 +912,7 @@ const form1 = ref({
     latitude: null, // function getGeoLication()
     longitude: null
   },
-  //function setWorkTime()
+  // workTime --> function setWorkTime()
   workStartTime: '',
   workEndTime: '',
   workDay: ['mon', 'tue', 'wed', 'thu', 'fri'], //ส่ง array หรือ string ? *check value choices
@@ -959,9 +920,9 @@ const form1 = ref({
   comp: {
     compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
   },
-  openPositionList: [], //function setOpenPositionList()
+  openPositionList: [], //positionList --> function setOpenPositionList()
   postUrl: '',
-  postTagList: [] //function setPostTag()
+  postTagList: [] //postTag --> function setPostTag()
 })
 // -- quill editor ---
 const quillToolbar = [
@@ -1012,13 +973,10 @@ const schema = yup.object({
     .min(1, 'โปรดระบุ อย่างน้อย 1 tag')
     .max(10, 'ไม่เกิน 10 tag'),
   // workDay: form.workDay.length != 0
-
   workTime: yup.array().nonNullable('โปรดเลือก เวลาทำงาน'),
-
   // postDesc: checkTextOnly()
   // postWelfare: checkTextOnly()
   // enrolling: checkTextOnly()
-
   // documents : null
   closingDate: yup
     .date()
@@ -1027,9 +985,8 @@ const schema = yup.object({
       is: true,
       then: yup.date().min(new Date()).required('โปรดเลือก วันที่ปิดรับสมัคร')
     }),
-  //location
+  //address : myAddress.value.tambon.zip_code != null
   area: yup.string().required('โปรดระบุ ที่อยู่').max(100),
-
   coordinatorName: yup
     .string()
     .trim()
@@ -1116,9 +1073,9 @@ const createPost = async () => {
 
 const back = () => router.push({ path: '/internship' })
 
-const form = ref({
+const form1 = ref({
   title: '[Test]:ประกาศฝึกงาน',
-  closedDate: null, // function setClosedDate()
+  closedDate: null,
   coordinatorName: '[Test]คุณ HR แสนดี',
   postDesc:
     '<h2><strong>หัวเรื่อง</strong></h2><ol><li>งานที่จะให้ทำสำหรับ Frontend</li><li>งานที่จะให้ทำสำหรับ Backend</li></ol>',
@@ -1126,7 +1083,7 @@ const form = ref({
     '[Test]Competitive stipend/salary for the duration of the internship. Comprehensive mentorship program to guide your professional development. Networking opportunities with industry leaders.Access to [Company] resources and facilities.Inclusive and supportive work environment.',
   enrolling:
     '[Test]How to Apply:Send your resume and a brief cover letter highlighting your motivation and relevant skills to [email@example.com] by [Application Deadline]. Join us on this exciting journey of discovery and development. Your future career starts here!',
-  documents: ['portfolio', 'resume'],
+  documents: null,
   tel: '0983651319',
   email: 'email@example.com',
   address: {
@@ -1136,20 +1093,20 @@ const form = ref({
     district: 'บางขุนเทียน',
     subDistrict: 'แสมดำ',
     area: '160 ถนนพระราม 2',
-    latitude: null, // function getGeoLication()
+    latitude: null,
     longitude: null
   },
-  //function setWorkTime()
+
   workStartTime: '',
   workEndTime: '',
-  workDay: ['mon', 'tue', 'wed', 'thu', 'fri'], //ส่ง array หรือ string ? *check value choices
+  workDay: ['mon', 'tue', 'wed', 'thu', 'fri'],
   workType: 'HYBRID',
   comp: {
     compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
   },
-  openPositionList: [], //function setOpenPositionList()
+  openPositionList: [],
   postUrl: '',
-  postTagList: [] //function setPostTag()
+  postTagList: []
 })
 </script>
 

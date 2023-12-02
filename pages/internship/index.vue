@@ -103,7 +103,7 @@
                 }}
               </BaseItem>
               <BaseItem :icon="MapPinIcon">{{
-                `${post.address.subDistrict} ${post.address.district}, ${post.address.city} ${post.address.postalCode} `
+                `${post.address.subDistrict} - ${post.address.district}, ${post.address.city} ${post.address.postalCode} `
               }}</BaseItem>
             </div>
             <div class="hidden text-sm text-gray-400 sm:flex">

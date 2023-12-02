@@ -255,7 +255,6 @@
             <BaseLabel id="postDesc" required
               >รายละเอียดงานที่จะให้ทำ</BaseLabel
             >
-            {{ form.postDesc }}
             <div class="mt-1">
               <!-- <textarea
                 id="about"
@@ -264,70 +263,45 @@
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 v-model="form.postDesc"
               /> -->
-              <Field v-slot="{ field, errors }" name="postDesc">
-                <ClientOnly>
-                  <quill-editor
-                    v-bind="field"
-                    style="
-                      height: 150px;
-                      border-bottom-right-radius: 0.375rem;
-                      border-bottom-left-radius: 0.375rem;
-                    "
-                    content-type="html"
-                    theme="snow"
-                    :toolbar="quillToolbar"
-                    class="h-full"
-                    v-model:content="form.postDesc"
-                  />
-                </ClientOnly>
-                <div class="pl-2 text-xs text-red-500">
-                  {{
-                    !checkStringPostDesc
-                      ? errors[0]
-                      : checkStringPostDesc?.length <= 750
-                      ? ''
-                      : 'ไม่เกิน 750 ตัวอักษร'
-                  }}
-                </div>
-              </Field>
+              <ClientOnly>
+                <quill-editor
+                  content-type="html"
+                  theme="snow"
+                  :toolbar="quillToolbar"
+                  class="h-full"
+                  v-model:content="form.postDesc"
+                  style="
+                    height: 150px;
+                    border-bottom-right-radius: 0.375rem;
+                    border-bottom-left-radius: 0.375rem;
+                  "
+                />
+              </ClientOnly>
+              <div class="pl-2 text-xs text-red-500">
+                {{ checkTextOnly(form.postDesc, 'รายละเอียดงานที่จะให้ทำ') }}
+              </div>
             </div>
           </div>
           <div class="col-span-full">
             <BaseLabel id="postWelfare" required>สวัสดิการอื่นๆ</BaseLabel>
             <div class="mt-1">
-              <!-- <textarea
-                id="about"
-                name="about"
-                rows="3"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                v-model="form.postWelfare"
-              /> -->
-              <Field v-slot="{ field, errors }" name="postWelfare">
-                <ClientOnly>
-                  <quill-editor
-                    v-bind="field"
-                    content-type="html"
-                    theme="snow"
-                    :toolbar="quillToolbar"
-                    class="h-full"
-                    v-model:content="form.postWelfare"
-                    style="
-                      height: 100px;
-                      border-bottom-right-radius: 0.375rem;
-                      border-bottom-left-radius: 0.375rem;
-                    "
-                  />
-                </ClientOnly>
-                <div class="pl-2 text-xs text-red-500">
-                  {{
-                    !checkStringPostWelfare
-                      ? errors[0]
-                      : checkStringPostWelfare?.length <= 750
-                      ? ''
-                      : 'ไม่เกิน 750 ตัวอักษร'
-                  }}
-                </div>
-              </Field>
+              <ClientOnly>
+                <quill-editor
+                  content-type="html"
+                  theme="snow"
+                  :toolbar="quillToolbar"
+                  class="h-full"
+                  v-model:content="form.postWelfare"
+                  style="
+                    height: 100px;
+                    border-bottom-right-radius: 0.375rem;
+                    border-bottom-left-radius: 0.375rem;
+                  "
+                />
+              </ClientOnly>
+              <div class="pl-2 text-xs text-red-500">
+                {{ checkTextOnly(form.postWelfare, 'สวัสดิการ') }}
+              </div>
             </div>
           </div>
         </ContainerField>
@@ -338,39 +312,23 @@
           <div class="col-span-full">
             <BaseLabel id="enrolling" required>วิธีการสมัคร</BaseLabel>
             <div class="mt-1">
-              <!-- <textarea
-                id="about"
-                name="about"
-                rows="3"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                v-model="form.enrolling"
-              /> -->
-              <Field v-slot="{ field, errors }" name="enrolling">
-                <ClientOnly>
-                  <quill-editor
-                    v-bind="field"
-                    content-type="html"
-                    theme="snow"
-                    :toolbar="quillToolbar"
-                    class="h-full"
-                    v-model:content="form.enrolling"
-                    style="
-                      height: 100px;
-                      border-bottom-right-radius: 0.375rem;
-                      border-bottom-left-radius: 0.375rem;
-                    "
-                  />
-                </ClientOnly>
-                <div class="pl-2 text-xs text-red-500">
-                  {{
-                    !checkStringEnrolling
-                      ? errors[0]
-                      : checkStringEnrolling?.length <= 750
-                      ? ''
-                      : 'ไม่เกิน 750 ตัวอักษร'
-                  }}
-                </div>
-              </Field>
+              <ClientOnly>
+                <quill-editor
+                  content-type="html"
+                  theme="snow"
+                  :toolbar="quillToolbar"
+                  class="h-full"
+                  v-model:content="form.enrolling"
+                  style="
+                    height: 100px;
+                    border-bottom-right-radius: 0.375rem;
+                    border-bottom-left-radius: 0.375rem;
+                  "
+                />
+              </ClientOnly>
+              <div class="pl-2 text-xs text-red-500">
+                {{ checkTextOnly(form.enrolling, 'วิธีการสมัคร') }}
+              </div>
             </div>
           </div>
           <div class="sm:col-span-full">
@@ -497,33 +455,6 @@
               </select>
             </div>
           </div> -->
-
-          <!-- <BaseInputField
-            class="sm:col-span-2"
-            label="จังหวัด"
-            id="city"
-            v-model="form.address.city"
-            required
-            :disabled="selectedLocation == 'default'"
-          ></BaseInputField> 
-          <BaseInputField
-            class="sm:col-span-2"
-            label="เขต"
-            id="district"
-            v-model="form.address.district"
-            required
-            :disabled="selectedLocation == 'default'"
-          ></BaseInputField>
-          <BaseInputField
-            class="sm:col-span-2"
-            label="แขวง"
-            id="subDistrict"
-            v-model="form.address.subDistrict"
-            required
-            :disabled="selectedLocation == 'default'"
-          ></BaseInputField>-->
-          <div class="sm:col-span-full">{{ myAddress }}</div>
-
           <BaseDropdown
             class="z-40 sm:col-span-2"
             :option-lists="provinceList"
@@ -533,6 +464,7 @@
             @click="getAmphure(myAddress.province.id)"
           >
           </BaseDropdown>
+
           <BaseDropdown
             class="z-30 sm:col-span-2"
             :option-lists="amphureList"
@@ -550,25 +482,22 @@
             v-model="myAddress.tambon"
             :disabled="!(tambonList.length > 0)"
             required
-            @click="() => (myAddress.zip_code = myAddress.tambon.zip_code)"
           >
           </BaseDropdown>
-          <!-- <BaseInputField
-            class="sm:col-span-2"
-            label="รหัสไปรณีย์"
-            id="postalCode"
-            type="number"
-            v-model="myAddress.zip_code"
-            required
-          ></BaseInputField> -->
           <BaseInputField
-            class="col-span-full"
+            class="sm:col-span-4"
             label="ที่อยู่"
             id="area"
             v-model="form.address.area"
             required
-            :disabled="selectedLocation == 'default'"
           ></BaseInputField>
+          <BaseInput
+            class="sm:col-span-2"
+            label="รหัสไปรณีย์"
+            id="postalCode"
+            v-model="myAddress.tambon.zip_code"
+            disabled
+          ></BaseInput>
         </ContainerField>
       </ContainerForm>
 
@@ -613,18 +542,17 @@
         >
         <BaseButton
           :trailingIcon="ChevronRightIcon"
-          @click="submitForm()"
           type="submit"
           :disabled="
-            form.workDay.length == 0 ||
-            checkStringPostDesc ||
-            checkStringPostDesc?.length > 750 ||
-            checkStringPostWelfare?.length > 750 ||
-            checkStringEnrolling?.length > 750
+            statusAddPosition ||
+            statusEditPosition ||
+            !(form.workDay.length > 0) ||
+            checkTextOnly(form.postDesc, 'รายละเอียดงานที่จะให้ทำ') != '' ||
+            checkTextOnly(form.postWelfare, 'สวัสดิการ') != '' ||
+            checkTextOnly(form.enrolling, 'วิธีการสมัคร') != ''
           "
           >Post</BaseButton
         >
-        <!-- !meta.dirty || !meta.valid  -->
       </div>
     </BaseSectionContent>
   </Form>
@@ -887,11 +815,10 @@ const sortingThai = (a, b) => {
 const myAddress = ref({
   province: { id: 0, text: 'เลือก จังหวัด' },
   amphure: { id: 0, text: 'เลือก เขต' },
-  tambon: { id: 0, text: 'เลือก แขวง' }
+  tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
 })
 const { data } = await useFetch('/api/locations-thai')
-// const dataThai = ref()
-console.log(data.value)
+// console.log(data.value)
 const provinceList = ref([])
 const getProvince = () => {
   let list = []
@@ -913,7 +840,7 @@ const getAmphure = (provinceId) => {
   amphureList.value = []
   myAddress.value.amphure = { id: 0, text: 'เลือก เขต' }
   tambonList.value = []
-  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง' }
+  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง', zip_code: null }
   let list = []
   let result = data.value.find((city) => city.id === provinceId)
   let amphure
@@ -931,7 +858,7 @@ const getAmphure = (provinceId) => {
 const tambonList = ref([])
 const getTambon = (provinceId, amphureId) => {
   tambonList.value = []
-  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง' }
+  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง', zip_code: null }
   let province = data.value.find((city) => city.id === provinceId)
   let amphure = province.amphure.find((district) => district.id === amphureId)
   let list = []
@@ -948,13 +875,17 @@ const getTambon = (provinceId, amphureId) => {
   tambonList.value = list
 }
 
-// onMounted(async () => {
-//   const { data } = await useFetch('/api/locations-thai')
-//   dataThai.value = data.value
-// })
+const setAddress = () => {
+  let address = form.value.address
+  ;(address.city = myAddress.value.province.text),
+    (address.district = myAddress.value.amphure.text),
+    (address.subDistrict = myAddress.value.tambon.text),
+    (address.postalCode = myAddress.value.tambon.zip_code)
+}
 
 // --- location: get latitude / longtitude ---
 const getGeoLication = async () => {
+  setAddress()
   let address = form.value.address
   let location = address.area.concat(
     ' ',
@@ -974,6 +905,7 @@ const getGeoLication = async () => {
     if (response.status == 'OK') {
       address.latitude = response.results[0].geometry.location.lat
       address.longitude = response.results[0].geometry.location.lng
+      console.log(address.latitude + ',' + address.longitude)
     } else {
       // console.log('Unable to locate this location.')
       Swal.fire({
@@ -998,7 +930,7 @@ const getGeoLication = async () => {
   }
 }
 
-const form = ref({
+const form1 = ref({
   title: '',
   closedDate: null, // function setClosedDate()
   coordinatorName: '',
@@ -1009,7 +941,8 @@ const form = ref({
   tel: '',
   email: '',
   address: {
-    country: '',
+    // function setAddress() inner getGeoLication()
+    country: 'Thailand',
     postalCode: '',
     city: '',
     district: '',
@@ -1042,50 +975,60 @@ const quillToolbar = [
 ]
 
 // --- check validate : length quill-editor ---
-const checkStringPostDesc = computed(() => {
-  if (form.value.postDesc != '') {
-    let str = form.value.postDesc.replace(/<[^>]*>/g, '')
-    return str
+function checkTextOnly(value, error_message) {
+  if (value.length == 0) {
+    return ''
+  } else if (!value.replace(/<[^>]*>/g, '').trim()) {
+    return 'โปรดระบุ ' + error_message
+  } else if (value.replace(/<[^>]*>/g, '').length > 750) {
+    return 'ไม่เกิน 750 ตัวอักษร'
+  } else {
+    return ''
   }
-})
-const checkStringPostWelfare = computed(() => {
-  if (form.value.postWelfare != '') {
-    let str = form.value.postWelfare.replace(/<[^>]*>/g, '')
-    return str
-  }
-})
-const checkStringEnrolling = computed(() => {
-  if (form.value.enrolling != '') {
-    let str = form.value.enrolling.replace(/<[^>]*>/g, '')
-    return str
-  }
-})
+}
 
 // --- check validate : yup ---
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+
 const schema = yup.object({
   title: yup.string().trim().required('โปรดระบุ หัวข้อตำแหน่งงาน').max(100),
-  openPositionTitle: yup
-    .string()
-    .trim()
-    .required('โปรดระบุ ชื่อตำแหน่งงาน')
-    .max(50),
-  openPositionDesc: yup.string().trim().required('โปรดระบุ คำอธิบาย').max(300),
+
+  //positionList: positionList.legnth > 0
+  openPositionTitle: yup.string().when('isVisible', {
+    is: true,
+    then: yup.string().trim().required('โปรดระบุ ชื่อตำแหน่งงาน').max(50)
+  }),
+  openPositionDesc: yup.string().when('isVisible', {
+    is: true,
+    then: yup.string().trim().required('โปรดระบุ คำอธิบาย').max(300)
+  }),
   workMonth: yup.number().typeError().nullable().positive(),
   salary: yup.number().typeError().nullable().positive(),
   openPositionNum: yup.number().typeError().nullable().positive().integer(),
+  postTag: yup
+    .array()
+    .required('โปรดระบุ tag')
+    .min(1, 'โปรดระบุ อย่างน้อย 1 tag')
+    .max(10, 'ไม่เกิน 10 tag'),
   // workDay: form.workDay.length != 0
-  workTime: yup.array().required('โปรดเลือก เวลาทำงาน'),
-  postDesc: yup.string().trim().required('โปรดระบุ รายละเอียดงานที่จะให้ทำ'),
-  postWelfare: yup.string().trim().required('โปรดระบุ สวัสดิการ'),
-  enrolling: yup.string().trim().required('โปรดระบุ วิธีการสมัคร'),
+
+  workTime: yup.array().nonNullable('โปรดเลือก เวลาทำงาน'),
+
+  // postDesc: checkTextOnly()
+  // postWelfare: checkTextOnly()
+  // enrolling: checkTextOnly()
+
   // documents : null
   closingDate: yup
     .date()
-    .min(new Date())
-    .required('โปรดเลือก วันที่ปิดรับสมัคร'),
+    .nonNullable('โปรดเลือก วันที่ปิดรับสมัคร')
+    .when('isVisible', {
+      is: true,
+      then: yup.date().min(new Date()).required('โปรดเลือก วันที่ปิดรับสมัคร')
+    }),
   //location
+  area: yup.string().required('โปรดระบุ ที่อยู่').max(100),
 
   coordinatorName: yup
     .string()
@@ -1099,9 +1042,25 @@ const schema = yup.object({
     .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
     .max(10),
   email: yup.string().email().required('โปรดระบุ อีเมล').max(320),
-  postUrl: yup.string().url('url ไม่ถูกต้อง').nullable().max(300),
-  postTag: yup.array().min(1, 'โปรดระบุ อย่างน้อย 1 tag')
+  postUrl: yup.string().url('url ไม่ถูกต้อง').nullable().max(300)
 })
+
+const checkValidate = () => {
+  let error_message = ''
+  if (form.value.openPositionList.length === 0) {
+    error_message = 'กรุณา เพิ่มตำแหน่งงาน'
+  } else if (myAddress.value.tambon.zip_code == null) {
+    error_message = 'กรุณา เลือกจังหวัด/เขต/แขวง'
+  } else if (
+    form.value.address.latitude == null &&
+    form.value.address.longitude == null
+  ) {
+    error_message = 'ที่อยู่ไม่ถูกต้อง'
+  } else {
+    error_message = null
+  }
+  return error_message
+}
 
 const submitForm = async () => {
   setClosedDate()
@@ -1111,17 +1070,20 @@ const submitForm = async () => {
   setPostTag()
   await getGeoLication()
   console.log(form.value)
+  let error_message = checkValidate()
 
-  form.value.address.latitude && form.value.address.longitude
-    ? await createPost()
-    : Swal.fire({
-        showConfirmButton: true,
-        timerProgressBar: true,
-        confirmButtonColor: 'blue',
-        icon: 'error',
-        title: 'ที่อยู่ไม่ถูกต้อง',
-        text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
-      })
+  if (error_message != null) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'เกิดข้อพลาดผิดพลาด',
+      text: error_message
+    })
+  } else {
+    await createPost()
+  }
 }
 
 const createPost = async () => {
@@ -1154,7 +1116,7 @@ const createPost = async () => {
 
 const back = () => router.push({ path: '/internship' })
 
-const form1 = ref({
+const form = ref({
   title: '[Test]:ประกาศฝึกงาน',
   closedDate: null, // function setClosedDate()
   coordinatorName: '[Test]คุณ HR แสนดี',
@@ -1165,7 +1127,7 @@ const form1 = ref({
   enrolling:
     '[Test]How to Apply:Send your resume and a brief cover letter highlighting your motivation and relevant skills to [email@example.com] by [Application Deadline]. Join us on this exciting journey of discovery and development. Your future career starts here!',
   documents: ['portfolio', 'resume'],
-  tel: '012-345-6789',
+  tel: '0983651319',
   email: 'email@example.com',
   address: {
     country: 'Thailand',

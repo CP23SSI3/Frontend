@@ -4,6 +4,7 @@
     v-slot="{ meta, values, errors }"
     :validation-schema="schema"
   >
+    {{ errors }}
     <BaseSectionContent class="px-5 py-4 space-y-6 md:px-10 md:py-8">
       <ContainerForm>
         <BaseTitleForm> ประกาศฝึกงาน </BaseTitleForm>
@@ -38,9 +39,9 @@
                   {{ position.openPositionDesc }}
                 </BaseText>
                 <div class="flex items-center gap-4">
-                  <BaseItem :icon="BriefcaseIcon" class="min-w-fit">{{
-                    position.workMonth ? position.workMonth : 'ไม่ระบุ'
-                  }}</BaseItem>
+                  <BaseItem :icon="BriefcaseIcon" class="min-w-fit">
+                    {{ position.workMonth ? position.workMonth : 'ไม่ระบุ' }}
+                  </BaseItem>
                   <BaseItem :icon="CurrencyDollarIcon" class="min-w-fit">
                     {{ position.salary ? position.salary : 'ไม่ระบุ' }}
                   </BaseItem>
@@ -619,7 +620,6 @@ const position = ref({
   workMonth: null
 })
 const checkNull = () => {
-  console.log('check null')
   position.value.workMonth ? '' : (position.value.workMonth = null)
   position.value.salary ? '' : (position.value.salary = null)
   position.value.openPositionNum ? '' : (position.value.openPositionNum = null)
@@ -647,7 +647,7 @@ const hideEditPosition = () => {
   positionEditing.value = null
 }
 const editPosition = (position, index) => {
-  if (!statusAddPosition.value) {
+  if (!statusAddPosition.value && positionEditing.value == null) {
     positionEditing.value = { ...position, id: index }
   }
 }
@@ -956,14 +956,20 @@ const schema = yup.object({
   title: yup.string().trim().required('โปรดระบุ หัวข้อตำแหน่งงาน').max(100),
 
   //positionList: positionList.legnth > 0
-  openPositionTitle: yup.string().when('isVisible', {
-    is: true,
-    then: yup.string().trim().required('โปรดระบุ ชื่อตำแหน่งงาน').max(50)
-  }),
-  openPositionDesc: yup.string().when('isVisible', {
-    is: true,
-    then: yup.string().trim().required('โปรดระบุ คำอธิบาย').max(300)
-  }),
+  openPositionTitle: yup
+    .string()
+    // .when('isVisible', {
+    //   is: true,
+    //   then: yup.string().trim().required('โปรดระบุ ชื่อตำแหน่งงาน')
+    // })
+    .max(50),
+  openPositionDesc: yup
+    .string()
+    // .when('isVisible', {
+    //   is: true,
+    //   then: yup.string().trim().required('โปรดระบุ คำอธิบาย')
+    // })
+    .max(300),
   workMonth: yup.number().typeError().nullable().positive(),
   salary: yup.number().typeError().nullable().positive(),
   openPositionNum: yup.number().typeError().nullable().positive().integer(),

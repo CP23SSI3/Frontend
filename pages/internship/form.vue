@@ -4,7 +4,6 @@
     v-slot="{ meta, values, errors }"
     :validation-schema="schema"
   >
-    {{ errors }}
     <BaseSectionContent class="px-5 py-4 space-y-6 md:px-10 md:py-8">
       <ContainerForm>
         <BaseTitleForm> ประกาศฝึกงาน </BaseTitleForm>
@@ -378,24 +377,29 @@
               </div>
             </fieldset>
           </div>
-          <Field v-slot="{ field, errors }" name="closingDate">
-            <BaseDatePicker
-              v-if="statusClosingDate"
-              class="sm:col-span-3"
-              label="วันที่ปิดรับสมัคร"
-              id="closingDate"
-              placeholder="Select Closing Date"
-              :enable-time-picker="false"
-              v-bind="field"
-              v-model="closingDate"
-              :format="(date) => moment(date).format('DD/MM/YYYY')"
-              :min-date="new Date()"
-              fixed-start
-              required
-            >
-              <template v-slot:error-message> {{ errors[0] }}</template>
-            </BaseDatePicker>
-          </Field>
+          <BaseDatePicker
+            v-if="statusClosingDate"
+            class="sm:col-span-3"
+            label="วันที่ปิดรับสมัคร"
+            id="closingDate"
+            placeholder="Select Closing Date"
+            :enable-time-picker="false"
+            v-model="closingDate"
+            :format="(date) => moment(date).format('DD/MM/YYYY')"
+            :min-date="new Date()"
+            fixed-start
+            required
+          >
+            <template v-slot:error-message>
+              {{
+                closingDate == null
+                  ? 'โปรดเลือก วันที่ปิดรับสมัคร'
+                  : closingDate <= new Date()
+                  ? 'ควรเปิดรับสมัครมากกว่า 1 วัน'
+                  : ''
+              }}
+            </template>
+          </BaseDatePicker>
         </ContainerField>
       </ContainerForm>
       <ContainerForm>
@@ -521,6 +525,8 @@
             checkTextOnly(form.postDesc, 'รายละเอียดงานที่จะให้ทำ') != '' ||
             checkTextOnly(form.postWelfare, 'สวัสดิการ') != '' ||
             checkTextOnly(form.enrolling, 'วิธีการสมัคร') != '' ||
+            (statusClosingDate && closingDate == null) ||
+            (statusClosingDate && closingDate <= new Date()) ||
             !meta.valid
           "
           >Post</BaseButton
@@ -947,6 +953,15 @@ function checkTextOnly(value, error_message) {
     return ''
   }
 }
+function checkClosingDate(date) {
+  console.log(statusClosingDate.value)
+  let currentDay = new Date()
+  if (statusClosingDate.value && date > currentDay) {
+    return true
+  } else {
+    return false
+  }
+}
 
 // --- check validate : yup ---
 const phoneRegExp =
@@ -956,20 +971,8 @@ const schema = yup.object({
   title: yup.string().trim().required('โปรดระบุ หัวข้อตำแหน่งงาน').max(100),
 
   //positionList: positionList.legnth > 0
-  openPositionTitle: yup
-    .string()
-    // .when('isVisible', {
-    //   is: true,
-    //   then: yup.string().trim().required('โปรดระบุ ชื่อตำแหน่งงาน')
-    // })
-    .max(50),
-  openPositionDesc: yup
-    .string()
-    // .when('isVisible', {
-    //   is: true,
-    //   then: yup.string().trim().required('โปรดระบุ คำอธิบาย')
-    // })
-    .max(300),
+  openPositionTitle: yup.string().max(50),
+  openPositionDesc: yup.string().max(300),
   workMonth: yup.number().typeError().nullable().positive(),
   salary: yup.number().typeError().nullable().positive(),
   openPositionNum: yup.number().typeError().nullable().positive().integer(),
@@ -984,13 +987,7 @@ const schema = yup.object({
   // postWelfare: checkTextOnly()
   // enrolling: checkTextOnly()
   // documents : null
-  closingDate: yup
-    .date()
-    .nonNullable('โปรดเลือก วันที่ปิดรับสมัคร')
-    .when('isVisible', {
-      is: true,
-      then: yup.date().min(new Date()).required('โปรดเลือก วันที่ปิดรับสมัคร')
-    }),
+  // closingDate: null | date
   //address : myAddress.value.tambon.zip_code != null
   area: yup.string().required('โปรดระบุ ที่อยู่').max(100),
   coordinatorName: yup

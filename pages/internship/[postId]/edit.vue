@@ -177,15 +177,6 @@
       <ContainerForm>
         <BaseTitleForm> ข้อมูลการฝึกงาน </BaseTitleForm>
         <ContainerField>
-          <BaseTimePicker
-            class="sm:col-span-3"
-            label="เวลาทำงาน"
-            id="time-only"
-            placeholder="Select Time"
-            v-model="workTime"
-            required
-          >
-          </BaseTimePicker>
           <div class="sm:col-span-4">
             <BaseLabel id="workDays" required>วันทำงาน</BaseLabel>
             <div
@@ -211,8 +202,29 @@
                 </div>
               </div>
             </div>
+            <!-- Error Message : workDay -->
+            <div
+              class="pl-2 text-xs text-red-500"
+              v-show="form.workDay.length == 0"
+            >
+              โปรดเลือก วันทำงานอย่างน้อย 1 วัน
+            </div>
           </div>
-          <div class="sm:col-span-3">
+          <Field v-slot="{ field, errors }" name="workTime">
+            <BaseTimePicker
+              class="sm:col-span-3"
+              label="เวลาทำงาน"
+              id="time-only"
+              placeholder="Select Time"
+              v-bind="field"
+              v-model="workTime"
+              required
+            >
+              <template v-slot:error-message> {{ errors[0] }}</template>
+            </BaseTimePicker>
+          </Field>
+
+          <div class="sm:col-start-1 sm:col-span-3">
             <BaseLabel id="workType" required> รูปแบบการฝึกงาน </BaseLabel>
             <fieldset class="mt-2">
               <div
@@ -220,7 +232,7 @@
               >
                 <div
                   v-for="choice in workTypes"
-                  :key="choice.id"
+                  :key="choice.value"
                   class="flex items-center"
                 >
                   <input
@@ -243,13 +255,6 @@
               >รายละเอียดงานที่จะให้ทำ</BaseLabel
             >
             <div class="mt-1">
-              <!-- <textarea
-                id="about"
-                name="about"
-                rows="4"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                v-model="form.postDesc"
-              /> -->
               <ClientOnly>
                 <quill-editor
                   content-type="html"
@@ -272,13 +277,6 @@
           <div class="col-span-full">
             <BaseLabel id="postWelfare" required>สวัสดิการอื่นๆ</BaseLabel>
             <div class="mt-1">
-              <!-- <textarea
-                id="about"
-                name="about"
-                rows="3"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                v-model="form.postWelfare"
-              /> -->
               <ClientOnly>
                 <quill-editor
                   content-type="html"
@@ -306,13 +304,23 @@
           <div class="col-span-full">
             <BaseLabel id="enrolling" required>วิธีการสมัคร</BaseLabel>
             <div class="mt-1">
-              <textarea
-                id="about"
-                name="about"
-                rows="3"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                v-model="form.enrolling"
-              />
+              <ClientOnly>
+                <quill-editor
+                  content-type="html"
+                  theme="snow"
+                  :toolbar="quillToolbar"
+                  class="h-full"
+                  v-model:content="form.enrolling"
+                  style="
+                    height: 100px;
+                    border-bottom-right-radius: 0.375rem;
+                    border-bottom-left-radius: 0.375rem;
+                  "
+                />
+              </ClientOnly>
+              <div class="pl-2 text-xs text-red-500">
+                {{ checkTextOnly(form.enrolling, 'วิธีการสมัคร') }}
+              </div>
             </div>
           </div>
           <div class="sm:col-span-full">
@@ -369,7 +377,6 @@
               </div>
             </fieldset>
           </div>
-
           <BaseDatePicker
             v-if="statusClosingDate"
             class="sm:col-span-3"
@@ -379,8 +386,19 @@
             :enable-time-picker="false"
             v-model="closingDate"
             :format="(date) => moment(date).format('DD/MM/YYYY')"
+            :min-date="new Date()"
+            fixed-start
             required
           >
+            <template v-slot:error-message>
+              {{
+                closingDate == null
+                  ? 'โปรดเลือก วันที่ปิดรับสมัคร'
+                  : closingDate <= new Date()
+                  ? 'ควรเปิดรับสมัครมากกว่า 1 วัน'
+                  : ''
+              }}
+            </template>
           </BaseDatePicker>
         </ContainerField>
       </ContainerForm>
@@ -412,14 +430,7 @@
               </div>
             </fieldset>
           </div>
-          <!-- <BaseInputField
-            class="sm:col-span-4"
-            label="ประเทศ"
-            id="country"
-            v-model="form.address.country"
-            required
-          ></BaseInputField> -->
-          <div class="sm:col-span-4">
+          <!-- <div class="sm:col-span-4">
             <BaseLabel id="country" required>ประเทศ</BaseLabel>
             <div class="mt-1">
               <select
@@ -433,8 +444,8 @@
                 <option value="ประเทศไทย">Thailand</option>
               </select>
             </div>
-          </div>
-          <BaseInputField
+          </div> -->
+          <!-- <BaseInputField
             class="sm:col-span-2"
             label="รหัสไปรณีย์"
             id="postalCode"
@@ -465,7 +476,36 @@
             v-model="form.address.subDistrict"
             required
             :disabled="selectedLocation == 'default'"
-          ></BaseInputField>
+          ></BaseInputField> -->
+          <BaseDropdown
+            class="z-40 sm:col-span-2"
+            :option-lists="provinceList"
+            label="จังหวัด"
+            v-model="myAddress.province"
+            required
+            @click="getAmphure(myAddress.province.id)"
+          >
+          </BaseDropdown>
+
+          <BaseDropdown
+            class="z-30 sm:col-span-2"
+            :option-lists="amphureList"
+            label="เขต"
+            v-model="myAddress.amphure"
+            :disabled="!(amphureList.length > 0)"
+            required
+            @click="getTambon(myAddress.province.id, myAddress.amphure.id)"
+          >
+          </BaseDropdown>
+          <BaseDropdown
+            class="z-20 sm:col-span-2"
+            :option-lists="tambonList"
+            label="แขวง"
+            v-model="myAddress.tambon"
+            :disabled="!(tambonList.length > 0)"
+            required
+          >
+          </BaseDropdown>
           <BaseInputField
             class="col-span-full"
             label="ที่อยู่"
@@ -552,7 +592,8 @@ import {
   TrashIcon,
   BriefcaseIcon,
   CurrencyDollarIcon,
-  UsersIcon
+  UsersIcon,
+  TagIcon
 } from '@heroicons/vue/24/outline'
 import FormPosition from '@/components/form/FormPosition.vue'
 import ContainerForm from '@/components/form/ContainerForm.vue'
@@ -801,8 +842,84 @@ const setWorkTime = () => {
   }
 }
 
+// --- location: province > amphure > tambon ---
+const sortingThai = (a, b) => {
+  return a.text.localeCompare(b.text, 'th')
+}
+const myAddress = ref({
+  province: { id: 0, text: 'เลือก จังหวัด' },
+  amphure: { id: 0, text: 'เลือก เขต' },
+  tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
+})
+const { data } = await useFetch('/api/locations-thai')
+// console.log(data.value)
+const provinceList = ref([])
+const getProvince = () => {
+  let list = []
+  let province
+  data.value.forEach((city) => {
+    province = {
+      id: city.id,
+      text: city.name_th
+    }
+    list.push(province)
+  })
+  list.sort(sortingThai)
+  provinceList.value = list
+}
+getProvince()
+
+const amphureList = ref([])
+const getAmphure = (provinceId) => {
+  amphureList.value = []
+  myAddress.value.amphure = { id: 0, text: 'เลือก เขต' }
+  tambonList.value = []
+  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง', zip_code: null }
+  let list = []
+  let result = data.value.find((city) => city.id === provinceId)
+  let amphure
+  result.amphure.forEach((district) => {
+    amphure = {
+      id: district.id,
+      text: district.name_th
+    }
+    list.push(amphure)
+  })
+  list.sort(sortingThai)
+  amphureList.value = list
+}
+
+const tambonList = ref([])
+const getTambon = (provinceId, amphureId) => {
+  tambonList.value = []
+  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง', zip_code: null }
+  let province = data.value.find((city) => city.id === provinceId)
+  let amphure = province.amphure.find((district) => district.id === amphureId)
+  let list = []
+  let tambon
+  amphure.tambon.forEach((subDistrict) => {
+    tambon = {
+      id: subDistrict.id,
+      text: subDistrict.name_th,
+      zip_code: subDistrict.zip_code
+    }
+    list.push(tambon)
+  })
+  list.sort(sortingThai)
+  tambonList.value = list
+}
+
+const setAddress = () => {
+  let address = form.value.address
+  ;(address.city = myAddress.value.province.text),
+    (address.district = myAddress.value.amphure.text),
+    (address.subDistrict = myAddress.value.tambon.text),
+    (address.postalCode = myAddress.value.tambon.zip_code)
+}
+
 // --- location: get latitude / longtitude ---
 const getGeoLication = async () => {
+  setAddress()
   let address = form.value.address
   let location = address.area.concat(
     ' ',
@@ -822,6 +939,7 @@ const getGeoLication = async () => {
     if (response.status == 'OK') {
       address.latitude = response.results[0].geometry.location.lat
       address.longitude = response.results[0].geometry.location.lng
+      console.log(address.latitude + ',' + address.longitude)
     } else {
       // console.log('Unable to locate this location.')
       Swal.fire({
@@ -925,20 +1043,8 @@ const schema = yup.object({
   title: yup.string().trim().required('โปรดระบุ หัวข้อตำแหน่งงาน').max(100),
 
   //positionList: positionList.legnth > 0
-  openPositionTitle: yup
-    .string()
-    // .when('isVisible', {
-    //   is: true,
-    //   then: yup.string().trim().required('โปรดระบุ ชื่อตำแหน่งงาน')
-    // })
-    .max(50),
-  openPositionDesc: yup
-    .string()
-    // .when('isVisible', {
-    //   is: true,
-    //   then: yup.string().trim().required('โปรดระบุ คำอธิบาย')
-    // })
-    .max(300),
+  openPositionTitle: yup.string().max(50),
+  openPositionDesc: yup.string().max(300),
   workMonth: yup.number().typeError().nullable().positive(),
   salary: yup.number().typeError().nullable().positive(),
   openPositionNum: yup.number().typeError().nullable().positive().integer(),
@@ -953,13 +1059,7 @@ const schema = yup.object({
   // postWelfare: checkTextOnly()
   // enrolling: checkTextOnly()
   // documents : null
-  closingDate: yup
-    .date()
-    .nonNullable('โปรดเลือก วันที่ปิดรับสมัคร')
-    .when('isVisible', {
-      is: true,
-      then: yup.date().min(new Date()).required('โปรดเลือก วันที่ปิดรับสมัคร')
-    }),
+  // closingDate: null | date
   //address : myAddress.value.tambon.zip_code != null
   area: yup.string().required('โปรดระบุ ที่อยู่').max(100),
   coordinatorName: yup

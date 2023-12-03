@@ -439,7 +439,6 @@
             @click="getAmphure(myAddress.province.id)"
           >
           </BaseDropdown>
-
           <BaseDropdown
             class="z-30 sm:col-span-2"
             :option-lists="amphureList"

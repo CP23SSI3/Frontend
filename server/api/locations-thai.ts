@@ -8,7 +8,7 @@ export default defineEventHandler((event) => {
       amphure: [
         {
           id: 1001,
-          name_th: 'เขตพระนคร',
+          name_th: 'พระนคร',
           name_en: 'Khet Phra Nakhon',
           province_id: 1,
 
@@ -101,7 +101,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1002,
-          name_th: 'เขตดุสิต',
+          name_th: 'ดุสิต',
           name_en: 'Khet Dusit',
           province_id: 1,
 
@@ -145,7 +145,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1003,
-          name_th: 'เขตหนองจอก',
+          name_th: 'หนองจอก',
           name_en: 'Khet Nong Chok',
           province_id: 1,
 
@@ -210,7 +210,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1004,
-          name_th: 'เขตบางรัก',
+          name_th: 'บางรัก',
           name_en: 'Khet Bang Rak',
           province_id: 1,
 
@@ -254,7 +254,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1005,
-          name_th: 'เขตบางเขน',
+          name_th: 'บางเขน',
           name_en: 'Khet Bang Khen',
           province_id: 1,
 
@@ -277,7 +277,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1006,
-          name_th: 'เขตบางกะปิ',
+          name_th: 'บางกะปิ',
           name_en: 'Khet Bang Kapi',
           province_id: 1,
 
@@ -300,7 +300,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1007,
-          name_th: 'เขตปทุมวัน',
+          name_th: 'ปทุมวัน',
           name_en: 'Khet Pathum Wan',
           province_id: 1,
 
@@ -337,7 +337,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1008,
-          name_th: 'เขตป้อมปราบศัตรูพ่าย',
+          name_th: 'ป้อมปราบศัตรูพ่าย',
           name_en: 'Khet Pom Prap Sattru Phai',
           province_id: 1,
 
@@ -381,7 +381,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1009,
-          name_th: 'เขตพระโขนง',
+          name_th: 'พระโขนง',
           name_en: 'Khet Phra Khanong',
           province_id: 1,
 
@@ -397,7 +397,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1010,
-          name_th: 'เขตมีนบุรี',
+          name_th: 'มีนบุรี',
           name_en: 'Khet Min Buri',
           province_id: 1,
 
@@ -420,7 +420,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1011,
-          name_th: 'เขตลาดกระบัง',
+          name_th: 'ลาดกระบัง',
           name_en: 'Khet Lat Krabang',
           province_id: 1,
 
@@ -471,7 +471,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1012,
-          name_th: 'เขตยานนาวา',
+          name_th: 'ยานนาวา',
           name_en: 'Khet Yan Nawa',
           province_id: 1,
 
@@ -494,7 +494,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1013,
-          name_th: 'เขตสัมพันธวงศ์',
+          name_th: 'สัมพันธวงศ์',
           name_en: 'Khet Samphanthawong',
           province_id: 1,
 
@@ -524,7 +524,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1014,
-          name_th: 'เขตพญาไท',
+          name_th: 'พญาไท',
           name_en: 'Khet Phaya Thai',
           province_id: 1,
 
@@ -540,7 +540,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1015,
-          name_th: 'เขตธนบุรี',
+          name_th: 'ธนบุรี',
           name_en: 'Khet Thon Buri',
           province_id: 1,
 
@@ -598,7 +598,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1016,
-          name_th: 'เขตบางกอกใหญ่',
+          name_th: 'บางกอกใหญ่',
           name_en: 'Khet Bangkok Yai',
           province_id: 1,
 
@@ -621,7 +621,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1017,
-          name_th: 'เขตห้วยขวาง',
+          name_th: 'ห้วยขวาง',
           name_en: 'Khet Huai Khwang',
           province_id: 1,
 
@@ -651,7 +651,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1018,
-          name_th: 'เขตคลองสาน',
+          name_th: 'คลองสาน',
           name_en: 'Khet Khlong San',
           province_id: 1,
 
@@ -688,7 +688,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1019,
-          name_th: 'เขตตลิ่งชัน',
+          name_th: 'ตลิ่งชัน',
           name_en: 'Khet Taling Chan',
           province_id: 1,
 
@@ -739,7 +739,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1020,
-          name_th: 'เขตบางกอกน้อย',
+          name_th: 'บางกอกน้อย',
           name_en: 'Khet Bangkok Noi',
           province_id: 1,
 
@@ -783,7 +783,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1021,
-          name_th: 'เขตบางขุนเทียน',
+          name_th: 'บางขุนเทียน',
           name_en: 'Khet Bang Khun Thian',
           province_id: 1,
 
@@ -806,7 +806,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1022,
-          name_th: 'เขตภาษีเจริญ',
+          name_th: 'ภาษีเจริญ',
           name_en: 'Khet Phasi Charoen',
           province_id: 1,
 
@@ -885,7 +885,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1023,
-          name_th: 'เขตหนองแขม',
+          name_th: 'หนองแขม',
           name_en: 'Khet Nong Khaem',
           province_id: 1,
 
@@ -908,7 +908,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1024,
-          name_th: 'เขตราษฎร์บูรณะ',
+          name_th: 'ราษฎร์บูรณะ',
           name_en: 'Khet Rat Burana',
           province_id: 1,
 
@@ -931,7 +931,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1025,
-          name_th: 'เขตบางพลัด',
+          name_th: 'บางพลัด',
           name_en: 'Khet Bang Phlat',
           province_id: 1,
 
@@ -968,7 +968,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1026,
-          name_th: 'เขตดินแดง',
+          name_th: 'ดินแดง',
           name_en: 'Khet Din Daeng',
           province_id: 1,
 
@@ -984,7 +984,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1027,
-          name_th: 'เขตบึงกุ่ม',
+          name_th: 'บึงกุ่ม',
           name_en: 'Khet Bueng Kum',
           province_id: 1,
 
@@ -1014,7 +1014,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1028,
-          name_th: 'เขตสาทร',
+          name_th: 'สาทร',
           name_en: 'Khet Sathon',
           province_id: 1,
 
@@ -1044,7 +1044,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1029,
-          name_th: 'เขตบางซื่อ',
+          name_th: 'บางซื่อ',
           name_en: 'Khet Bang Sue',
           province_id: 1,
 
@@ -1060,7 +1060,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1030,
-          name_th: 'เขตจตุจักร',
+          name_th: 'จตุจักร',
           name_en: 'Khet Chatuchak',
           province_id: 1,
 
@@ -1104,7 +1104,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1031,
-          name_th: 'เขตบางคอแหลม',
+          name_th: 'บางคอแหลม',
           name_en: 'Khet Bang Kho Laem',
           province_id: 1,
 
@@ -1134,7 +1134,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1032,
-          name_th: 'เขตประเวศ',
+          name_th: 'ประเวศ',
           name_en: 'Khet Prawet',
           province_id: 1,
 
@@ -1171,7 +1171,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1033,
-          name_th: 'เขตคลองเตย',
+          name_th: 'คลองเตย',
           name_en: 'Khet Khlong Toei',
           province_id: 1,
 
@@ -1222,7 +1222,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1034,
-          name_th: 'เขตสวนหลวง',
+          name_th: 'สวนหลวง',
           name_en: 'Khet Suan Luang',
           province_id: 1,
 
@@ -1238,7 +1238,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1035,
-          name_th: 'เขตจอมทอง',
+          name_th: 'จอมทอง',
           name_en: 'Khet Chom Thong',
           province_id: 1,
 
@@ -1275,7 +1275,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1036,
-          name_th: 'เขตดอนเมือง',
+          name_th: 'ดอนเมือง',
           name_en: 'Khet Don Mueang',
           province_id: 1,
 
@@ -1291,7 +1291,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1037,
-          name_th: 'เขตราชเทวี',
+          name_th: 'ราชเทวี',
           name_en: 'Khet Ratchathewi',
           province_id: 1,
 
@@ -1328,7 +1328,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1038,
-          name_th: 'เขตลาดพร้าว',
+          name_th: 'ลาดพร้าว',
           name_en: 'Khet Lat Phrao',
           province_id: 1,
 
@@ -1351,7 +1351,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1039,
-          name_th: 'เขตวัฒนา',
+          name_th: 'วัฒนา',
           name_en: 'Khet Watthana',
           province_id: 1,
 
@@ -1381,7 +1381,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1040,
-          name_th: 'เขตบางแค',
+          name_th: 'บางแค',
           name_en: 'Khet Bang Khae',
           province_id: 1,
 
@@ -1418,7 +1418,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1041,
-          name_th: 'เขตหลักสี่',
+          name_th: 'หลักสี่',
           name_en: 'Khet Lak Si',
           province_id: 1,
 
@@ -1441,7 +1441,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1042,
-          name_th: 'เขตสายไหม',
+          name_th: 'สายไหม',
           name_en: 'Khet Sai Mai',
           province_id: 1,
 
@@ -1471,7 +1471,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1043,
-          name_th: 'เขตคันนายาว',
+          name_th: 'คันนายาว',
           name_en: 'Khet Khan Na Yao',
           province_id: 1,
 
@@ -1487,7 +1487,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1044,
-          name_th: 'เขตสะพานสูง',
+          name_th: 'สะพานสูง',
           name_en: 'Khet Saphan Sung',
           province_id: 1,
 
@@ -1503,7 +1503,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1045,
-          name_th: 'เขตวังทองหลาง',
+          name_th: 'วังทองหลาง',
           name_en: 'Khet Wang Thonglang',
           province_id: 1,
 
@@ -1519,7 +1519,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1046,
-          name_th: 'เขตคลองสามวา',
+          name_th: 'คลองสามวา',
           name_en: 'Khet Khlong Sam Wa',
           province_id: 1,
 
@@ -1563,7 +1563,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1047,
-          name_th: 'เขตบางนา',
+          name_th: 'บางนา',
           name_en: 'Khet Bang Na',
           province_id: 1,
 
@@ -1579,7 +1579,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1048,
-          name_th: 'เขตทวีวัฒนา',
+          name_th: 'ทวีวัฒนา',
           name_en: 'Khet Thawi Watthana',
           province_id: 1,
 
@@ -1602,7 +1602,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1049,
-          name_th: 'เขตทุ่งครุ',
+          name_th: 'ทุ่งครุ',
           name_en: 'Khet Thung Khru',
           province_id: 1,
 
@@ -1625,7 +1625,7 @@ export default defineEventHandler((event) => {
         },
         {
           id: 1050,
-          name_th: 'เขตบางบอน',
+          name_th: 'บางบอน',
           name_en: 'Khet Bang Bon',
           province_id: 1,
 

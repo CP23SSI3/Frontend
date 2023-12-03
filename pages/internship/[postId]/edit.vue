@@ -486,7 +486,6 @@
             @click="getAmphure(myAddress.province.id)"
           >
           </BaseDropdown>
-
           <BaseDropdown
             class="z-30 sm:col-span-2"
             :option-lists="amphureList"
@@ -497,6 +496,7 @@
             @click="getTambon(myAddress.province.id, myAddress.amphure.id)"
           >
           </BaseDropdown>
+          <!--       :disabled="!(amphureList.length > 0)" -->
           <BaseDropdown
             class="z-20 sm:col-span-2"
             :option-lists="tambonList"
@@ -507,13 +507,20 @@
           >
           </BaseDropdown>
           <BaseInputField
-            class="col-span-full"
+            class="sm:col-span-4"
             label="ที่อยู่"
             id="area"
             v-model="form.address.area"
             required
-            :disabled="selectedLocation == 'default'"
-          ></BaseInputField>
+          >
+          </BaseInputField>
+          <BaseInput
+            class="sm:col-span-2"
+            label="รหัสไปรณีย์"
+            id="postalCode"
+            v-model="myAddress.tambon.zip_code"
+            disabled
+          ></BaseInput>
         </ContainerField>
       </ContainerForm>
 
@@ -917,6 +924,28 @@ const setAddress = () => {
     (address.postalCode = myAddress.value.tambon.zip_code)
 }
 
+const setupMyAddress = () => {
+  let address = form.value.address
+  let province = data.value.find((p) => p.name_th === address.city)
+  if (province) {
+    myAddress.value.province.id = province.id
+    myAddress.value.province.text = province.name_th
+    getAmphure(myAddress.value.province.id)
+  }
+  let amphure = amphureList.value.find((a) => a.text == address.district)
+  if (amphure) {
+    myAddress.value.amphure.id = amphure.id
+    myAddress.value.amphure.text = amphure.text
+    getTambon(myAddress.value.province.id, myAddress.value.amphure.id)
+  }
+  let tambon = tambonList.value.find((t) => t.text == address.subDistrict)
+  if (tambon) {
+    myAddress.value.tambon.id = tambon.id
+    myAddress.value.tambon.text = tambon.text
+    myAddress.value.tambon.zip_code = tambon.zip_code
+  }
+}
+
 // --- location: get latitude / longtitude ---
 const getGeoLication = async () => {
   setAddress()
@@ -1007,6 +1036,7 @@ form.value = props?.post
 positionList.value = props?.post.openPositionList
 setupWorkTime()
 setupClosedDate()
+setupMyAddress()
 
 console.log(props.post)
 // console.log(form.value)

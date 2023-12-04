@@ -24,7 +24,7 @@
       </template>
       <template #item-workMonth="{ workMonth }">
         <div class="text-sm text-gray-500 whitespace-normal">
-          {{ workMonth }} เดือน
+          {{ workMonth ? workMonth + ' เดือน' : 'ไม่ระบุ' }}
         </div>
       </template>
       <template #item-salary="{ salary }">
@@ -34,7 +34,7 @@
       </template>
       <template #item-openPositionNum="{ openPositionNum }">
         <div class="text-sm text-gray-500 whitespace-normal">
-          {{ openPositionNum }} คน
+          {{ openPositionNum ? openPositionNum + ' คน' : 'ไม่ระบุ' }}
         </div>
       </template>
     </EasyDataTable>

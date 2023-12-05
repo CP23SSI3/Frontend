@@ -1,4 +1,5 @@
 <template>
+  <!--     :initial-values="initialValues" -->
   <Form
     @submit="submitForm"
     v-slot="{ meta, values, errors }"
@@ -157,7 +158,7 @@
           </div>
           <div class="sm:col-span-5">
             <BaseLabel id="postTag" :icon="TagIcon" required>Tags</BaseLabel>
-            <Field v-slot="{ field, errors }" name="postTag">
+            <Field v-slot="{ field, errors }" name="postTagList">
               <Multiselect
                 v-bind="field"
                 v-model="form.postTagList"
@@ -530,7 +531,7 @@
           <BaseInputField
             class="sm:col-span-3"
             label="ชื่อผู้ประสานงาน"
-            id="area"
+            id="coordinatorName"
             v-model="form.coordinatorName"
             required
           ></BaseInputField>
@@ -578,7 +579,20 @@
         <BaseButton :leadingIcon="TrashIcon" negative @click="gotoBack()"
           >Cancel</BaseButton
         >
-        <BaseButton :trailingIcon="ChevronRightIcon" @click="submitForm()"
+        <BaseButton
+          :trailingIcon="ChevronRightIcon"
+          type="submit"
+          :disabled="
+            statusAddPosition ||
+            statusEditPosition ||
+            !(form.workDay.length > 0) ||
+            checkTextOnly(form.postDesc, 'รายละเอียดงานที่จะให้ทำ') != '' ||
+            checkTextOnly(form.postWelfare, 'สวัสดิการ') != '' ||
+            checkTextOnly(form.enrolling, 'วิธีการสมัคร') != '' ||
+            (statusClosingDate && closingDate == null) ||
+            (statusClosingDate && closingDate <= new Date()) ||
+            !meta.valid
+          "
           >Save</BaseButton
         >
       </div>
@@ -1033,13 +1047,18 @@ const props = defineProps({
 })
 
 form.value = props?.post
+// const initialValues = ref(form.value)
 positionList.value = props?.post.openPositionList
-setupWorkTime()
-setupClosedDate()
-setupMyAddress()
+setupWorkTime() // workStartTime, workEndTime ---> workTime
+setupClosedDate() // closeedDate ---> closingDate, statusClosingDate
+setupMyAddress() // address ---> myAddress
 
+console.log('props')
 console.log(props.post)
-// console.log(form.value)
+console.log('form')
+console.log(form.value)
+// console.log('initialValues')
+// console.log(initialValues.value)
 
 // -- quill editor ---
 const quillToolbar = [
@@ -1078,9 +1097,8 @@ const schema = yup.object({
   workMonth: yup.number().typeError().nullable().positive(),
   salary: yup.number().typeError().nullable().positive(),
   openPositionNum: yup.number().typeError().nullable().positive().integer(),
-  postTag: yup
+  postTagList: yup
     .array()
-    .required('โปรดระบุ tag')
     .min(1, 'โปรดระบุ อย่างน้อย 1 tag')
     .max(10, 'ไม่เกิน 10 tag'),
   // workDay: form.workDay.length != 0
@@ -1107,22 +1125,43 @@ const schema = yup.object({
   postUrl: yup.string().url('url ไม่ถูกต้อง').nullable().max(300)
 })
 
+const checkValidate = () => {
+  let error_message = ''
+  if (form.value.openPositionList.length === 0) {
+    error_message = 'กรุณา เพิ่มตำแหน่งงาน'
+  } else if (myAddress.value.tambon.zip_code == null) {
+    error_message = 'กรุณา เลือกจังหวัด/เขต/แขวง'
+  } else if (
+    form.value.address.latitude == null &&
+    form.value.address.longitude == null
+  ) {
+    error_message = 'ที่อยู่ไม่ถูกต้อง'
+  } else {
+    error_message = null
+  }
+  return error_message
+}
+
 const submitForm = async () => {
   setClosedDate()
   setWorkTime()
   setOpenPositionList()
   await getGeoLication()
-
-  form.value.address.latitude && form.value.address.longitude
-    ? await savePost()
-    : Swal.fire({
-        showConfirmButton: true,
-        timerProgressBar: true,
-        confirmButtonColor: 'blue',
-        icon: 'error',
-        title: 'ที่อยู่ไม่ถูกต้อง',
-        text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
-      })
+  console.log('edit')
+  console.log(form.value)
+  let error_message = checkValidate()
+  if (error_message != null) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'เกิดข้อพลาดผิดพลาด',
+      text: error_message
+    })
+  } else {
+    await savePost()
+  }
 }
 
 const savePost = async () => {

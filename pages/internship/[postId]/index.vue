@@ -235,7 +235,7 @@ post.value = props?.post
 // await getPostDetail()
 
 // -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
-const statusClosedDate = (postCloseDate, postIdex) => {
+const statusClosedDate = (postCloseDate) => {
   if (postCloseDate == null) {
     return { text: 'เปิดรับตลอด', color: 'green' }
   } else {

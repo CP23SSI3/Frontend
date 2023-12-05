@@ -124,6 +124,19 @@
               <BaseBadge>ปิดรับสมัคร 19/09/2023</BaseBadge>
               <BaseBadge color="red">ปิดรับสมัคร 19/09/2023</BaseBadge>
               <BaseBadge color="yellow">ปิดรับสมัคร 19/09/2023</BaseBadge>
+
+              <BaseBadge
+                :color="statusClosedDate('2023-12-05T00:00:00').color"
+                class="hidden sm:flex"
+              >
+                {{ statusClosedDate('2023-12-05T00:00:00').text }}
+              </BaseBadge>
+              <BaseBadge
+                :color="statusClosedDate('2023-12-04T00:00:00').color"
+                class="hidden sm:flex"
+              >
+                {{ statusClosedDate('2023-12-04T00:00:00').text }}
+              </BaseBadge>
             </div>
           </BaseSectionContent>
         </td>
@@ -156,9 +169,33 @@ import TestBaseDropdown from '@/components/test-component/TestBaseDropdown.vue'
 import TestBaseInput from '@/components/test-component/TestBaseInput.vue'
 import TestBaseItem from '@/components/test-component/TestBaseItem.vue'
 import TestBaseTimePicker from '@/components/test-component/TestBaseTimePicker.vue'
+
+import moment from 'moment'
 const data = ref({
   workMonth: { amount: null, unit: 'เดือน' }
 })
+
+// -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
+const statusClosedDate = (postCloseDate, postIndex) => {
+  if (postCloseDate == null) {
+    return { text: 'เปิดรับตลอด', color: 'green' }
+  } else {
+    let endDate = new Date(new Date(postCloseDate).setHours(23, 59, 0, 0))
+    let closedDate = moment(endDate).format('DD/MM/YYYY')
+    if (new Date() > endDate) {
+      return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
+    } else {
+      // ถ้ายังไม่เลยวันที่ปิดรับสมัคร ดูว่าใกล้ปิดภายใน 7 วันหรือไม่
+      if (
+        new Date(moment(endDate).subtract(7, 'days')) <= new Date() &&
+        new Date() <= endDate
+      ) {
+        return { text: 'ปิดรับสมัคร ' + closedDate, color: 'yellow' }
+      }
+      return { text: 'ปิดรับสมัคร ' + closedDate }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

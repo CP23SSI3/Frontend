@@ -283,7 +283,7 @@ const changeStarButton = () => {
 }
 
 // -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
-const statusClosedDate = (postCloseDate, postIdex) => {
+const statusClosedDate = (postCloseDate) => {
   if (postCloseDate == null) {
     return { text: 'เปิดรับตลอด', color: 'green' }
   } else {

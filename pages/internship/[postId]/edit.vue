@@ -431,53 +431,6 @@
               </div>
             </fieldset>
           </div>
-          <!-- <div class="sm:col-span-4">
-            <BaseLabel id="country" required>ประเทศ</BaseLabel>
-            <div class="mt-1">
-              <select
-                id="country"
-                name="country"
-                autocomplete="country-name"
-                :disabled="selectedLocation == 'default'"
-                v-model="form.address.country"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6 disabled:bg-gray-100 disabled:border-gray-200 disabled:textgray-400"
-              >
-                <option value="ประเทศไทย">Thailand</option>
-              </select>
-            </div>
-          </div> -->
-          <!-- <BaseInputField
-            class="sm:col-span-2"
-            label="รหัสไปรณีย์"
-            id="postalCode"
-            v-model="form.address.postalCode"
-            required
-            :disabled="selectedLocation == 'default'"
-          ></BaseInputField>
-          <BaseInputField
-            class="sm:col-span-2"
-            label="จังหวัด"
-            id="city"
-            v-model="form.address.city"
-            required
-            :disabled="selectedLocation == 'default'"
-          ></BaseInputField>
-          <BaseInputField
-            class="sm:col-span-2"
-            label="เขต"
-            id="district"
-            v-model="form.address.district"
-            required
-            :disabled="selectedLocation == 'default'"
-          ></BaseInputField>
-          <BaseInputField
-            class="sm:col-span-2"
-            label="แขวง"
-            id="subDistrict"
-            v-model="form.address.subDistrict"
-            required
-            :disabled="selectedLocation == 'default'"
-          ></BaseInputField> -->
           <BaseDropdown
             class="z-40 sm:col-span-2"
             :option-lists="provinceList"
@@ -559,22 +512,6 @@
           ></BaseInputField>
         </ContainerField>
       </ContainerForm>
-      <!-- <ContainerForm>
-        <BaseTitleForm>tag</BaseTitleForm>
-        <ContainerField>
-          <div class="sm:col-span-6">
-            <Multiselect
-              v-model="form.postTagList"
-              mode="tags"
-              :close-on-select="false"
-              :searchable="true"
-              :create-option="true"
-              :options="listPositionTag"
-              class="multiselect-blue"
-            /></div>
-            </ContainerField
-      ></ContainerForm> -->
-
       <div class="flex justify-between gap-2">
         <BaseButton :leadingIcon="TrashIcon" negative @click="gotoBack()"
           >Cancel</BaseButton

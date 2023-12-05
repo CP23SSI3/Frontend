@@ -183,7 +183,7 @@
           </div>
         </DisclosurePanel>
       </Disclosure>
-      <!-- <div
+      <div
         class="flex items-center justify-center w-full h-20 bg-gray-900"
         v-if="
           route.fullPath.includes('/form') || route.fullPath.includes('/edit')
@@ -198,7 +198,7 @@
               : 'แบบฟอร์มสร้างประกาศรับสมัครฝึกงาน'
           }}
         </h2>
-      </div> -->
+      </div>
     </div>
     <div class="relative h-auto py-5">
       <!-- <header>

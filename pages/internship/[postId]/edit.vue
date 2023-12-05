@@ -624,6 +624,10 @@ import yup from '@/assets/yup-error.js'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 
+definePageMeta({
+  layout: 'form'
+})
+
 const route = useRoute()
 const postId = route.params.postId
 const router = useRouter()

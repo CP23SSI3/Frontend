@@ -560,6 +560,10 @@ import yup from '@/assets/yup-error.js'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 
+definePageMeta({
+  layout: 'form'
+})
+
 const route = useRoute()
 const router = useRouter()
 const gotoBack = () => {
@@ -977,7 +981,6 @@ const schema = yup.object({
   openPositionNum: yup.number().typeError().nullable().positive().integer(),
   postTag: yup
     .array()
-    .required('โปรดระบุ tag')
     .min(1, 'โปรดระบุ อย่างน้อย 1 tag')
     .max(10, 'ไม่เกิน 10 tag'),
   // workDay: form.workDay.length != 0

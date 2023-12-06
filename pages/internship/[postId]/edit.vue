@@ -527,8 +527,9 @@
             checkTextOnly(form.postWelfare, 'สวัสดิการ') != '' ||
             checkTextOnly(form.enrolling, 'วิธีการสมัคร') != '' ||
             (statusClosingDate && closingDate == null) ||
-            (statusClosingDate && closingDate <= new Date()) ||
-            !meta.valid
+            (statusClosingDate && closingDate <= new Date())
+            // ||
+            // !meta.valid
           "
           >Save</BaseButton
         >

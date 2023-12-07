@@ -14,7 +14,11 @@ RUN yarn install
 COPY . .
 
 # Expose the port on which your Node.js application listens
-EXPOSE 3000
+EXPOSE 80
 
 # Start the Node.js application
-CMD ["yarn", "start"]
+RUN yarn build
+
+CMD [ "yarn", "start" ]
+
+

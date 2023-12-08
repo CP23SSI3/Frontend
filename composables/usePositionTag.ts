@@ -19,7 +19,7 @@ export default async (params: any) => {
     // }
   })
   if (error.value) {
-    // console.log(error.value)
+    console.log(error.value)
     throw createError({
       ...error.value,
       statusMessage: `Could not fetch data from ${url}`

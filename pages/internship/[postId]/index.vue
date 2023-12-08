@@ -75,17 +75,17 @@
             </div>
 
             <BaseDescription label="รายละเอียดงาน">
-              {{ post.postDesc }}
+              <div v-html="post.postDesc"></div>
             </BaseDescription>
             <BaseDescription label="สวัสดิการอื่นๆ">
-              {{ post.postWelfare }}
+              <div v-html="post.postWelfare"></div>
             </BaseDescription>
           </div>
           <div class="space-y-4">
             <BaseLineTopic>การสมัคร</BaseLineTopic>
             <div class="grid gap-5 lg:grid-cols-4">
               <BaseDescription label="วิธีการสมัคร" class="lg:col-span-3">
-                {{ post.enrolling }}
+                <div v-html="post.enrolling"></div>
               </BaseDescription>
               <BaseDescription
                 label="เอกสารประกอบการสมัคร"
@@ -104,7 +104,7 @@
           <BaseLineTopic>สถานที่ฝึกงาน</BaseLineTopic>
           <BaseDescription label="">
             {{
-              `${post.address.area} ${post.address.subDistrict} ${post.address.district}, ${post.address.city} ${post.address.country} ${post.address.postalCode}`
+              `${post.address.area} แขวง${post.address.subDistrict} เขต${post.address.district}, ${post.address.city}  ${post.address.postalCode}`
             }}
           </BaseDescription>
           <BaseMap :lat="post.address.latitude" :lng="post.address.longitude" />
@@ -235,7 +235,7 @@ post.value = props?.post
 // await getPostDetail()
 
 // -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
-const statusClosedDate = (postCloseDate, postIdex) => {
+const statusClosedDate = (postCloseDate) => {
   if (postCloseDate == null) {
     return { text: 'เปิดรับตลอด', color: 'green' }
   } else {

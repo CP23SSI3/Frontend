@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid items-end grid-cols-1 px-6 py-4 mt-1 rounded-md gap-x-3 gap-y-4 sm:grid-cols-6 bg-blue-50"
+    class="grid items-start grid-cols-1 px-6 py-4 mt-1 rounded-md gap-x-3 gap-y-4 sm:grid-cols-6 bg-blue-50"
   >
     <BaseTitleForm class="text-center col-span-full">
       {{ editmode ? 'แก้ไขตำแหน่งงาน' : 'เพิ่มตำแหน่งงาน' }}
@@ -8,7 +8,7 @@
     <BaseInputField
       class="sm:col-span-4"
       label="ชื่อตำแหน่งงาน"
-      id="title"
+      id="openPositionTitle"
       v-model="position.openPositionTitle"
       required
     ></BaseInputField>
@@ -35,7 +35,7 @@
     <BaseInputField
       class="sm:col-span-6"
       label="คำอธิบาย"
-      id="desc"
+      id="openPositionDesc"
       v-model="position.openPositionDesc"
       required
     ></BaseInputField>
@@ -43,11 +43,10 @@
       class="sm:col-span-2"
       :icon="BriefcaseIcon"
       label="ระยะเวลาการฝึกงาน"
-      id="workMounth"
+      id="workMonth"
       v-model="position.workMonth"
       type="number"
       unit="เดือน"
-      required
     ></BaseInputField>
     <BaseInputField
       class="sm:col-span-2"
@@ -57,20 +56,22 @@
       v-model="position.salary"
       type="number"
       unit="บาท/วัน"
-      required
     ></BaseInputField>
     <BaseInputField
       class="sm:col-span-2"
       :icon="UsersIcon"
       label="จำนวนที่เปิดรับ"
-      id="num"
+      id="openPositionNum"
       v-model="position.openPositionNum"
       type="number"
       unit="คน"
-      required
     ></BaseInputField>
     <div class="flex flex-row-reverse gap-3 sm:col-span-6">
-      <BaseButton :leadingIcon="CheckIcon" @click="$emit('submit')">
+      <BaseButton
+        :leadingIcon="CheckIcon"
+        @click="$emit('submit')"
+        :disabled="statusButton"
+      >
         {{ editmode ? 'บันทึกการแก้ไข' : 'เพิ่มตำแหน่งงาน' }}
       </BaseButton>
       <BaseButton negative @click="$emit('cancel', position)">
@@ -93,6 +94,10 @@ const props = defineProps({
     required: true
   },
   editmode: {
+    type: Boolean,
+    default: false
+  },
+  statusButton: {
     type: Boolean,
     default: false
   }

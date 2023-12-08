@@ -87,27 +87,17 @@
             </h2>
             <div class="flex flex-col gap-1 xl:flex-row xl:space-x-6">
               <BaseItem :icon="BriefcaseIcon">
-                {{
-                  post.rangeData.workMonth.all.length > 1 &&
-                  post.rangeData.workMonth.min != post.rangeData.workMonth.max
-                    ? `${post.rangeData.workMonth.min} - ${post.rangeData.workMonth.max} เดือน`
-                    : `${post.rangeData.workMonth.all[0]} เดือน`
-                }}
+                {{ showRangeData(post.rangeData, 'workMonth') }}
               </BaseItem>
               <BaseItem :icon="CurrencyDollarIcon">
-                {{
-                  post.rangeData.salary.all.length > 1 &&
-                  post.rangeData.salary.min != post.rangeData.salary.max
-                    ? `${post.rangeData.salary.min} - ${post.rangeData.salary.max} บาทต่อวัน`
-                    : `${post.rangeData.salary.all[0]} บาท/วัน`
-                }}
+                {{ showRangeData(post.rangeData, 'salary') }}
               </BaseItem>
               <BaseItem :icon="MapPinIcon">{{
-                `${post.address.subDistrict} ${post.address.district}, ${post.address.city} ${post.address.postalCode} `
+                `${post.address.subDistrict} - ${post.address.district}, ${post.address.city} ${post.address.postalCode} `
               }}</BaseItem>
             </div>
             <div class="hidden text-sm text-gray-400 sm:flex">
-              {{ cutDescription(post.postDesc, 200) }}
+              {{ cutDescription(post.postDesc.replace(/<[^>]*>/g, ' '), 200) }}
             </div>
 
             <div
@@ -209,6 +199,32 @@ const setMinMax = (positionList, postIndex) => {
     listPost.value[postIndex].rangeData = rangeData
   }
 }
+// --- show text max-min workMonth and salary ---
+const showRangeData = (postRangeData, fieldName) => {
+  let text
+  if (fieldName === 'workMonth') {
+    if (postRangeData.workMonth.all[0] != null) {
+      postRangeData.workMonth.all.length > 1 &&
+      postRangeData.workMonth.min != postRangeData.workMonth.max
+        ? (text = `${postRangeData.workMonth.min} - ${postRangeData.workMonth.max} เดือน`)
+        : (text = `${postRangeData.workMonth.all[0]} เดือน`)
+    } else {
+      return (text = 'ไม่ระบุ')
+    }
+  }
+
+  if (fieldName === 'salary') {
+    if (postRangeData.salary.all.length != 0) {
+      postRangeData.salary.all.length > 1 &&
+      postRangeData.salary.min != postRangeData.salary.max
+        ? (text = `${postRangeData.salary.min} - ${postRangeData.salary.max} บาทต่อวัน`)
+        : (text = `${postRangeData.salary.all[0]} บาท/วัน`)
+    } else {
+      return (text = 'ไม่ระบุ')
+    }
+  }
+  return text
+}
 
 // --- Pagination ---
 const changePage = () => {
@@ -267,7 +283,7 @@ const changeStarButton = () => {
 }
 
 // -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
-const statusClosedDate = (postCloseDate, postIdex) => {
+const statusClosedDate = (postCloseDate) => {
   if (postCloseDate == null) {
     return { text: 'เปิดรับตลอด', color: 'green' }
   } else {

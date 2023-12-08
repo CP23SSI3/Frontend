@@ -47,7 +47,7 @@
         leave-to-class="opacity-0"
       >
         <ListboxOptions
-          class="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-36 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+          class="absolute z-10 w-full py-1 mt-1 ml-0 overflow-auto text-base bg-white rounded-md shadow-lg max-h-52 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
         >
           <ListboxOption
             as="template"
@@ -59,7 +59,7 @@
             <li
               :class="[
                 active ? 'bg-blue-600 text-white' : 'text-gray-900',
-                'relative  select-none py-2 pl-3 pr-9 cursor-pointer'
+                'relative  select-none py-2 pl-3 pr-6 cursor-pointer'
               ]"
             >
               <div class="flex items-center">
@@ -85,10 +85,10 @@
                 v-if="selected && modelValue.value != '' && option.id != 0"
                 :class="[
                   active ? 'text-white' : 'text-blue-600',
-                  'absolute inset-y-0 right-0 flex items-center pr-4'
+                  'absolute inset-y-0 right-0 flex items-center pr-5'
                 ]"
               >
-                <CheckIcon class="w-5 h-5" aria-hidden="true" />
+                <CheckIcon class="w-5 h-5 -mr-4" aria-hidden="true" />
               </span>
             </li>
           </ListboxOption>

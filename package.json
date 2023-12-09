@@ -2,16 +2,12 @@
   "name": "nuxt-app",
   "private": true,
   "scripts": {
-    "build": "nuxt build --port 80",
+    "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-<<<<<<< HEAD
-    "start": "nuxt start --port 80"
-=======
     "start": "nuxt start"
->>>>>>> develop
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",

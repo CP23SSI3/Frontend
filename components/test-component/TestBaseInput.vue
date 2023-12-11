@@ -79,6 +79,7 @@ const data = ref({
   search: '',
   count: '',
   number: '',
+  workMonth: { amount: null, unit: 'เดือน' },
   phone: ''
 })
 

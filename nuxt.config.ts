@@ -14,17 +14,27 @@ export default defineNuxtConfig({
     }
   },
   // ใช้ต่อ api ใน .env
-  // runtimeConfig: {
-  //   public: {
-  //     API_URL: process.env.API_URL,
-  //   },
-  // },
+  runtimeConfig: {
+    public: {
+      API_URL: process.env.API_URL,
+      KEY_API_MAP: process.env.KEY_API_GOOGLE_MAP
+    }
+  },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) =>
+        ['OtherComponents', 'QuillEditor', 'Dialog', 'DialogPanel'].includes(
+          tag
+        )
+    }
+  },
 
   app: {
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
-      title: 'InternHub'
+      title: 'InternHub',
+      link: [{ rel: 'icon', type: 'svg', href: '/internhub-icon.svg' }]
     }
   }
 })

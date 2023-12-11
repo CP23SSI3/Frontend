@@ -12,13 +12,15 @@
       {{ label }}
     </BaseLabel>
 
-    <div class="relative mt-1">
+    <div class="relative z-20 mt-1">
       <ListboxButton
         :disabled="disabled"
         :class="
           disabled
             ? 'bg-gray-100 boder-gray-200 text-gray-400 min-h-[36px]'
-            : 'bg-white text-gray-900 '
+            : modelValue.id == 0
+            ? 'bg-white text-gray-400'
+            : 'bg-white text-gray-900'
         "
         class="relative w-full cursor-default rounded-md py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 sm:text-sm sm:leading-6"
       >
@@ -45,7 +47,7 @@
         leave-to-class="opacity-0"
       >
         <ListboxOptions
-          class="absolute z-10 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-36 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+          class="absolute z-10 w-full py-1 mt-1 ml-0 overflow-auto text-base bg-white rounded-md shadow-lg max-h-52 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
         >
           <ListboxOption
             as="template"
@@ -57,7 +59,7 @@
             <li
               :class="[
                 active ? 'bg-blue-600 text-white' : 'text-gray-900',
-                'relative  select-none py-2 pl-3 pr-9 cursor-pointer'
+                'relative  select-none py-2 pl-3 pr-6 cursor-pointer'
               ]"
             >
               <div class="flex items-center">
@@ -69,23 +71,24 @@
                 /> -->
                 <span
                   :class="[
-                    selected && modelValue.value != ''
+                    selected && modelValue.value != '' && option.id != 0
                       ? 'font-semibold'
                       : 'font-normal',
-                    ' block truncate'
+                    'block truncate',
+                    option.id == 0 ? 'text-gray-400' : ''
                   ]"
                   >{{ option.text }}</span
                 >
               </div>
 
               <span
-                v-if="selected && modelValue.value != ''"
+                v-if="selected && modelValue.value != '' && option.id != 0"
                 :class="[
                   active ? 'text-white' : 'text-blue-600',
-                  'absolute inset-y-0 right-0 flex items-center pr-4'
+                  'absolute inset-y-0 right-0 flex items-center pr-5'
                 ]"
               >
-                <CheckIcon class="w-5 h-5" aria-hidden="true" />
+                <CheckIcon class="w-5 h-5 -mr-4" aria-hidden="true" />
               </span>
             </li>
           </ListboxOption>
@@ -128,5 +131,5 @@ defineProps({
   }
 })
 
-defineEmits(['update:modelValue'])
+defineEmits(['update:modelValue', 'reset'])
 </script>

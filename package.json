@@ -2,11 +2,12 @@
   "name": "nuxt-app",
   "private": true,
   "scripts": {
-    "build": "nuxt build",
+    "build": "nuxt build --port 80",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "start": "nuxt start --host 0.0.0.0 --port 80"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
@@ -24,9 +25,11 @@
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.16",
+    "@hennge/vue3-pagination": "^1.0.17",
     "@heroicons/vue": "^2.0.18",
     "@vueform/multiselect": "^2.6.2",
     "@vuepic/vue-datepicker": "^7.1.0",
+    "@vueup/vue-quill": "^1.2.0",
     "moment": "^2.29.4",
     "sweetalert2": "^11.7.31",
     "tailwindcss": "^3.3.3",

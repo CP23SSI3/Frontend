@@ -242,15 +242,15 @@ const navigation = ref([
   {
     name: 'Internship',
     href: '/internship'
-  },
-  {
-    name: 'Component',
-    href: '/components'
-  },
-  {
-    name: 'Test',
-    href: '/test'
   }
+  // {
+  //   name: 'Component',
+  //   href: '/components'
+  // },
+  // {
+  //   name: 'Test',
+  //   href: '/test'
+  // }
 ])
 </script>
 

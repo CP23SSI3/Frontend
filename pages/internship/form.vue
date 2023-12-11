@@ -511,7 +511,11 @@
       </ContainerForm>
 
       <div class="flex justify-between gap-2">
-        <BaseButton :leadingIcon="TrashIcon" negative @click="gotoBack()"
+        <BaseButton
+          :leadingIcon="TrashIcon"
+          type="button"
+          negative
+          @click="gotoBack()"
           >Cancel</BaseButton
         >
         <BaseButton

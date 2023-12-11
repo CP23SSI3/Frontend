@@ -141,4 +141,10 @@ const options = [
 const listPosition = ['Frontend', 'Backend', 'Developer', 'Infrastructure']
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.multiselect-blue {
+  --ms-tag-bg: #dbeafe;
+  --ms-tag-color: #2563eb;
+  --ms-ring-color: rgba(56, 189, 248, 0.2);
+}
+</style>

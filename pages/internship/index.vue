@@ -179,7 +179,6 @@ const setMinMax = (positionList, postIndex) => {
     }
   }
   if (positionList) {
-    console.log(positionList)
     positionList.forEach((num) => {
       if (num.workMonth !== null) {
         rangeData.workMonth.all.push(num.workMonth)
@@ -197,7 +196,6 @@ const setMinMax = (positionList, postIndex) => {
       rangeData.salary.min = Math.min.apply(Math, rangeData.salary.all)
       rangeData.salary.max = Math.max.apply(Math, rangeData.salary.all)
     }
-    console.log(rangeData)
     listPost.value[postIndex].rangeData = rangeData
   } else {
     listPost.value[postIndex].rangeData = rangeData
@@ -284,7 +282,6 @@ const getPost = async () => {
       loading.value = false
     }
   } catch (error) {
-    console.log(error)
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,

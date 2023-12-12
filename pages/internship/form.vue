@@ -883,7 +883,7 @@ const getGeoLication = async () => {
       address.longitude = response.results[0].geometry.location.lng
         .toString()
         .substring(0, 11)
-      console.log(address.latitude + ',' + address.longitude)
+      // console.log(address.latitude + ',' + address.longitude)
     } else {
       // console.log('Unable to locate this location.')
       Swal.fire({
@@ -964,15 +964,6 @@ function checkTextOnly(value, error_message) {
     return ''
   }
 }
-function checkClosingDate(date) {
-  console.log(statusClosingDate.value)
-  let currentDay = new Date()
-  if (statusClosingDate.value && date > currentDay) {
-    return true
-  } else {
-    return false
-  }
-}
 
 // --- check validate : yup ---
 const phoneRegExp =
@@ -1039,7 +1030,7 @@ const submitForm = async () => {
   setDocument()
   setPostTag()
   await getGeoLication()
-  console.log(form.value)
+  // console.log(form.value)
   let error_message = checkValidate()
 
   if (error_message != null) {

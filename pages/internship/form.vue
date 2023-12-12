@@ -878,8 +878,12 @@ const getGeoLication = async () => {
     let response = res.value
     if (response.status == 'OK') {
       address.latitude = response.results[0].geometry.location.lat
+        .toString()
+        .substring(0, 11)
       address.longitude = response.results[0].geometry.location.lng
-      console.log(address.latitude + ',' + address.longitude)
+        .toString()
+        .substring(0, 11)
+      // console.log(address.latitude + ',' + address.longitude)
     } else {
       // console.log('Unable to locate this location.')
       Swal.fire({
@@ -960,15 +964,6 @@ function checkTextOnly(value, error_message) {
     return ''
   }
 }
-function checkClosingDate(date) {
-  console.log(statusClosingDate.value)
-  let currentDay = new Date()
-  if (statusClosingDate.value && date > currentDay) {
-    return true
-  } else {
-    return false
-  }
-}
 
 // --- check validate : yup ---
 const phoneRegExp =
@@ -979,7 +974,7 @@ const schema = yup.object({
 
   //positionList: positionList.legnth > 0
   openPositionTitle: yup.string().max(50),
-  openPositionDesc: yup.string().max(300),
+  openPositionDesc: yup.string().max(200),
   workMonth: yup.number().typeError().nullable().positive(),
   salary: yup.number().typeError().nullable().positive(),
   openPositionNum: yup.number().typeError().nullable().positive().integer(),
@@ -1035,7 +1030,7 @@ const submitForm = async () => {
   setDocument()
   setPostTag()
   await getGeoLication()
-  console.log(form.value)
+  // console.log(form.value)
   let error_message = checkValidate()
 
   if (error_message != null) {
@@ -1081,42 +1076,6 @@ const createPost = async () => {
 }
 
 const back = () => router.push({ path: '/internship' })
-
-const form1 = ref({
-  title: '[Test]:ประกาศฝึกงาน',
-  closedDate: null,
-  coordinatorName: '[Test]คุณ HR แสนดี',
-  postDesc:
-    '<h2><strong>หัวเรื่อง</strong></h2><ol><li>งานที่จะให้ทำสำหรับ Frontend</li><li>งานที่จะให้ทำสำหรับ Backend</li></ol>',
-  postWelfare:
-    '[Test]Competitive stipend/salary for the duration of the internship. Comprehensive mentorship program to guide your professional development. Networking opportunities with industry leaders.Access to [Company] resources and facilities.Inclusive and supportive work environment.',
-  enrolling:
-    '[Test]How to Apply:Send your resume and a brief cover letter highlighting your motivation and relevant skills to [email@example.com] by [Application Deadline]. Join us on this exciting journey of discovery and development. Your future career starts here!',
-  documents: null,
-  tel: '0983651319',
-  email: 'email@example.com',
-  address: {
-    country: 'Thailand',
-    postalCode: '10150',
-    city: 'กรุงเทพมหานคร',
-    district: 'บางขุนเทียน',
-    subDistrict: 'แสมดำ',
-    area: '160 ถนนพระราม 2',
-    latitude: null,
-    longitude: null
-  },
-
-  workStartTime: '',
-  workEndTime: '',
-  workDay: ['mon', 'tue', 'wed', 'thu', 'fri'],
-  workType: 'HYBRID',
-  comp: {
-    compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
-  },
-  openPositionList: [],
-  postUrl: '',
-  postTagList: []
-})
 </script>
 
 <style lang="scss" scoped>

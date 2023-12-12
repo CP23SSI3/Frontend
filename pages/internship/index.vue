@@ -179,9 +179,12 @@ const setMinMax = (positionList, postIndex) => {
     }
   }
   if (positionList) {
+    console.log(positionList)
     positionList.forEach((num) => {
-      rangeData.workMonth.all.push(num.workMonth)
-      if (num.salary) {
+      if (num.workMonth !== null) {
+        rangeData.workMonth.all.push(num.workMonth)
+      }
+      if (num.salary !== null) {
         rangeData.salary.all.push(num.salary)
       }
     })
@@ -194,6 +197,7 @@ const setMinMax = (positionList, postIndex) => {
       rangeData.salary.min = Math.min.apply(Math, rangeData.salary.all)
       rangeData.salary.max = Math.max.apply(Math, rangeData.salary.all)
     }
+    console.log(rangeData)
     listPost.value[postIndex].rangeData = rangeData
   } else {
     listPost.value[postIndex].rangeData = rangeData
@@ -203,22 +207,40 @@ const setMinMax = (positionList, postIndex) => {
 const showRangeData = (postRangeData, fieldName) => {
   let text
   if (fieldName === 'workMonth') {
-    if (postRangeData.workMonth.all[0] != null) {
-      postRangeData.workMonth.all.length > 1 &&
-      postRangeData.workMonth.min != postRangeData.workMonth.max
-        ? (text = `${postRangeData.workMonth.min} - ${postRangeData.workMonth.max} เดือน`)
+    if (postRangeData.workMonth.all.length == 1) {
+      postRangeData.workMonth.all[0] === 0
+        ? (text = 'ไม่ระบุ')
         : (text = `${postRangeData.workMonth.all[0]} เดือน`)
+    } else if (postRangeData.workMonth.all.length > 1) {
+      if (postRangeData.workMonth.min != postRangeData.workMonth.max) {
+        postRangeData.workMonth.min == 0
+          ? (text = `${postRangeData.workMonth.max} เดือน`)
+          : (text = `${postRangeData.workMonth.min} - ${postRangeData.workMonth.max} เดือน`)
+      } else {
+        postRangeData.workMonth.min == 0
+          ? (text = 'ไม่ระบุ')
+          : (text = `${postRangeData.workMonth.min} เดือน`)
+      }
     } else {
       return (text = 'ไม่ระบุ')
     }
   }
 
   if (fieldName === 'salary') {
-    if (postRangeData.salary.all.length != 0) {
-      postRangeData.salary.all.length > 1 &&
-      postRangeData.salary.min != postRangeData.salary.max
-        ? (text = `${postRangeData.salary.min} - ${postRangeData.salary.max} บาทต่อวัน`)
+    if (postRangeData.salary.all.length == 1) {
+      postRangeData.salary.all[0] === 0
+        ? (text = 'ไม่ระบุ')
         : (text = `${postRangeData.salary.all[0]} บาท/วัน`)
+    } else if (postRangeData.salary.all.length > 1) {
+      if (postRangeData.salary.min != postRangeData.salary.max) {
+        postRangeData.salary.min == 0
+          ? (text = `${postRangeData.salary.max} บาท/วัน`)
+          : (text = `${postRangeData.salary.min} - ${postRangeData.salary.max} บาท/วัน`)
+      } else {
+        postRangeData.salary.min == 0
+          ? (text = 'ไม่ระบุ')
+          : (text = `${postRangeData.salary.min} บาท/วัน`)
+      }
     } else {
       return (text = 'ไม่ระบุ')
     }
@@ -310,93 +332,6 @@ function cutDescription(description, maxLength) {
   } else {
     return description
   }
-}
-
-// -- check field --
-const data = {
-  number: 0,
-  size: 10,
-  totalPages: 1,
-  totalElements: 1,
-  content: [
-    {
-      address: {
-        // addressId: '9346a466-4a82-4037-ab00-72ba24fa50bf',
-        // area: '17 Chan road',
-        city: 'Bangkok',
-        country: 'Thailand',
-        district: 'Sathorn',
-        // latitude: 13.705368,
-        // longitude: 100.5331527,
-        postalCode: '10120',
-        subDistrict: 'ThungWatDon'
-      },
-      closedDate: null,
-      comp: {
-        // address: {
-        //   addressId: '9346a466-4a82-4037-ab00-72ba24fa50bf',
-        //   area: '17 Chan road',
-        //   city: 'Bangkok',
-        //   country: 'Thailand',
-        //   district: 'Sathorn',
-        //   latitude: 13.705368,
-        //   longitude: 100.5331527,
-        //   postalCode: '10120',
-        //   subDistrict: 'ThungWatDon'
-        // },
-        // compDesc:
-        //   'This is a compDesc as an example. Hope we will be able to make a move soon',
-        compId: '8e20782f-2807-4f13-a11e-0fb9ff955488',
-        compLogoKey: 'https://www.google.com',
-        compName: 'Test company',
-        compUrl: 'https://www.google.com'
-        // createdDate: '2023-10-04T13:30:00',
-        // defaultWelfare:
-        //   'Lorem for the welfare for this company, This is the example script only',
-        // lastActive: '2023-10-04T13:30:00',
-        // lastUpdate: '2023-10-04T13:30:00'
-      },
-      // coordinatorName: 'Vichuta Pipoppinyo',
-      createdDate: '2023-10-04T13:30:00',
-      // documents: ['portfolio', 'resume', 'cv'],
-      // email: 'nice.vct@mail.kmutt.ac.th',
-      // enrolling:
-      //   'ติดต่อไนซ์ วิชชุตา พิภพภิญโญสำหรับข้อมูลเพิ่มเติม กรุณาติดต่อผ่านอีเมลที่ระบุเอาไว้เท่านั้น',
-      lastUpdateDate: '2023-10-05T13:30:00',
-      openPositionList: [
-        {
-          // openPositionDesc: 'Working on Frontend mainly, using React',
-          //     openPositionId: '24526070-68cf-48ff-8d02-29e9d05aeda2',
-          // openPositionNum: 4,
-          openPositionTitle: 'Frontend Developer',
-          salary: 300,
-          workMonth: 6
-        },
-        {
-          //     openPositionDesc: 'Open position - for Java or Kotlin',
-          //     openPositionId: '72d02945-9f1b-401a-9809-b10aff9406cc',
-          //     openPositionNum: 2,
-          openPositionTitle: 'Backend developer',
-          salary: 250,
-          workMonth: 4
-        }
-      ],
-      // postDesc:
-      //   'ประกาศรับฝึกงานด่วนที่สุดแต่ตลอดทั้งปี นี่คือส่วนหนึ่งของตัวอย่างรายละเอียดข้อมูล',
-      postId: 'eba83fe4-937b-4054-a420-d977534feebe',
-      postTagList: ['Backend developer', 'Frontend developer'],
-      postUrl: 'https://www.wikipedia.org/',
-      // postWelfare: 'สวัสดิการพื้นฐาน : กินขนมฟรี ข้าวฟรี ไม่มีเงินเดือน',
-      status: 'OPENED',
-      // tel: '012-345-6789',
-      title: 'ประกาศรับฝึกงาน ด่วนที่สุด บริษัทตามใจฉัน',
-      // totalView: 125,
-      // workDay: ['mon', 'tue', 'wed', 'thu', 'fri'],
-      // workEndTime: '17:30:00',
-      // workStartTime: '09:30:00',
-      workType: 'HYBRID'
-    }
-  ]
 }
 </script>
 

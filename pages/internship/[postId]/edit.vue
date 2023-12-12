@@ -927,7 +927,11 @@ const getGeoLication = async () => {
     let response = res.value
     if (response.status == 'OK') {
       address.latitude = response.results[0].geometry.location.lat
+        .toString()
+        .substring(0, 11)
       address.longitude = response.results[0].geometry.location.lng
+        .toString()
+        .substring(0, 11)
       console.log(address.latitude + ',' + address.longitude)
     } else {
       // console.log('Unable to locate this location.')
@@ -1039,7 +1043,7 @@ const schema = yup.object({
 
   //positionList: positionList.legnth > 0
   openPositionTitle: yup.string().max(50),
-  openPositionDesc: yup.string().max(300),
+  openPositionDesc: yup.string().max(200),
   workMonth: yup.number().typeError().nullable().positive(),
   salary: yup.number().typeError().nullable().positive(),
   openPositionNum: yup.number().typeError().nullable().positive().integer(),

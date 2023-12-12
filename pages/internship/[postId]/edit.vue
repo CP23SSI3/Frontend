@@ -602,10 +602,8 @@ const getListPositionTag = async () => {
       res.value.data.forEach((item) => {
         listPositionTag.value.push(item.positionTagName)
       })
-      // console.log(listPositionTag.value)
     }
   } catch (error) {
-    // console.log(error)
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,
@@ -633,7 +631,6 @@ const position = ref({
   workMonth: null
 })
 const checkNull = () => {
-  console.log('check null')
   position.value.workMonth ? '' : (position.value.workMonth = null)
   position.value.salary ? '' : (position.value.salary = null)
   position.value.openPositionNum ? '' : (position.value.openPositionNum = null)
@@ -819,7 +816,6 @@ const myAddress = ref({
   tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
 })
 const { data } = await useFetch('/api/locations-thai')
-// console.log(data.value)
 const provinceList = ref([])
 const getProvince = () => {
   let list = []
@@ -927,8 +923,12 @@ const getGeoLication = async () => {
     let response = res.value
     if (response.status == 'OK') {
       address.latitude = response.results[0].geometry.location.lat
+        .toString()
+        .substring(0, 11)
       address.longitude = response.results[0].geometry.location.lng
-      console.log(address.latitude + ',' + address.longitude)
+        .toString()
+        .substring(0, 11)
+      // console.log(address.latitude + ',' + address.longitude)
     } else {
       // console.log('Unable to locate this location.')
       Swal.fire({
@@ -999,10 +999,10 @@ setupWorkTime() // workStartTime, workEndTime ---> workTime
 setupClosedDate() // closeedDate ---> closingDate, statusClosingDate
 setupMyAddress() // address ---> myAddress
 
-console.log('props')
-console.log(props.post)
-console.log('form')
-console.log(form.value)
+// console.log('props')
+// console.log(props.post)
+// console.log('form')
+// console.log(form.value)
 // console.log('initialValues')
 // console.log(initialValues.value)
 
@@ -1039,7 +1039,7 @@ const schema = yup.object({
 
   //positionList: positionList.legnth > 0
   openPositionTitle: yup.string().max(50),
-  openPositionDesc: yup.string().max(300),
+  openPositionDesc: yup.string().max(200),
   workMonth: yup.number().typeError().nullable().positive(),
   salary: yup.number().typeError().nullable().positive(),
   openPositionNum: yup.number().typeError().nullable().positive().integer(),
@@ -1093,8 +1093,7 @@ const submitForm = async () => {
   setWorkTime()
   setOpenPositionList()
   await getGeoLication()
-  console.log('edit')
-  console.log(form.value)
+  // console.log(form.value)
   let error_message = checkValidate()
   if (error_message != null) {
     Swal.fire({
@@ -1111,7 +1110,6 @@ const submitForm = async () => {
 }
 
 const savePost = async () => {
-  console.log(form.value)
   try {
     const res = await updatePost(postId, form.value)
     if (res.value) {

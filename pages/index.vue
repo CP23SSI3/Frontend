@@ -5,7 +5,11 @@
         class="px-6 pt-10 pb-24 sm:pb-32 lg:col-span-7 lg:px-0 lg:pb-56 lg:pt-48 xl:col-span-6"
       >
         <div class="max-w-2xl mx-auto lg:mx-0">
-          <img class="h-10" src="/InternHub-logo-light.svg" alt="InternHub" />
+          <img
+            class="h-10"
+            src="../public/InternHub-logo-light.svg"
+            alt="InternHub"
+          />
           <!-- <div class="hidden sm:mt-32 sm:flex lg:mt-16">
             <div
               class="relative px-3 py-1 text-sm leading-6 text-gray-500 rounded-full ring-1 ring-gray-900/10 hover:ring-gray-900/20"
@@ -46,7 +50,7 @@
       >
         <img
           class="aspect-[3/2] w-full bg-gray-50 object-cover lg:absolute lg:inset-0 lg:aspect-auto lg:h-full"
-          src="/landing-2.png"
+          src="../public/landing-2.png"
           alt=""
         />
       </div>

@@ -9,7 +9,7 @@
                 <NuxtLink href="/">
                   <nuxt-img
                     class="w-auto h-11"
-                    src="/InternHub-logo.svg"
+                    src="../public/InternHub-logo.svg"
                     alt="InternHub"
                 /></NuxtLink>
               </div>

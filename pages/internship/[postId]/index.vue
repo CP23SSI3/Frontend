@@ -11,7 +11,7 @@
           alt="Your Company"
         />
 
-        <div class="flex flex-col-reverse lg:flex-col lg:pr-[300px]">
+        <div class="flex flex-col-reverse lg:flex-col lg:pr-[350px]">
           <h2 class="text-lg font-semibold lg:text-lg">
             {{ post.title }}
           </h2>

@@ -40,11 +40,13 @@
               <!-- * add Logo Company -->
               <nuxt-img
                 class="w-10 h-10 rounded-full shadow-md lg:w-12 lg:h-12 lg:rounded-sm bg-gray-50"
-                src="/logo-test.png"
+                src="../public/logo-test.png"
                 :alt="post.comp.compName"
               />
               <div class="flex flex-col-reverse lg:flex-col">
-                <h2 class="hidden text-sm font-semibold lg:flex lg:text-lg">
+                <h2
+                  class="hidden max-w-2xl text-sm font-semibold lg:flex lg:text-lg"
+                >
                   {{ post.title }}
                 </h2>
 
@@ -86,7 +88,7 @@
               {{ post.title }}
             </h2>
             <div class="flex flex-col gap-1 xl:flex-row xl:space-x-6">
-              <BaseItem :icon="BriefcaseIcon">
+              <BaseItem :icon="ClockIcon">
                 {{ showRangeData(post.rangeData, 'workMonth') }}
               </BaseItem>
               <BaseItem :icon="CurrencyDollarIcon">
@@ -150,14 +152,11 @@
 
 <script setup>
 import {
-  BriefcaseIcon,
   CurrencyDollarIcon,
   MapPinIcon,
   Bars3BottomLeftIcon,
-  ArrowPathIcon,
-  ArrowLongRightIcon,
-  ArrowLongLeftIcon,
-  StarIcon as ActiveStarIcon
+  StarIcon as ActiveStarIcon,
+  ClockIcon
 } from '@heroicons/vue/20/solid'
 import { StarIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
 import FilterCompenent from '~/components/filter/FilterCompenent.vue'
@@ -208,16 +207,16 @@ const showRangeData = (postRangeData, fieldName) => {
     if (postRangeData.workMonth.all.length == 1) {
       postRangeData.workMonth.all[0] === 0
         ? (text = 'ไม่ระบุ')
-        : (text = `${postRangeData.workMonth.all[0]} เดือน`)
+        : (text = `รับฝึก ${postRangeData.workMonth.all[0]} เดือน`)
     } else if (postRangeData.workMonth.all.length > 1) {
       if (postRangeData.workMonth.min != postRangeData.workMonth.max) {
         postRangeData.workMonth.min == 0
-          ? (text = `${postRangeData.workMonth.max} เดือน`)
-          : (text = `${postRangeData.workMonth.min} - ${postRangeData.workMonth.max} เดือน`)
+          ? (text = `รับฝึก ${postRangeData.workMonth.max} เดือน`)
+          : (text = `รับฝึก ${postRangeData.workMonth.min} - ${postRangeData.workMonth.max} เดือน`)
       } else {
         postRangeData.workMonth.min == 0
           ? (text = 'ไม่ระบุ')
-          : (text = `${postRangeData.workMonth.min} เดือน`)
+          : (text = `รับฝึก ${postRangeData.workMonth.min} เดือน`)
       }
     } else {
       return (text = 'ไม่ระบุ')

@@ -1,6 +1,6 @@
 <template>
   <span
-    class="inline-flex items-center gap-x-1.5 rounded-full px-1.5 py-0.5 text-xs font-medium"
+    class="inline-flex items-center gap-x-1.5 rounded-full px-1.5 py-0.5 text-xs font-medium min-w-fit"
     :class="[styleColor]"
   >
     <svg

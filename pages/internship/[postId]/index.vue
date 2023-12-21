@@ -42,7 +42,10 @@
           @click="changeStarButton()"
           ><span class="w-auto text-gray-700">Favorite</span></BaseButton
         >
-        <BaseButton :trailingIcon="ShareIcon" class="w-full sm:w-auto"
+        <BaseButton
+          :trailingIcon="ShareIcon"
+          class="w-full sm:w-auto"
+          @click="copyLinkToClipboard()"
           >Share</BaseButton
         >
       </div>
@@ -212,6 +215,42 @@ const props = defineProps({
 })
 
 post.value = props?.post
+
+useSeoMeta({
+  title: 'InternHub - ' + props.title,
+  ogTitle: props.title,
+  description: props.description,
+  ogDescription: props.description,
+  ogImage: '../../../public/InternHub-logo.svg'
+})
+
+// -- share --
+const copyLinkToClipboard = () => {
+  const currentUrl = window.location.href // Replace with your actual link
+
+  navigator.clipboard
+    .writeText(currentUrl)
+    .then(() => {
+      Swal.fire({
+        showConfirmButton: true,
+        timerProgressBar: true,
+        confirmButtonColor: 'blue',
+        icon: 'success',
+        title: 'Link copied to clipboard',
+        text: 'คัดลอกลิ้งค์ สำเร็จ'
+      })
+    })
+    .catch((error) => {
+      Swal.fire({
+        showConfirmButton: true,
+        timerProgressBar: true,
+        confirmButtonColor: 'red',
+        icon: 'error',
+        title: 'Unable to copy link to clipboard',
+        text: error
+      })
+    })
+}
 
 // const getPostDetail = async () => {
 //   loading.value = true

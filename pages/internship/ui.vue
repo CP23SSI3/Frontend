@@ -1,439 +1,473 @@
-<!--
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
--->
 <template>
-  <form>
-    <div class="space-y-12">
-      <div
-        class="grid grid-cols-1 pb-12 border-b gap-x-8 gap-y-10 border-gray-900/10 md:grid-cols-3"
-      >
-        <div>
-          <h2 class="text-base font-semibold leading-7 text-gray-900">
-            Profile
-          </h2>
-          <p class="mt-1 text-sm leading-6 text-gray-600">
-            This information will be displayed publicly so be careful what you
-            share.
-          </p>
-        </div>
-
-        <div
-          class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2"
-        >
-          <div class="sm:col-span-4">
-            <label
-              for="website"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >Website</label
-            >
-            <div class="mt-2">
-              <div
-                class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md"
-              >
-                <span
-                  class="flex items-center pl-3 text-gray-500 select-none sm:text-sm"
-                  >http://</span
-                >
-                <input
-                  type="text"
-                  name="website"
-                  id="website"
-                  class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                  placeholder="www.example.com"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="col-span-full">
-            <label
-              for="about"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >About</label
-            >
-            <div class="mt-2">
-              <textarea
-                id="about"
-                name="about"
-                rows="3"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-            <p class="mt-3 text-sm leading-6 text-gray-600">
-              Write a few sentences about yourself.
-            </p>
-          </div>
-
-          <div class="col-span-full">
-            <label
-              for="photo"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >Photo</label
-            >
-            <div class="flex items-center mt-2 gap-x-3">
-              <UserCircleIcon
-                class="w-12 h-12 text-gray-300"
-                aria-hidden="true"
-              />
-              <button
-                type="button"
-                class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-              >
-                Change
-              </button>
-            </div>
-          </div>
-
-          <div class="col-span-full">
-            <label
-              for="cover-photo"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >Cover photo</label
-            >
-            <div
-              class="flex justify-center px-6 py-10 mt-2 border border-dashed rounded-lg border-gray-900/25"
-            >
-              <div class="text-center">
-                <PhotoIcon
-                  class="w-12 h-12 mx-auto text-gray-300"
-                  aria-hidden="true"
-                />
-                <div class="flex mt-4 text-sm leading-6 text-gray-600">
-                  <label
-                    for="file-upload"
-                    class="relative font-semibold text-indigo-600 bg-white rounded-md cursor-pointer focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                  >
-                    <span>Upload a file</span>
-                    <input
-                      id="file-upload"
-                      name="file-upload"
-                      type="file"
-                      class="sr-only"
-                    />
-                  </label>
-                  <p class="pl-1">or drag and drop</p>
-                </div>
-                <p class="text-xs leading-5 text-gray-600">
-                  PNG, JPG, GIF up to 10MB
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="grid grid-cols-1 pb-12 border-b gap-x-8 gap-y-10 border-gray-900/10 md:grid-cols-3"
-      >
-        <div>
-          <h2 class="text-base font-semibold leading-7 text-gray-900">
-            Personal Information
-          </h2>
-          <p class="mt-1 text-sm leading-6 text-gray-600">
-            Use a permanent address where you can receive mail.
-          </p>
-        </div>
-
-        <div
-          class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2"
-        >
-          <div class="sm:col-span-3">
-            <label
-              for="first-name"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >First name</label
-            >
-            <div class="mt-2">
-              <input
-                type="text"
-                name="first-name"
-                id="first-name"
-                autocomplete="given-name"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <div class="sm:col-span-3">
-            <label
-              for="last-name"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >Last name</label
-            >
-            <div class="mt-2">
-              <input
-                type="text"
-                name="last-name"
-                id="last-name"
-                autocomplete="family-name"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <div class="sm:col-span-4">
-            <label
-              for="email"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >Email address</label
-            >
-            <div class="mt-2">
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autocomplete="email"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <div class="sm:col-span-3">
-            <label
-              for="country"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >Country</label
-            >
-            <div class="mt-2">
-              <select
-                id="country"
-                name="country"
-                autocomplete="country-name"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-              >
-                <option>United States</option>
-                <option>Canada</option>
-                <option>Mexico</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="col-span-full">
-            <label
-              for="street-address"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >Street address</label
-            >
-            <div class="mt-2">
-              <input
-                type="text"
-                name="street-address"
-                id="street-address"
-                autocomplete="street-address"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <div class="sm:col-span-2 sm:col-start-1">
-            <label
-              for="city"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >City</label
-            >
-            <div class="mt-2">
-              <input
-                type="text"
-                name="city"
-                id="city"
-                autocomplete="address-level2"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <div class="sm:col-span-2">
-            <label
-              for="region"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >State / Province</label
-            >
-            <div class="mt-2">
-              <input
-                type="text"
-                name="region"
-                id="region"
-                autocomplete="address-level1"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-
-          <div class="sm:col-span-2">
-            <label
-              for="postal-code"
-              class="block text-sm font-medium leading-6 text-gray-900"
-              >ZIP / Postal code</label
-            >
-            <div class="mt-2">
-              <input
-                type="text"
-                name="postal-code"
-                id="postal-code"
-                autocomplete="postal-code"
-                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="grid grid-cols-1 pb-12 border-b gap-x-8 gap-y-10 border-gray-900/10 md:grid-cols-3"
-      >
-        <div>
-          <h2 class="text-base font-semibold leading-7 text-gray-900">
-            Notifications
-          </h2>
-          <p class="mt-1 text-sm leading-6 text-gray-600">
-            We'll always let you know about important changes, but you pick what
-            else you want to hear about.
-          </p>
-        </div>
-
-        <div class="max-w-2xl space-y-10 md:col-span-2">
-          <fieldset>
-            <legend class="text-sm font-semibold leading-6 text-gray-900">
-              By Email
-            </legend>
-            <div class="mt-6 space-y-6">
-              <div class="relative flex gap-x-3">
-                <div class="flex items-center h-6">
-                  <input
-                    id="comments"
-                    name="comments"
-                    type="checkbox"
-                    class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-600"
-                  />
-                </div>
-                <div class="text-sm leading-6">
-                  <label for="comments" class="font-medium text-gray-900"
-                    >Comments</label
-                  >
-                  <p class="text-gray-500">
-                    Get notified when someones posts a comment on a posting.
-                  </p>
-                </div>
-              </div>
-              <div class="relative flex gap-x-3">
-                <div class="flex items-center h-6">
-                  <input
-                    id="candidates"
-                    name="candidates"
-                    type="checkbox"
-                    class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-600"
-                  />
-                </div>
-                <div class="text-sm leading-6">
-                  <label for="candidates" class="font-medium text-gray-900"
-                    >Candidates</label
-                  >
-                  <p class="text-gray-500">
-                    Get notified when a candidate applies for a job.
-                  </p>
-                </div>
-              </div>
-              <div class="relative flex gap-x-3">
-                <div class="flex items-center h-6">
-                  <input
-                    id="offers"
-                    name="offers"
-                    type="checkbox"
-                    class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-600"
-                  />
-                </div>
-                <div class="text-sm leading-6">
-                  <label for="offers" class="font-medium text-gray-900"
-                    >Offers</label
-                  >
-                  <p class="text-gray-500">
-                    Get notified when a candidate accepts or rejects an offer.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend class="text-sm font-semibold leading-6 text-gray-900">
-              Push Notifications
-            </legend>
-            <p class="mt-1 text-sm leading-6 text-gray-600">
-              These are delivered via SMS to your mobile phone.
-            </p>
-            <div class="mt-6 space-y-6">
-              <div class="flex items-center gap-x-3">
-                <input
-                  id="push-everything"
-                  name="push-notifications"
-                  type="radio"
-                  class="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-600"
-                />
-                <label
-                  for="push-everything"
-                  class="block text-sm font-medium leading-6 text-gray-900"
-                  >Everything</label
-                >
-              </div>
-              <div class="flex items-center gap-x-3">
-                <input
-                  id="push-email"
-                  name="push-notifications"
-                  type="radio"
-                  class="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-600"
-                />
-                <label
-                  for="push-email"
-                  class="block text-sm font-medium leading-6 text-gray-900"
-                  >Same as email</label
-                >
-              </div>
-              <div class="flex items-center gap-x-3">
-                <input
-                  id="push-nothing"
-                  name="push-notifications"
-                  type="radio"
-                  class="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-600"
-                />
-                <label
-                  for="push-nothing"
-                  class="block text-sm font-medium leading-6 text-gray-900"
-                  >No push notifications</label
-                >
-              </div>
-            </div>
-          </fieldset>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex items-center justify-end mt-6 gap-x-6">
+  <div
+    x-show="open"
+    x-transition:enter="transition ease-in-out duration-300 transform"
+    x-transition:enter-start="translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    x-transition:leave="transition ease-in-out duration-300 transform"
+    x-transition:leave-start="translate-x-0"
+    x-transition:leave-end="translate-x-full"
+    x-description="Off-canvas menu, show/hide based on off-canvas menu state."
+    class="relative flex flex-col w-full h-full max-w-xs py-4 pb-12 ml-auto overflow-y-auto bg-white shadow-xl"
+    @click.away="open = false"
+  >
+    <div class="flex items-center justify-between px-4">
+      <h2 class="text-lg font-medium text-gray-900">Filters</h2>
       <button
         type="button"
-        class="text-sm font-semibold leading-6 text-gray-900"
+        class="flex items-center justify-center w-10 h-10 p-2 -mr-2 text-gray-400 bg-white rounded-md"
+        @click="open = false"
       >
-        Cancel
-      </button>
-      <button
-        type="submit"
-        class="px-3 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-      >
-        Save
+        <span class="sr-only">Close menu</span>
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
       </button>
     </div>
-  </form>
+
+    <!-- Filters -->
+    <form class="mt-4 border-t border-gray-200">
+      <h3 class="sr-only">Categories</h3>
+      <ul role="list" class="px-2 py-3 font-medium text-gray-900">
+        <li>
+          <a href="#" class="block px-2 py-3">Totes</a>
+        </li>
+        <li>
+          <a href="#" class="block px-2 py-3">Backpacks</a>
+        </li>
+        <li>
+          <a href="#" class="block px-2 py-3">Travel Bags</a>
+        </li>
+        <li>
+          <a href="#" class="block px-2 py-3">Hip Bags</a>
+        </li>
+        <li>
+          <a href="#" class="block px-2 py-3">Laptop Sleeves</a>
+        </li>
+      </ul>
+
+      <div x-data="{ open: false }" class="px-4 py-6 border-t border-gray-200">
+        <h3 class="flow-root -mx-2 -my-3">
+          <button
+            type="button"
+            x-description="Expand/collapse section button"
+            class="flex items-center justify-between w-full px-2 py-3 text-gray-400 bg-white hover:text-gray-500"
+            aria-controls="filter-section-mobile-0"
+            @click="open = !open"
+            aria-expanded="false"
+            x-bind:aria-expanded="open.toString()"
+          >
+            <span class="font-medium text-gray-900">Color</span>
+            <span class="flex items-center ml-6">
+              <svg
+                class="w-5 h-5"
+                x-description="Expand icon, show/hide based on section open state."
+                x-show="!(open)"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"
+                ></path>
+              </svg>
+              <svg
+                class="w-5 h-5"
+                x-description="Collapse icon, show/hide based on section open state."
+                x-show="open"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+                style="display: none"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </span>
+          </button>
+        </h3>
+        <div
+          class="pt-6"
+          x-description="Filter section, show/hide based on section state."
+          id="filter-section-mobile-0"
+          x-show="open"
+          style="display: none"
+        >
+          <div class="space-y-6">
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-color-0"
+                name="color[]"
+                value="white"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-color-0"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >White</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-color-1"
+                name="color[]"
+                value="beige"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-color-1"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >Beige</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-color-2"
+                name="color[]"
+                value="blue"
+                type="checkbox"
+                checked=""
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-color-2"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >Blue</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-color-3"
+                name="color[]"
+                value="brown"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-color-3"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >Brown</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-color-4"
+                name="color[]"
+                value="green"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-color-4"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >Green</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-color-5"
+                name="color[]"
+                value="purple"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-color-5"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >Purple</label
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div x-data="{ open: false }" class="px-4 py-6 border-t border-gray-200">
+        <h3 class="flow-root -mx-2 -my-3">
+          <button
+            type="button"
+            x-description="Expand/collapse section button"
+            class="flex items-center justify-between w-full px-2 py-3 text-gray-400 bg-white hover:text-gray-500"
+            aria-controls="filter-section-mobile-1"
+            @click="open = !open"
+            aria-expanded="false"
+            x-bind:aria-expanded="open.toString()"
+          >
+            <span class="font-medium text-gray-900">Category</span>
+            <span class="flex items-center ml-6">
+              <svg
+                class="w-5 h-5"
+                x-description="Expand icon, show/hide based on section open state."
+                x-show="!(open)"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"
+                ></path>
+              </svg>
+              <svg
+                class="w-5 h-5"
+                x-description="Collapse icon, show/hide based on section open state."
+                x-show="open"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+                style="display: none"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </span>
+          </button>
+        </h3>
+        <div
+          class="pt-6"
+          x-description="Filter section, show/hide based on section state."
+          id="filter-section-mobile-1"
+          x-show="open"
+          style="display: none"
+        >
+          <div class="space-y-6">
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-category-0"
+                name="category[]"
+                value="new-arrivals"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-category-0"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >New Arrivals</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-category-1"
+                name="category[]"
+                value="sale"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-category-1"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >Sale</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-category-2"
+                name="category[]"
+                value="travel"
+                type="checkbox"
+                checked=""
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-category-2"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >Travel</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-category-3"
+                name="category[]"
+                value="organization"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-category-3"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >Organization</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-category-4"
+                name="category[]"
+                value="accessories"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-category-4"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >Accessories</label
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <div x-data="{ open: false }" class="px-4 py-6 border-t border-gray-200">
+        <h3 class="flow-root -mx-2 -my-3">
+          <button
+            type="button"
+            x-description="Expand/collapse section button"
+            class="flex items-center justify-between w-full px-2 py-3 text-gray-400 bg-white hover:text-gray-500"
+            aria-controls="filter-section-mobile-2"
+            @click="open = !open"
+            aria-expanded="false"
+            x-bind:aria-expanded="open.toString()"
+          >
+            <span class="font-medium text-gray-900">Size</span>
+            <span class="flex items-center ml-6">
+              <svg
+                class="w-5 h-5"
+                x-description="Expand icon, show/hide based on section open state."
+                x-show="!(open)"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"
+                ></path>
+              </svg>
+              <svg
+                class="w-5 h-5"
+                x-description="Collapse icon, show/hide based on section open state."
+                x-show="open"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+                style="display: none"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </span>
+          </button>
+        </h3>
+        <div
+          class="pt-6"
+          x-description="Filter section, show/hide based on section state."
+          id="filter-section-mobile-2"
+          x-show="open"
+          style="display: none"
+        >
+          <div class="space-y-6">
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-size-0"
+                name="size[]"
+                value="2l"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-size-0"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >2L</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-size-1"
+                name="size[]"
+                value="6l"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-size-1"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >6L</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-size-2"
+                name="size[]"
+                value="12l"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-size-2"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >12L</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-size-3"
+                name="size[]"
+                value="18l"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-size-3"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >18L</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-size-4"
+                name="size[]"
+                value="20l"
+                type="checkbox"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-size-4"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >20L</label
+              >
+            </div>
+            <div class="flex items-center">
+              <input
+                id="filter-mobile-size-5"
+                name="size[]"
+                value="40l"
+                type="checkbox"
+                checked=""
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="filter-mobile-size-5"
+                class="flex-1 min-w-0 ml-3 text-gray-500"
+                >40L</label
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script setup>
-import { PhotoIcon, UserCircleIcon } from '@heroicons/vue/24/solid'
+definePageMeta({
+  layout: 'test'
+})
 </script>
+
+<style lang="scss" scoped></style>

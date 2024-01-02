@@ -246,7 +246,7 @@ const navigation = ref([
   // {
   //   name: 'Component',
   //   href: '/components'
-  // },
+  // }
   // {
   //   name: 'Test',
   //   href: '/test'

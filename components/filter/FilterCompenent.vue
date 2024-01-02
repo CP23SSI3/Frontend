@@ -1,144 +1,168 @@
 <template>
   <!-- Filter -->
-  <BaseSectionContent
-    class="hidden col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col"
-  >
-    <div class="space-y-4">
-      <div class="flex items-center justify-between">
-        <BaseTitleForm>Search</BaseTitleForm>
-        <BaseItem
-          @click="clearSearch"
-          class="cursor-pointer hover:text-gray-800"
-          :icon="ArrowPathIcon"
-          >clear</BaseItem
-        >
-      </div>
-      <BaseInput
-        label="Search"
-        type="search"
-        id="search"
-        placeholder="name company, post"
-        :iconInput="MagnifyingGlassIcon"
-        v-model="filter.search"
-      ></BaseInput>
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <BaseTitleForm>Filter</BaseTitleForm>
+      <BaseItem
+        @click="clearSearchValue()"
+        type="reset"
+        class="mr-10 cursor-pointer lg:mr-0 hover:text-gray-800"
+        :icon="ArrowPathIcon"
+        >clear</BaseItem
+      >
+    </div>
+    <BaseInput
+      label="คำที่ต้องการค้นหา"
+      type="search"
+      id="search"
+      placeholder="ค้นหา..."
+      :iconInput="MagnifyingGlassIcon"
+      v-model="filter.search"
+    ></BaseInput>
+    <div>
+      <BaseLabel id="postTag" :icon="TagIcon">Tags</BaseLabel>
+      <Multiselect
+        v-model="filter.postTag"
+        mode="tags"
+        :close-on-select="false"
+        :searchable="true"
+        :create-option="false"
+        :options="listPositionTag"
+        class="multiselect-blue"
+      />
+    </div>
+
+    <BaseLine />
+    <div class="flex flex-col gap-4">
       <BaseDropdown
-        :option-lists="categoryLists"
-        label="หมวดหมู่งาน"
-        v-model="filter.category"
+        :option-lists="statusLists"
+        label="การรับสมัคร"
+        v-model="filter.status"
       >
       </BaseDropdown>
-
-      <div>
-        <!-- *search by portTagList -->
-        <BaseLabel id="position">ชื่อตำแหน่งงาน</BaseLabel>
+      <div class="space-y-1">
+        <BaseLabel id="postTag" :icon="MapPinIcon">สถานที่ฝึกงาน</BaseLabel>
         <Multiselect
-          v-model="filter.position"
+          v-model="filter.location"
           mode="tags"
+          placeholder="เขต - จังหวัด"
           :close-on-select="false"
           :searchable="true"
-          :create-option="true"
-          :options="options"
+          :create-option="false"
+          :options="listLocation"
+          :max="3"
           class="multiselect-blue"
         />
-      </div>
-      <BaseLine />
-      <div class="flex flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <BaseTitleForm>Filter</BaseTitleForm>
-          <BaseItem
-            @click="clearFilter"
-            class="cursor-pointer hover:text-gray-800"
-            :icon="ArrowPathIcon"
-            >clear</BaseItem
-          >
-        </div>
-
-        <BaseInputGroup
-          label="ระยะเวลาที่ทำงาน"
-          id="price"
-          type="number"
-          :icon="BriefcaseIcon"
-          v-model:amount="filter.workMonth.amount"
-          v-model:unit="filter.workMonth.unit"
-          unitSelect
-        ></BaseInputGroup>
-
-        <BaseInput
-          label="สถานที่ฝึกงาน"
-          id="location"
-          :icon="MapPinIcon"
-          placeholder="ชื่อจังหวัด / แขวง / เขต"
-          v-model="filter.location"
-        ></BaseInput>
-
-        <BaseDropdown
-          :option-lists="statusLists"
-          label="การรับสมัคร"
-          v-model="filter.status"
+        <span class="text-xs text-gray-400"
+          >พิมพ์เพื่อค้นหา และเลือกสูงสุด 3 เขต</span
         >
-        </BaseDropdown>
       </div>
+
+      <BaseInput
+        label="ระยะเวลาที่ทำงาน (ขั้นต่ำ)"
+        id="workMonth"
+        type="number"
+        :icon="ClockIcon"
+        unit="เดือน"
+        v-model="filter.workMonth"
+      ></BaseInput>
+      <BaseInput
+        label="ค่าตอบแทน (ขั้นต่ำ)"
+        id="price"
+        type="number"
+        :icon="CurrencyDollarIcon"
+        unit="บาท/วัน"
+        v-model="filter.salary"
+      ></BaseInput>
     </div>
-  </BaseSectionContent>
+    <BaseButton full @click="search()">ค้นหา</BaseButton>
+  </div>
 </template>
 
 <script setup>
 import {
-  BriefcaseIcon,
+  ClockIcon,
   CurrencyDollarIcon,
   MapPinIcon,
-  Bars3BottomLeftIcon,
   MagnifyingGlassIcon,
   ArrowPathIcon,
-  ArrowLongRightIcon,
-  ArrowLongLeftIcon,
+  TagIcon,
   StarIcon as ActiveStarIcon
 } from '@heroicons/vue/20/solid'
+
+const statusLists = [
+  { id: 0, text: '--เลือก--' },
+  { id: 1, text: 'เปิดรับตลอด', color: 'fill-green-500' },
+  { id: 2, text: 'ยังไม่ปิดรับสมัคร', color: 'fill-gray-500' },
+  { id: 3, text: 'ปิดรับสมัครแล้ว', color: 'fill-red-500' },
+  { id: 4, text: 'ใกล้ปิดรับสมัคร', color: 'fill-yellow-500' }
+]
+
+// -- Search Zone --
 const filter = ref({
   search: '',
-  category: { id: 0, text: '--เลือกหมวดหมู่--', value: 'default' },
-  position: [],
-  workMonth: { amount: null, unit: 'เดือน' },
-  salaryRange: { min: 300, max: 600 },
-  location: '',
-  status: { id: 0, text: '--เลือก--', value: 'default' }
+  postTag: [],
+  location: [],
+  workMonth: null,
+  salary: null,
+  status: { id: 0, text: '--เลือก--' }
 })
 
-const clearSearch = () => {
-  filter.value.search = ''
-  filter.value.category = { id: 0, text: '--เลือกหมวดหมู่--', value: 'default' }
-  filter.value.position = []
+const clearSearchValue = () => {
+  filter.value = {
+    search: '',
+    postTag: [],
+    location: [],
+    workMonth: null,
+    salary: null,
+    status: { id: 0, text: '--เลือก--' }
+  }
 }
 
-const clearFilter = () => {
-  filter.value.workMonth = { amount: null, unit: 'เดือน' }
-  filter.value.salaryRange = { min: 300, max: 600 }
-  filter.value.location = ''
-  filter.value.status = { id: 0, text: '--เลือก--', value: 'default' }
+// --- GET : position-tag (postTag) ---
+const listPositionTag = ref([])
+const getListPositionTag = async () => {
+  listPositionTag.value = []
+  try {
+    const res = await usePositionTag()
+    if (res.value.status === 200) {
+      console.log(res.value.message)
+      res.value.data.forEach((item) => {
+        listPositionTag.value.push(item.positionTagName)
+      })
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'Error',
+      text: 'get /position-tag ใช้งานไม่ได้'
+    })
+  }
 }
+await getListPositionTag()
 
-const categoryLists = [
-  { id: 0, text: '--เลือกหมวดหมู่--', value: 'default' },
-  { id: 1, text: 'ไอที', value: 'IT' },
-  { id: 2, text: 'งานช่าง', value: 'Engineer' },
-  { id: 3, text: 'บัญชี', value: 'Accountant' }
-]
-const statusLists = [
-  { id: 0, text: '--เลือก--', value: 'default' },
-  { id: 1, text: 'เปิดรับตลอด', value: true },
-  { id: 2, text: 'ใกล้ปิดรับสมัคร', value: false }
-]
+const listLocation = ref([])
+const { data } = await useFetch('/api/locations-thai')
 
-const options = [
-  'Frontend',
-  'Backend',
-  'UX/UI',
-  'Developer',
-  'Dev',
-  'Full stack'
-]
+const setListLocation = () => {
+  data.value.forEach((city) => {
+    listLocation.value.push(city.name_th)
+  })
+  data.value.forEach((city) => {
+    city.amphure.forEach((district) => {
+      let text = district.name_th + ' - ' + city.name_th
+      listLocation.value.push(text)
+    })
+  })
+}
+setListLocation()
 
-const listPosition = ['Frontend', 'Backend', 'Developer', 'Infrastructure']
+const search = () => {
+  console.log(filter.value)
+}
 </script>
 
 <style lang="scss" scoped>

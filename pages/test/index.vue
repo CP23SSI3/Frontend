@@ -33,7 +33,6 @@
     <NuxtLink href="/test/nuxtapi"
       >Get ชื่อจังหวัด/เขต/แขวงประเทศไทย (Nuxt API)</NuxtLink
     >
-
     <input type="search" v-model="searchValue" />
     {{ searchValue }}
     <button @click="reset()">reset</button>

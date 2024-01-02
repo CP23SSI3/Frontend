@@ -1,7 +1,11 @@
 <template>
-  <div class="grid items-start grid-cols-4 gap-6">
+  <div class="grid items-start grid-cols-4 gap-4">
     <!-- Filter -->
-    <FilterCompenent />
+    <BaseSectionContent
+      class="hidden col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col"
+    >
+      <FilterCompenent />
+    </BaseSectionContent>
 
     <!-- List Post -->
     <div
@@ -17,11 +21,66 @@
           </h1>
           <!-- total element -->
           <span class="text-sm text-gray-400">{{ totalItems }} posts</span>
+          <button
+            type="button"
+            class="p-2 -m-2 text-gray-400 hover:text-gray-500 lg:hidden"
+            @click="openFilter()"
+          >
+            <span class="sr-only">Filters</span>
+
+            <FunnelIcon class="w-5 h-5" aria-hidden="true" />
+          </button>
         </div>
         <NuxtLink :to="{ path: '/internship/form' }">
-          <BaseButton :leadingIcon="PlusCircleIcon">Add Post</BaseButton>
+          <BaseButton :leadingIcon="PlusCircleIcon" class="w-full md:w-auto"
+            >Add Post</BaseButton
+          >
         </NuxtLink>
       </div>
+      <!-- Sidebar for Mobile -->
+
+      <!-- <div class="absolute top-0 right-0 h-full bg-white w-60">
+        Filter Sidebar Mobile
+      </div> -->
+      <!-- <div class="flex items-center justify-center w-screen h-screen"> -->
+      <!-- <div
+          @click="openFilter()"
+          class="px-5 py-2 text-sm text-gray-500 border border-gray-300 rounded cursor-pointer hover:bg-gray-100"
+        >
+          Toggle Slide-over
+        </div> -->
+      <div
+        id="slideover-container"
+        :class="[
+          'fixed inset-0 w-full h-full z-40',
+          filterMobile ? '' : 'invisible'
+        ]"
+      >
+        <div
+          id="slideover-bg"
+          :class="[
+            'absolute inset-0 w-full h-full transition-all duration-500 ease-out bg-gray-900 ',
+            filterMobile ? 'opacity-50' : 'opacity-0'
+          ]"
+        ></div>
+        <div
+          id="slideover"
+          :class="[
+            'absolute top-16 right-0 h-full transition-all duration-300 ease-out bg-white md:w-96 w-80',
+            filterMobile ? '' : 'translate-x-full'
+          ]"
+        >
+          <div
+            class="absolute top-0 right-0 flex items-center justify-center w-8 h-8 mt-5 mr-5 text-gray-600 cursor-pointer"
+          >
+            <XMarkIcon class="w-10 h-10" @click="closeFilter()"></XMarkIcon>
+          </div>
+          <div class="col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col">
+            <FilterCompenent />
+          </div>
+        </div>
+      </div>
+      <!-- </div> -->
 
       <!-- List -->
       <BaseLoading v-if="loading" />
@@ -156,12 +215,23 @@ import {
   MapPinIcon,
   Bars3BottomLeftIcon,
   StarIcon as ActiveStarIcon,
-  ClockIcon
+  ClockIcon,
+  FunnelIcon,
+  XMarkIcon
 } from '@heroicons/vue/20/solid'
 import { StarIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
 import FilterCompenent from '~/components/filter/FilterCompenent.vue'
 import moment from 'moment'
 import Swal from 'sweetalert2'
+
+// -- Filter : Mobile  --
+const filterMobile = ref(false)
+const openFilter = () => {
+  filterMobile.value = true
+}
+const closeFilter = () => {
+  filterMobile.value = false
+}
 
 // ---- SET : MIN-MAX ของระยะการฝึกงาน, ค่าตอบแทนของแต่ละ post ----
 const setMinMax = (positionList, postIndex) => {

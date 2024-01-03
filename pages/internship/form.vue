@@ -1022,7 +1022,7 @@ const checkValidate = () => {
   }
   return error_message
 }
-
+const loading = ref(false)
 const submitForm = async () => {
   setClosedDate()
   setWorkTime()
@@ -1043,12 +1043,15 @@ const submitForm = async () => {
       text: error_message
     })
   } else {
-    await createPost()
+    if (!loading.value) {
+      await createPost()
+    }
   }
 }
 
 const createPost = async () => {
   try {
+    loading.value = true
     const res = await createNewPost(form.value)
 
     if (res.value) {

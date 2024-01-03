@@ -30,10 +30,10 @@
       </div>
       <div class="flex items-center gap-2 sm:absolute sm:right-0">
         <BaseBadge
-          :color="statusClosedDate(post.closedDate).color"
+          :color="statusClosedDate(post.status, post.closedDate).color"
           class="absolute top-0 right-0 sm:static sm:right-auto sm:top-auto"
         >
-          {{ statusClosedDate(post.closedDate).text }}
+          {{ statusClosedDate(post.status, post.closedDate).text }}
         </BaseBadge>
         <BaseButton
           :leadingIcon="statusStar ? ActiveStarIcon : StarIcon"
@@ -274,27 +274,40 @@ const copyLinkToClipboard = () => {
 // await getPostDetail()
 
 // -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
-const statusClosedDate = (postCloseDate) => {
-  if (postCloseDate == null) {
-    return { text: 'เปิดรับตลอด', color: 'green' }
-  } else {
-    let endDate = new Date(new Date(postCloseDate).setHours(23, 59, 0, 0))
-    let closedDate = moment(endDate).format('DD/MM/YYYY')
-    if (new Date() > endDate) {
+const statusClosedDate = (postStatus, postClosedDate) => {
+  // if (postCloseDate == null) {
+  //   return { text: 'เปิดรับตลอด', color: 'green' }
+  // } else {
+  //   let endDate = new Date(new Date(postCloseDate).setHours(23, 59, 0, 0))
+  //   let closedDate = moment(endDate).format('DD/MM/YYYY')
+  //   if (new Date() > endDate) {
+  //     return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
+  //   } else {
+  //     // ถ้ายังไม่เลยวันที่ปิดรับสมัคร ดูว่าใกล้ปิดภายใน 7 วันหรือไม่
+  //     if (
+  //       new Date(moment(endDate).subtract(7, 'days')) <= new Date() &&
+  //       new Date() <= endDate
+  //     ) {
+  //       return { text: 'ปิดรับสมัคร ' + closedDate, color: 'yellow' }
+  //     }
+  //     return { text: 'ปิดรับสมัคร ' + closedDate }
+  //   }
+  // }
+  let closedDate
+  if (postClosedDate != null) {
+    closedDate = moment(new Date(postClosedDate)).format('DD/MM/YYYY')
+  }
+  switch (postStatus) {
+    case 'ALWAYS_OPENED':
+      return { text: 'เปิดรับตลอด', color: 'green' }
+    case 'OPENED':
+      return { text: closedDate ? 'ปิดรับสมัคร ' + closedDate : 'ปิดรับสมัคร' }
+    case 'CLOSED':
       return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
-    } else {
-      // ถ้ายังไม่เลยวันที่ปิดรับสมัคร ดูว่าใกล้ปิดภายใน 7 วันหรือไม่
-      if (
-        new Date(moment(endDate).subtract(7, 'days')) <= new Date() &&
-        new Date() <= endDate
-      ) {
-        return { text: 'ปิดรับสมัคร ' + closedDate, color: 'yellow' }
-      }
-      return { text: 'ปิดรับสมัคร ' + closedDate }
-    }
+    case 'NEARLY_CLOSED':
+      return { text: 'ปิดรับสมัคร ' + closedDate, color: 'yellow' }
   }
 }
-
 // --- Favorite Button ---
 const statusStar = ref(false)
 const changeStarButton = () => {

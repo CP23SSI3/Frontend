@@ -4,7 +4,11 @@
     <BaseSectionContent
       class="hidden col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col"
     >
-      <FilterCompenent />
+      <FilterCompenent
+        :filter="filter"
+        @cancel="clearFilterValue()"
+        @search="search()"
+      />
     </BaseSectionContent>
 
     <!-- List Post -->
@@ -38,17 +42,6 @@
         </NuxtLink>
       </div>
       <!-- Sidebar for Mobile -->
-
-      <!-- <div class="absolute top-0 right-0 h-full bg-white w-60">
-        Filter Sidebar Mobile
-      </div> -->
-      <!-- <div class="flex items-center justify-center w-screen h-screen"> -->
-      <!-- <div
-          @click="openFilter()"
-          class="px-5 py-2 text-sm text-gray-500 border border-gray-300 rounded cursor-pointer hover:bg-gray-100"
-        >
-          Toggle Slide-over
-        </div> -->
       <div
         id="slideover-container"
         :class="[
@@ -62,6 +55,7 @@
             'absolute inset-0 w-full h-full transition-all duration-500 ease-out bg-gray-900 ',
             filterMobile ? 'opacity-50' : 'opacity-0'
           ]"
+          @click="closeFilter()"
         ></div>
         <div
           id="slideover"
@@ -76,7 +70,11 @@
             <XMarkIcon class="w-10 h-10" @click="closeFilter()"></XMarkIcon>
           </div>
           <div class="col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col">
-            <FilterCompenent />
+            <FilterCompenent
+              :filter="filter"
+              @cancel="clearFilterValue()"
+              @search="search()"
+            />
           </div>
         </div>
       </div>
@@ -123,10 +121,10 @@
             </div>
             <div class="flex gap-2">
               <BaseBadge
-                :color="statusClosedDate(post.closedDate).color"
+                :color="statusClosedDate(post.status, post.closedDate).color"
                 class="hidden sm:flex"
               >
-                {{ statusClosedDate(post.closedDate).text }}
+                {{ statusClosedDate(post.status, post.closedDate).text }}
               </BaseBadge>
 
               <!-- *เดี๋ยวมาทำ statusStar ผูกกับ Object Post -->
@@ -194,7 +192,12 @@
       </div>
 
       <!-- Pagination -->
-      <div class="p-4 bg-white">
+      <div v-if="listPost.length == 0 && !loading" class="flex justify-center">
+        <BaseButton :leading-icon="ArrowPathIcon" outline @click="refresh()"
+          >Refresh</BaseButton
+        >
+      </div>
+      <div class="p-4 bg-white" v-else>
         <v-pagination
           v-show="!loading"
           v-model="pagination.currentPage"
@@ -217,7 +220,8 @@ import {
   StarIcon as ActiveStarIcon,
   ClockIcon,
   FunnelIcon,
-  XMarkIcon
+  XMarkIcon,
+  ArrowPathIcon
 } from '@heroicons/vue/20/solid'
 import { StarIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
 import FilterCompenent from '~/components/filter/FilterCompenent.vue'
@@ -231,6 +235,37 @@ const openFilter = () => {
 }
 const closeFilter = () => {
   filterMobile.value = false
+}
+
+const filter = ref({
+  search: '',
+  postTag: [],
+  location: '',
+  workMonth: null,
+  salary: null,
+  status: { id: 1, text: 'เปิดอยู่', color: 'fill-gray-500' }
+})
+
+const clearFilterValue = () => {
+  filter.value = {
+    search: '',
+    postTag: [],
+    location: '',
+    workMonth: null,
+    salary: null,
+    status: { id: 0, text: '--เลือก--' }
+  }
+}
+
+const refresh = () => {
+  clearFilterValue()
+  getPost()
+}
+
+const search = () => {
+  closeFilter()
+  console.log(filter.value)
+  getPost()
 }
 
 // ---- SET : MIN-MAX ของระยะการฝึกงาน, ค่าตอบแทนของแต่ละ post ----
@@ -335,7 +370,8 @@ const getPost = async () => {
   try {
     const res = await usePost({
       page: pagination.value.currentPage - 1,
-      pageSize: pagination.value.itemPerPages
+      pageSize: pagination.value.itemPerPages,
+      q: filter.value.search
     })
     if (res.value) {
       let data = res.value.data

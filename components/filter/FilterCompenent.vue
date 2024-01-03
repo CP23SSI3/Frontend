@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between">
       <BaseTitleForm>Filter</BaseTitleForm>
       <BaseItem
-        @click="clearSearchValue()"
+        @click="$emit('cancel')"
         type="reset"
         class="mr-10 cursor-pointer lg:mr-0 hover:text-gray-800"
         :icon="ArrowPathIcon"
@@ -29,6 +29,8 @@
         :create-option="false"
         :options="listPositionTag"
         class="multiselect-blue"
+        :max="5"
+        noResultsText="-- ไม่พบข้อมูล --"
       />
     </div>
 
@@ -42,7 +44,7 @@
       </BaseDropdown>
       <div class="space-y-1">
         <BaseLabel id="postTag" :icon="MapPinIcon">สถานที่ฝึกงาน</BaseLabel>
-        <Multiselect
+        <!-- <Multiselect
           v-model="filter.location"
           mode="tags"
           placeholder="เขต - จังหวัด"
@@ -52,9 +54,20 @@
           :options="listLocation"
           :max="3"
           class="multiselect-blue"
+        /> -->
+        <Multiselect
+          v-model="filter.location"
+          :searchable="true"
+          :close-on-select="true"
+          :create-option="false"
+          :show-labels="false"
+          :options="listLocation"
+          :max="1"
+          class="singleselect-blue"
+          noResultsText="-- ไม่พบข้อมูล --"
         />
         <span class="text-xs text-gray-400"
-          >พิมพ์เพื่อค้นหา และเลือกสูงสุด 3 เขต</span
+          >พิมพ์ ชื่อจังหวัด, เขต เพื่อค้นหา</span
         >
       </div>
 
@@ -75,7 +88,7 @@
         v-model="filter.salary"
       ></BaseInput>
     </div>
-    <BaseButton full @click="search()">ค้นหา</BaseButton>
+    <BaseButton full @click="$emit('search')">ค้นหา</BaseButton>
   </div>
 </template>
 
@@ -91,33 +104,19 @@ import {
 } from '@heroicons/vue/20/solid'
 
 const statusLists = [
-  { id: 0, text: '--เลือก--' },
-  { id: 1, text: 'เปิดรับตลอด', color: 'fill-green-500' },
-  { id: 2, text: 'ยังไม่ปิดรับสมัคร', color: 'fill-gray-500' },
-  { id: 3, text: 'ปิดรับสมัครแล้ว', color: 'fill-red-500' },
-  { id: 4, text: 'ใกล้ปิดรับสมัคร', color: 'fill-yellow-500' }
+  { id: 1, text: 'เปิดอยู่', color: 'fill-gray-500' },
+  { id: 2, text: 'เปิดรับตลอด', color: 'fill-green-500' },
+  { id: 3, text: 'ใกล้ปิดรับสมัคร', color: 'fill-yellow-500' },
+  { id: 4, text: 'ปิดรับสมัคร', color: 'fill-red-500' }
 ]
-
-// -- Search Zone --
-const filter = ref({
-  search: '',
-  postTag: [],
-  location: [],
-  workMonth: null,
-  salary: null,
-  status: { id: 0, text: '--เลือก--' }
+const props = defineProps({
+  filter: {
+    type: Object,
+    required: true
+  }
 })
 
-const clearSearchValue = () => {
-  filter.value = {
-    search: '',
-    postTag: [],
-    location: [],
-    workMonth: null,
-    salary: null,
-    status: { id: 0, text: '--เลือก--' }
-  }
-}
+defineEmits(['cancel', 'search'])
 
 // --- GET : position-tag (postTag) ---
 const listPositionTag = ref([])
@@ -150,10 +149,8 @@ const { data } = await useFetch('/api/locations-thai')
 const setListLocation = () => {
   data.value.forEach((city) => {
     listLocation.value.push(city.name_th)
-  })
-  data.value.forEach((city) => {
     city.amphure.forEach((district) => {
-      let text = district.name_th + ' - ' + city.name_th
+      let text = district.name_th + ', ' + city.name_th
       listLocation.value.push(text)
     })
   })
@@ -161,7 +158,7 @@ const setListLocation = () => {
 setListLocation()
 
 const search = () => {
-  console.log(filter.value)
+  console.log(props.filter)
 }
 </script>
 
@@ -169,6 +166,11 @@ const search = () => {
 .multiselect-blue {
   --ms-tag-bg: #dbeafe;
   --ms-tag-color: #2563eb;
+  --ms-ring-color: rgba(56, 189, 248, 0.2);
+}
+
+.singleselect-blue {
+  --ms-option-bg-selected: #2563eb;
   --ms-ring-color: rgba(56, 189, 248, 0.2);
 }
 </style>

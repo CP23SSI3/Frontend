@@ -1,10 +1,10 @@
 <template>
   <span
-    class="inline-flex items-center gap-x-1.5 rounded-full px-1.5 py-0.5 text-xs font-medium min-w-fit"
+    class="inline-flex items-center gap-x-1.5 rounded-full px-[6px] py-[2px] sm:px-1.5 sm:py-0.5 text-[10px] sm:text-xs font-medium min-w-fit"
     :class="[styleColor]"
   >
     <svg
-      class="h-1.5 w-1.5"
+      class="h-1 w-1 sm:h-1.5 sm:w-1.5"
       :class="[styleFillColor]"
       viewBox="0 0 6 6"
       aria-hidden="true"

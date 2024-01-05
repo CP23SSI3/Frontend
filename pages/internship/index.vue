@@ -8,6 +8,8 @@
         :filter="filter"
         @cancel="clearFilterValue()"
         @search="search()"
+        @setLocation="setFilterLocation()"
+        @clearLocation="clearFilterLocation()"
       />
     </BaseSectionContent>
 
@@ -70,10 +72,13 @@
             <XMarkIcon class="w-10 h-10" @click="closeFilter()"></XMarkIcon>
           </div>
           <div class="col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col">
+            <!-- filter for mobile size -->
             <FilterCompenent
               :filter="filter"
               @cancel="clearFilterValue()"
               @search="search()"
+              @setLocation="setFilterLocation()"
+              @clearLocation="clearFilterLocation()"
             />
           </div>
         </div>
@@ -107,7 +112,9 @@
                   {{ post.title }}
                 </h2>
 
-                <div class="flex items-center gap-2">
+                <div
+                  class="flex flex-col gap-0 sm:gap-2 item-start sm:items-center sm:flex-row"
+                >
                   <div class="text-sm font-semibold leading-6 text-gray-600">
                     {{ post.comp.compName }}
                   </div>
@@ -115,6 +122,14 @@
                     {{
                       moment(new Date(post.lastUpdateDate)).format('DD/MM/YYYY')
                     }}
+                    <BaseBadge
+                      :color="
+                        statusClosedDate(post.status, post.closedDate).color
+                      "
+                      class="flex sm:hidden"
+                    >
+                      {{ statusClosedDate(post.status, post.closedDate).text }}
+                    </BaseBadge>
                   </span>
                 </div>
               </div>
@@ -240,26 +255,52 @@ const closeFilter = () => {
 const filter = ref({
   search: '',
   postTag: [],
-  location: '',
+  location: null,
+  status: { id: 1, text: 'เปิดอยู่', color: 'fill-gray-500', value: 'OPENED' },
   workMonth: null,
   salary: null,
-  status: { id: 1, text: 'เปิดอยู่', color: 'fill-gray-500' }
+  city: null,
+  district: null
 })
 
 const clearFilterValue = () => {
   filter.value = {
     search: '',
     postTag: [],
-    location: '',
+    location: null,
+    status: {
+      id: 1,
+      text: 'เปิดอยู่',
+      color: 'fill-gray-500',
+      value: 'OPENED'
+    },
     workMonth: null,
     salary: null,
-    status: { id: 0, text: '--เลือก--' }
+    city: null,
+    district: null
   }
 }
 
 const refresh = () => {
   clearFilterValue()
   getPost()
+}
+
+const setFilterLocation = () => {
+  let location = filter.value.location
+  if (location.includes(',')) {
+    let array = location.split(',')
+    filter.value.city = array[1].trim()
+    filter.value.district = array[0]
+  } else {
+    filter.value.city = location
+    filter.value.district = null
+  }
+}
+
+const clearFilterLocation = () => {
+  filter.value.city = null
+  filter.value.district = null
 }
 
 const search = () => {
@@ -371,7 +412,9 @@ const getPost = async () => {
     const res = await usePost({
       page: pagination.value.currentPage - 1,
       pageSize: pagination.value.itemPerPages,
-      q: filter.value.search
+      q: filter.value.search,
+      city: filter.value.city,
+      district: filter.value.district
     })
     if (res.value) {
       let data = res.value.data
@@ -408,37 +451,21 @@ const changeStarButton = () => {
 
 // -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
 const statusClosedDate = (postStatus, postClosedDate) => {
-  // if (postCloseDate == null) {
-  //   return { text: 'เปิดรับตลอด', color: 'green' }
-  // } else {
-  //   let endDate = new Date(new Date(postCloseDate).setHours(23, 59, 0, 0))
-  //   let closedDate = moment(endDate).format('DD/MM/YYYY')
-  //   if (new Date() > endDate) {
-  //     return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
-  //   } else {
-  //     // ถ้ายังไม่เลยวันที่ปิดรับสมัคร ดูว่าใกล้ปิดภายใน 7 วันหรือไม่
-  //     if (
-  //       new Date(moment(endDate).subtract(7, 'days')) <= new Date() &&
-  //       new Date() <= endDate
-  //     ) {
-  //       return { text: 'ปิดรับสมัคร ' + closedDate, color: 'yellow' }
-  //     }
-  //     return { text: 'ปิดรับสมัคร ' + closedDate }
-  //   }
-  // }
   let closedDate
   if (postClosedDate != null) {
     closedDate = moment(new Date(postClosedDate)).format('DD/MM/YYYY')
   }
   switch (postStatus) {
+    case 'OPENED':
+      return closedDate
+        ? { text: 'ปิดรับสมัคร ' + closedDate }
+        : { text: 'เปิดรับตลอด', color: 'green' }
     case 'ALWAYS_OPENED':
       return { text: 'เปิดรับตลอด', color: 'green' }
-    case 'OPENED':
-      return { text: closedDate ? 'ปิดรับสมัคร ' + closedDate : 'ปิดรับสมัคร' }
-    case 'CLOSED':
-      return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
     case 'NEARLY_CLOSED':
       return { text: 'ปิดรับสมัคร ' + closedDate, color: 'yellow' }
+    case 'CLOSED':
+      return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
   }
 }
 // --- แสดง text description ---

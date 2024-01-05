@@ -32,6 +32,9 @@
         :max="5"
         noResultsText="-- ไม่พบข้อมูล --"
       />
+      <span class="text-xs text-gray-400"
+        >ค้นหา tag ที่เกี่ยวข้อง เลือกได้สูงสุด 10 tags</span
+      >
     </div>
 
     <BaseLine />
@@ -63,8 +66,10 @@
           :show-labels="false"
           :options="listLocation"
           :max="1"
-          class="singleselect-blue"
+          class="multiselect-blue"
           noResultsText="-- ไม่พบข้อมูล --"
+          @select="$emit('setLocation')"
+          @clear="$emit('clearLocation')"
         />
         <span class="text-xs text-gray-400"
           >พิมพ์ ชื่อจังหวัด, เขต เพื่อค้นหา</span
@@ -104,10 +109,20 @@ import {
 } from '@heroicons/vue/20/solid'
 
 const statusLists = [
-  { id: 1, text: 'เปิดอยู่', color: 'fill-gray-500' },
-  { id: 2, text: 'เปิดรับตลอด', color: 'fill-green-500' },
-  { id: 3, text: 'ใกล้ปิดรับสมัคร', color: 'fill-yellow-500' },
-  { id: 4, text: 'ปิดรับสมัคร', color: 'fill-red-500' }
+  { id: 1, text: 'เปิดอยู่', color: 'fill-gray-500', value: 'OPENED' },
+  {
+    id: 2,
+    text: 'เปิดรับตลอด',
+    color: 'fill-green-500',
+    value: 'ALWAYS_OPENED'
+  },
+  {
+    id: 3,
+    text: 'ใกล้ปิดรับสมัคร',
+    color: 'fill-yellow-500',
+    value: 'NEARLY_CLOSED'
+  },
+  { id: 4, text: 'ปิดรับสมัคร', color: 'fill-red-500', value: 'CLOSED' }
 ]
 const props = defineProps({
   filter: {
@@ -116,7 +131,7 @@ const props = defineProps({
   }
 })
 
-defineEmits(['cancel', 'search'])
+defineEmits(['cancel', 'search', 'setLocation', 'clearLocation'])
 
 // --- GET : position-tag (postTag) ---
 const listPositionTag = ref([])
@@ -125,7 +140,6 @@ const getListPositionTag = async () => {
   try {
     const res = await usePositionTag()
     if (res.value.status === 200) {
-      console.log(res.value.message)
       res.value.data.forEach((item) => {
         listPositionTag.value.push(item.positionTagName)
       })
@@ -167,10 +181,9 @@ const search = () => {
   --ms-tag-bg: #dbeafe;
   --ms-tag-color: #2563eb;
   --ms-ring-color: rgba(56, 189, 248, 0.2);
-}
-
-.singleselect-blue {
   --ms-option-bg-selected: #2563eb;
   --ms-ring-color: rgba(56, 189, 248, 0.2);
+  --ms-option-color-pointed: #2563eb;
+  --ms-option-bg-selected-pointed: #2563eb;
 }
 </style>

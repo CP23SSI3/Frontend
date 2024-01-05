@@ -25,6 +25,8 @@
             <span class="text-xs text-gray-500">
               {{ moment(new Date(post.lastUpdateDate)).format('DD/MM/YYYY') }}
             </span>
+            <span class="text-xs text-gray-500"> | </span>
+            <BaseItem :icon="EyeIcon"> views: {{ post.totalView }}</BaseItem>
           </div>
         </div>
       </div>
@@ -186,7 +188,8 @@
 import {
   ChevronLeftIcon,
   ShareIcon,
-  StarIcon as ActiveStarIcon
+  StarIcon as ActiveStarIcon,
+  EyeIcon
 } from '@heroicons/vue/24/solid'
 import {
   StarIcon,
@@ -275,37 +278,21 @@ const copyLinkToClipboard = () => {
 
 // -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
 const statusClosedDate = (postStatus, postClosedDate) => {
-  // if (postCloseDate == null) {
-  //   return { text: 'เปิดรับตลอด', color: 'green' }
-  // } else {
-  //   let endDate = new Date(new Date(postCloseDate).setHours(23, 59, 0, 0))
-  //   let closedDate = moment(endDate).format('DD/MM/YYYY')
-  //   if (new Date() > endDate) {
-  //     return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
-  //   } else {
-  //     // ถ้ายังไม่เลยวันที่ปิดรับสมัคร ดูว่าใกล้ปิดภายใน 7 วันหรือไม่
-  //     if (
-  //       new Date(moment(endDate).subtract(7, 'days')) <= new Date() &&
-  //       new Date() <= endDate
-  //     ) {
-  //       return { text: 'ปิดรับสมัคร ' + closedDate, color: 'yellow' }
-  //     }
-  //     return { text: 'ปิดรับสมัคร ' + closedDate }
-  //   }
-  // }
   let closedDate
   if (postClosedDate != null) {
     closedDate = moment(new Date(postClosedDate)).format('DD/MM/YYYY')
   }
   switch (postStatus) {
+    case 'OPENED':
+      return closedDate
+        ? { text: 'ปิดรับสมัคร ' + closedDate }
+        : { text: 'เปิดรับตลอด', color: 'green' }
     case 'ALWAYS_OPENED':
       return { text: 'เปิดรับตลอด', color: 'green' }
-    case 'OPENED':
-      return { text: closedDate ? 'ปิดรับสมัคร ' + closedDate : 'ปิดรับสมัคร' }
-    case 'CLOSED':
-      return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
     case 'NEARLY_CLOSED':
       return { text: 'ปิดรับสมัคร ' + closedDate, color: 'yellow' }
+    case 'CLOSED':
+      return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
   }
 }
 // --- Favorite Button ---

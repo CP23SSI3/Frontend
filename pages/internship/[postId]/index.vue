@@ -255,27 +255,6 @@ const copyLinkToClipboard = () => {
     })
 }
 
-// const getPostDetail = async () => {
-//   loading.value = true
-//   try {
-//     const res = await getPostById(postId)
-//     if (res.value) {
-//       post.value = res.value.data
-//       loading.value = false
-//     }
-//   } catch (error) {
-//     Swal.fire({
-//       showConfirmButton: true,
-//       timerProgressBar: true,
-//       icon: 'error',
-//       title: 'Error',
-//       text: 'ระบบผิดพลาด'
-//     })
-//   }
-// }
-
-// await getPostDetail()
-
 // -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
 const statusClosedDate = (postStatus, postClosedDate) => {
   let closedDate

@@ -414,7 +414,8 @@ const getPost = async () => {
       pageSize: pagination.value.itemPerPages,
       q: filter.value.search,
       city: filter.value.city,
-      district: filter.value.district
+      district: filter.value.district,
+      status: filter.value.status.value
     })
     if (res.value) {
       let data = res.value.data

@@ -307,13 +307,9 @@ const clearFilterLocation = () => {
   filter.value.city = null
   filter.value.district = null
 }
-const setFilterTags = () => {
-  console.log(filter.value.postTag.toString())
-}
 
 const search = () => {
   closeFilter()
-  setFilterTags()
   getPost()
 }
 

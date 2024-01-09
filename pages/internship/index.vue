@@ -212,9 +212,8 @@
           >Refresh</BaseButton
         >
       </div>
-      <div class="p-4 bg-white" v-else>
+      <div class="p-4 bg-white" v-else-if="!loading">
         <v-pagination
-          v-show="!loading"
           v-model="pagination.currentPage"
           :pages="pagination.totalPages"
           :range-size="1"

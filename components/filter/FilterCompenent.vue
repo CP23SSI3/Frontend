@@ -33,7 +33,7 @@
         noResultsText="-- ไม่พบข้อมูล --"
       />
       <span class="text-xs text-gray-400"
-        >ค้นหา tag ที่เกี่ยวข้อง เลือกได้สูงสุด 10 tags</span
+        >ค้นหา tag ที่เกี่ยวข้อง เลือกได้สูงสุด 5 tags</span
       >
     </div>
 
@@ -109,7 +109,12 @@ import {
 } from '@heroicons/vue/20/solid'
 
 const statusLists = [
-  { id: 1, text: 'เปิดอยู่', color: 'fill-gray-500', value: 'OPENED' },
+  {
+    id: 1,
+    text: 'เปิดอยู่',
+    color: 'fill-gray-500',
+    value: 'NEARLY_CLOSED,OPENED,ALWAYS_OPENED'
+  },
   {
     id: 2,
     text: 'เปิดรับตลอด',
@@ -170,10 +175,6 @@ const setListLocation = () => {
   })
 }
 setListLocation()
-
-const search = () => {
-  console.log(props.filter)
-}
 </script>
 
 <style lang="scss" scoped>

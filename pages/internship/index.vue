@@ -256,7 +256,12 @@ const filter = ref({
   search: '',
   postTag: [],
   location: null,
-  status: { id: 1, text: 'เปิดอยู่', color: 'fill-gray-500', value: 'OPENED' },
+  status: {
+    id: 1,
+    text: 'เปิดอยู่',
+    color: 'fill-gray-500',
+    value: 'NEARLY_CLOSED,OPENED,ALWAYS_OPENED'
+  },
   workMonth: null,
   salary: null,
   city: null,
@@ -272,7 +277,7 @@ const clearFilterValue = () => {
       id: 1,
       text: 'เปิดอยู่',
       color: 'fill-gray-500',
-      value: 'OPENED'
+      value: 'NEARLY_CLOSED,OPENED,ALWAYS_OPENED'
     },
     workMonth: null,
     salary: null,
@@ -302,10 +307,13 @@ const clearFilterLocation = () => {
   filter.value.city = null
   filter.value.district = null
 }
+const setFilterTags = () => {
+  console.log(filter.value.postTag.toString())
+}
 
 const search = () => {
   closeFilter()
-  console.log(filter.value)
+  setFilterTags()
   getPost()
 }
 
@@ -415,7 +423,8 @@ const getPost = async () => {
       q: filter.value.search,
       city: filter.value.city,
       district: filter.value.district,
-      status: filter.value.status.value
+      status: filter.value.status.value,
+      tags: filter.value.postTag.toString()
     })
     if (res.value) {
       let data = res.value.data

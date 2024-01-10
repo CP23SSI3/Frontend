@@ -419,7 +419,8 @@ const getPost = async () => {
       city: filter.value.city,
       district: filter.value.district,
       status: filter.value.status.value,
-      tags: filter.value.postTag.toString()
+      tags: filter.value.postTag.toString(),
+      minSalary: filter.value.salary
     })
     if (res.value) {
       let data = res.value.data

@@ -420,7 +420,8 @@ const getPost = async () => {
       district: filter.value.district,
       status: filter.value.status.value,
       tags: filter.value.postTag.toString(),
-      minSalary: filter.value.salary
+      month: filter.value.workMonth,
+      salary: filter.value.salary
     })
     if (res.value) {
       let data = res.value.data

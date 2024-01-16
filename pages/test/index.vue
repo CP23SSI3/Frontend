@@ -18,6 +18,8 @@
       Swal Alert
     </BaseButton>
 
+    <NuxtLink href="/test/components">All Component list</NuxtLink>
+
     <NuxtLink href="/test/easytable">View Vue3-EasyDataTable</NuxtLink>
 
     <NuxtLink href="/test/validation">View yup & Vee validation</NuxtLink>

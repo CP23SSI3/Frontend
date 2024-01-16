@@ -1,4 +1,4 @@
-import { ResponseList } from '~/types/Response'
+import { ResponseList, Response } from '~/types/Response'
 import { Post } from '~/types/Post'
 
 type ResponsePostList = ResponseList & {

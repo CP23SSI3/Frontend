@@ -1,10 +1,10 @@
 <template>
-  <div class="grid items-start grid-cols-4 gap-4">
+  <div class="grid items-start gap-6 lg:grid-cols-12">
     <!-- Filter -->
     <BaseSectionContent
-      class="hidden col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col"
+      class="hidden col-span-3 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col"
     >
-      <FilterCompenent
+      <FilterComponent
         :filter="filter"
         @cancel="clearFilterValue()"
         @search="search()"
@@ -15,7 +15,7 @@
 
     <!-- List Post -->
     <div
-      class="flex flex-col w-full col-span-4 gap-4 px-1 lg:col-span-3 sm:px-0"
+      class="flex flex-col w-full col-span-1 gap-4 px-1 lg:col-span-9 sm:px-0"
     >
       <!-- Topic -->
       <div
@@ -73,7 +73,7 @@
           </div>
           <div class="col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col">
             <!-- filter for mobile size -->
-            <FilterCompenent
+            <FilterComponent
               :filter="filter"
               @cancel="clearFilterValue()"
               @search="search()"
@@ -184,13 +184,6 @@
                   class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-md lg:text-sm"
                   >{{ item }}</span
                 >
-
-                <!-- <span
-                v-else
-                v-for="item in post.openPositionList"
-                class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-md lg:text-sm"
-                >{{ item.openPositionTitle }}</span
-              > -->
               </div>
               <NuxtLink
                 :to="{
@@ -238,7 +231,7 @@ import {
   ArrowPathIcon
 } from '@heroicons/vue/20/solid'
 import { StarIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
-import FilterCompenent from '~/components/filter/FilterCompenent.vue'
+import FilterComponent from '~/components/filter/FilterComponent.vue'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 

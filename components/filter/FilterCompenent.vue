@@ -107,6 +107,7 @@ import {
   TagIcon,
   StarIcon as ActiveStarIcon
 } from '@heroicons/vue/20/solid'
+import Swal from 'sweetalert2'
 
 const statusLists = [
   {

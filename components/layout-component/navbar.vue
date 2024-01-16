@@ -64,7 +64,7 @@
                 >
                   <MenuItem v-slot="{ active }">
                     <NuxtLink
-                      href="/about-me"
+                      href="/admin/profile"
                       :class="[
                         active ? 'bg-gray-100' : '',
                         'block px-4 py-2 text-sm text-gray-700'
@@ -162,7 +162,7 @@
         <div class="px-2 mt-3 space-y-1">
           <DisclosureButton
             as="a"
-            href="/about-me"
+            href="/admin/profile"
             class="block px-3 py-2 text-base font-medium text-gray-400 rounded-md hover:bg-gray-700 hover:text-white"
             >Your Profile</DisclosureButton
           >

@@ -1,5 +1,25 @@
 <template>
-  <div>User List</div>
+  <div class="flex flex-col justify-between gap-2 sm:items-center sm:flex-row">
+    <div class="flex items-center gap-4">
+      <h1 class="text-2xl font-bold leading-8 text-black">All users</h1>
+      <!-- total element -->
+      <span class="text-sm text-gray-400">{{ totalItems }} accounts </span>
+      <!-- <button
+            type="button"z
+            class="p-2 -m-2 text-gray-400 hover:text-gray-500 lg:hidden"
+            @click="openFilter()"
+          >
+            <span class="sr-only">Filters</span>
+
+            <FunnelIcon class="w-5 h-5" aria-hidden="true" />
+          </button> -->
+    </div>
+    <!-- <NuxtLink :to="{ path: '/internship/form' }">
+          <BaseButton :leadingIcon="PlusCircleIcon" class="w-full md:w-auto"
+            >Add Post</BaseButton
+          >
+        </NuxtLink> -->
+  </div>
   {{ listUser }}
   <!-- Pagination -->
   <!-- <div v-if="listUser.length == 0 && !loading" class="flex justify-center">

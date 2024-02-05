@@ -7,7 +7,7 @@
             <NuxtLink href="/">
               <nuxt-img
                 class="w-auto h-11"
-                src="../public/InternHub-logo.svg"
+                src="/InternHub-logo.svg"
                 alt="InternHub"
             /></NuxtLink>
           </div>
@@ -19,7 +19,7 @@
                 :key="item.name"
                 :href="item.href"
                 :class="[
-                  route.path == item.href
+                  route.path.includes(item.href) && item.href !== '/'
                     ? 'text-white bg-gray-900'
                     : 'text-gray-300 hover:bg-gray-700 hover:text-white ',
                   'block px-3 py-2 text-base rounded-md font-medium'
@@ -30,7 +30,7 @@
           </div>
         </div>
         <div class="hidden sm:ml-6 sm:block">
-          <div class="flex items-center" v-if="statusLogin">
+          <div class="flex items-center" v-if="auth.statusLogin">
             <button
               type="button"
               class="relative p-1 text-gray-400 bg-gray-800 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -64,12 +64,12 @@
                 >
                   <MenuItem v-slot="{ active }">
                     <NuxtLink
-                      href="/admin/profile"
+                      :to="pathViewProfile"
                       :class="[
                         active ? 'bg-gray-100' : '',
                         'block px-4 py-2 text-sm text-gray-700'
                       ]"
-                      >Your Profile</NuxtLink
+                      >My Profile</NuxtLink
                     >
                   </MenuItem>
                   <MenuItem v-slot="{ active }">
@@ -84,13 +84,13 @@
                   </MenuItem>
                   <MenuItem v-slot="{ active }">
                     <div
-                      @click="statusLogin = false"
+                      @click="auth.logout()"
                       :class="[
                         active ? 'bg-gray-100' : '',
                         'block px-4 py-2 text-sm text-gray-700'
                       ]"
                     >
-                      Sign out
+                      Log out
                     </div>
                   </MenuItem>
                 </MenuItems>
@@ -130,7 +130,7 @@
           <DisclosureButton
             as="a"
             :class="[
-              route.path.includes(item.href)
+              route.path.includes(item.href) && item.href !== '/'
                 ? 'text-white bg-gray-900'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white ',
               'block px-3 py-2 text-base rounded-md font-medium'
@@ -141,7 +141,7 @@
         >
       </div>
       <!-- Profile User mobile -->
-      <div class="pt-4 pb-3 border-t border-gray-700" v-if="statusLogin">
+      <div class="pt-4 pb-3 border-t border-gray-700" v-if="auth.statusLogin">
         <div class="flex items-center px-5">
           <div class="flex-shrink-0">
             <UserCircleIcon class="w-10 h-10 text-gray-300 rounded-full" />
@@ -160,11 +160,12 @@
           </button>
         </div>
         <div class="px-2 mt-3 space-y-1">
+          <!-- Mobile -->
           <DisclosureButton
             as="a"
-            href="/admin/profile"
+            :href="pathViewProfile"
             class="block px-3 py-2 text-base font-medium text-gray-400 rounded-md hover:bg-gray-700 hover:text-white"
-            >Your Profile</DisclosureButton
+            >My Profile</DisclosureButton
           >
           <DisclosureButton
             as="a"
@@ -175,8 +176,9 @@
           <DisclosureButton
             as="a"
             href="#"
+            @click="auth.logout()"
             class="block px-3 py-2 text-base font-medium text-gray-400 rounded-md hover:bg-gray-700 hover:text-white"
-            >Sign out</DisclosureButton
+            >Log out</DisclosureButton
           >
         </div>
       </div>
@@ -243,17 +245,18 @@ const navigation = ref([
     name: 'Internship',
     href: '/internship'
   },
-  // {
-  //   name: 'Component',
-  //   href: '/test/components'
-  // },
   {
-    name: 'Admin',
-    href: '/admin/profile'
+    name: 'Account',
+    href: '/account'
   }
 ])
-
-const statusLogin = ref(true)
+const auth = useAuth()
+const pathViewProfile = ref('/')
+if (auth.checkStatusAuth()) {
+  pathViewProfile.value = `/account/${auth.user.role?.toLowerCase()}/profile`
+} else {
+  pathViewProfile.value
+}
 </script>
 
 <style lang="scss" scoped></style>

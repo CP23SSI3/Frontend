@@ -568,7 +568,6 @@ definePageMeta({
   layout: 'form'
 })
 
-const route = useRoute()
 const router = useRouter()
 const gotoBack = () => {
   Swal.fire({

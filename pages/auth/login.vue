@@ -16,10 +16,10 @@
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <Form @submit="submitForm" :validation-schema="schema" class="space-y-6">
       <BaseInputField
-        label="Email Address"
-        id="email"
-        v-model="user.email"
-        placeholder="Enter your email"
+        label="Username"
+        id="username"
+        v-model="user.username"
+        placeholder="Enter your username"
       >
       </BaseInputField>
 
@@ -47,7 +47,7 @@
       Don't have an account?
       {{ ' ' }}
       <NuxtLink
-        href="/sign-up"
+        to="/auth/sign-up"
         class="font-semibold leading-6 text-blue-600 hover:text-blue-500"
         >Sign Up</NuxtLink
       >
@@ -56,17 +56,42 @@
 </template>
 
 <script setup>
+import Swal from 'sweetalert2'
 import yup from '@/assets/yup-error.js'
 import { Field, ErrorMessage, Form } from 'vee-validate'
+import { useAuth } from '~/stores/auth'
+
+const auth = useAuth()
+
 definePageMeta({
   layout: 'register'
 })
 
-const user = ref({ email: '', password: '' })
+const user = ref({ username: '', password: '' })
 const schema = yup.object({
-  email: yup.string().email().required('โปรดระบุ อีเมล').max(320),
-  password: yup.string().required('กรุณาใส่รหัสผ่านให้ถูกต้อง')
+  username: yup.string(),
+  password: yup.string()
 })
+
+const submitForm = async () => {
+  await login()
+}
+
+const login = async () => {
+  try {
+    const res = await useLogin(user.value)
+    auth.login(res.value)
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'Error',
+      text: error.message
+    })
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

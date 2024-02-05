@@ -1,6 +1,6 @@
 <template>
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-    <NuxtLink href="/">
+    <NuxtLink to="/">
       <nuxt-img
         class="w-auto h-12 mx-auto"
         src="../public/InternHub-logo-light.svg"
@@ -49,14 +49,14 @@
         v-model="user.confirmPassword"
       ></BaseInputField>
 
-      <BaseButton type="submit" full> Sign in </BaseButton>
+      <BaseButton type="submit" full> Sign up </BaseButton>
     </Form>
 
     <p class="mt-10 text-sm text-center text-gray-500">
       Already have an account?
       {{ ' ' }}
       <NuxtLink
-        href="/login"
+        to="/auth/login"
         class="font-semibold leading-6 text-blue-600 hover:text-blue-500"
         >Log in</NuxtLink
       >

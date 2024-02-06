@@ -1,3 +1,5 @@
+import { Address } from '~/types/Post'
+
 export type User = {
   createdDate: Date
   email: string
@@ -9,6 +11,25 @@ export type User = {
   phoneNumber: string
   role: string
   userId: string
+  username: string
+}
+
+export type UserAuth = {
+  accessToken: string
+  refreshToken: string
+  role: string
+  userId: string
+  username: string
+}
+
+export type UserRegister = {
+  address: Address
+  email: string
+  firstname: string
+  lastname: string
+  phoneNumber: string
+  rawPassword: string
+  role: string
   username: string
 }
 

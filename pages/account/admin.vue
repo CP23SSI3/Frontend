@@ -48,13 +48,6 @@ const tabs = [
     icon: PencilSquareIcon
   }
 ]
-
-// const tabs = [
-//   { name: 'My Account', href: '#', icon: UserIcon, current: false },
-//   { name: 'Company', href: '#', icon: BuildingOfficeIcon, current: false },
-//   { name: 'Team Members', href: '#', icon: UsersIcon, current: true },
-//   { name: 'Billing', href: '#', icon: CreditCardIcon, current: false }
-// ]
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,10 +1,4 @@
-type ResponseLogin = {
-  accessToken: string
-  refreshToken: string
-  role: string
-  userId: string
-  username: string
-}
+import { UserAuth } from '~/types/User'
 
 export default async (user: any) => {
   console.log(user)
@@ -12,7 +6,7 @@ export default async (user: any) => {
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}auth/login`
 
-  const { data, error } = await useFetch<ResponseLogin>(url, {
+  const { data, error } = await useFetch<UserAuth>(url, {
     headers: {
       'Content-Type': 'application/json'
     },

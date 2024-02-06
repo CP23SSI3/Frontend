@@ -1,10 +1,11 @@
 import Swal from 'sweetalert2'
+import { reloadNuxtApp } from 'nuxt/app'
 
 export const useAuth = defineStore('auth', () => {
   const statusLogin = ref(false)
   const user = useCookie('user')
-  const accessToken = useCookie('accessToken')
-  const refreshToken = useCookie('refreshToken')
+  // const accessToken = useCookie('accessToken')
+  // const refreshToken = useCookie('refreshToken')
 
   const router = useRouter()
 
@@ -21,10 +22,12 @@ export const useAuth = defineStore('auth', () => {
     user.value = {
       userId: respone.userId,
       username: respone.username,
-      role: respone.role
+      role: respone.role,
+      accessToken: respone.accessToken,
+      refreshToken: respone.refreshToken
     }
-    accessToken.value = respone.accessToken
-    refreshToken.value = respone.refreshToken
+    // accessToken.value = respone.accessToken
+    // refreshToken.value = respone.refreshToken
     statusLogin.value = true
     router.go(-1)
   }
@@ -43,10 +46,13 @@ export const useAuth = defineStore('auth', () => {
     }).then((result) => {
       if (result.isConfirmed) {
         user.value = null
-        accessToken.value = null
-        refreshToken.value = null
+        // accessToken.value = null
+        // refreshToken.value = null
         statusLogin.value = false
-        router.push({ path: '/' })
+        reloadNuxtApp({
+          path: '/',
+          ttl: 1000
+        })
       }
     })
   }
@@ -54,8 +60,8 @@ export const useAuth = defineStore('auth', () => {
   return {
     statusLogin,
     user,
-    accessToken,
-    refreshToken,
+    // accessToken,
+    // refreshToken,
 
     login,
     logout,

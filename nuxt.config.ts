@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/image-edge'],
+  modules: ['@nuxt/image-edge', '@pinia/nuxt'],
   devtools: { enabled: true },
   css: [
     '@/assets/css/main.css',
@@ -17,9 +17,14 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       API_URL: process.env.API_URL,
-      KEY_API_MAP: process.env.KEY_API_GOOGLE_MAP
+      KEY_API_MAP: process.env.KEY_API_GOOGLE_MAP,
+      base: '/ssi3/'
     }
   },
+  generate: { fallback: '404.html' },
+  // devServer: {
+  //   port: 80
+  // },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) =>
@@ -28,7 +33,6 @@ export default defineNuxtConfig({
         )
     }
   },
-
   app: {
     head: {
       charset: 'utf-8',
@@ -36,5 +40,7 @@ export default defineNuxtConfig({
       title: 'InternHub',
       link: [{ rel: 'icon', type: 'svg', href: '/internhub-icon.svg' }]
     }
+    // ,
+    // baseURL: '/ssi3a/'
   }
 })

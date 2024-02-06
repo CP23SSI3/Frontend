@@ -51,10 +51,16 @@ export async function getPostById(id: string) {
   })
 
   if (error.value) {
-    throw createError({
+    let errorMessage = {
       ...error.value,
-      statusMessage: `Could not fetch data from ${url}`
-    })
+      message: `Could not fetch data from ${url}`
+    }
+    if (error.value.statusCode === 500) {
+      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+    } else if (error.value.statusCode === 404) {
+      errorMessage.message = `Post id ${id} not found`
+    }
+    throw createError(errorMessage)
   }
 
   return data

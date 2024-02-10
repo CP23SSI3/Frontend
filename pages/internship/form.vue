@@ -919,7 +919,7 @@ const form = ref({
   email: '',
   address: {
     // myAddress --> function setAddress() inner getGeoLication()
-    country: 'Thailand',
+    country: 'ประเทศไทย',
     postalCode: '',
     city: '',
     district: '',

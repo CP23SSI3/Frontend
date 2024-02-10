@@ -7,8 +7,6 @@ export const useAuth = defineStore('auth', () => {
   // const accessToken = useCookie('accessToken')
   // const refreshToken = useCookie('refreshToken')
 
-  const router = useRouter()
-
   const checkStatusAuth = () => {
     if (user.value == undefined) {
       statusLogin.value = false
@@ -29,7 +27,10 @@ export const useAuth = defineStore('auth', () => {
     // accessToken.value = respone.accessToken
     // refreshToken.value = respone.refreshToken
     statusLogin.value = true
-    router.go(-1)
+    reloadNuxtApp({
+      path: '/',
+      ttl: 1000
+    })
   }
 
   const logout = function () {

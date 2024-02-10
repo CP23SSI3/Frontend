@@ -2,8 +2,8 @@ import { resolveDirective } from 'nuxt/dist/app/compat/capi'
 import { UserAuth } from '~/types/User'
 
 export default defineNuxtRouteMiddleware((to, from) => {
-  // console.log(to)
-  // console.log(from)
+  console.log(to)
+  console.log(from)
   // const auth = useAuth()
   // auth.checkStatusAuth()
   // if (to.path.includes('/account') && auth.statusLogin) {
@@ -11,6 +11,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   // } else {
   //   console.log('Page not login')
   // }
+
   if (to.path.includes('/account')) {
     const auth = useAuth()
     auth.checkStatusAuth()
@@ -19,8 +20,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
     if (!auth.statusLogin && auth.user == undefined) {
       return navigateTo('/auth/login')
     } else {
-      let thisUser: UserAuth | null | undefined = null
-      thisUser = auth.user
+      // let thisUser: UserAuth | null | undefined = null
+      let thisUser: UserAuth = auth.user
       if (to.path.includes('/admin')) {
         if (thisUser?.role !== 'ADMIN') {
           return abortNavigation(error.err403)

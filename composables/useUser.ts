@@ -75,13 +75,13 @@ export async function getUserById(id: string) {
 type ResponseCreateUser = Response & {
   data: UserRegister
 }
-export async function register(newUser: ResponseCreateUser) {
+export async function useRegister(newUser: UserRegister) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}users`
   // const auth = useAuth()
   // const token = auth.$storage.getUniversal('_token.local') as string
-  const { data, error } = await useFetch<ResponseUser>(url, {
+  const { data, error } = await useFetch<ResponseCreateUser>(url, {
     headers: {
       // Authorization: token,
       'Content-Type': 'application/json'
@@ -91,6 +91,7 @@ export async function register(newUser: ResponseCreateUser) {
   })
 
   if (error.value) {
+    console.log(error.value.data)
     let errorMessage = {
       ...error.value,
       message: `Could not fetch data from ${url}`
@@ -98,7 +99,7 @@ export async function register(newUser: ResponseCreateUser) {
     if (error.value.statusCode === 500) {
       errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
     } else if (error.value.statusCode === 400) {
-      errorMessage.message = `ข้อมูลไม่ถูกต้อง`
+      errorMessage.message = error.value.data.message
     }
     throw createError(errorMessage)
   }

@@ -64,7 +64,8 @@ import { useAuth } from '~/stores/auth'
 const auth = useAuth()
 
 definePageMeta({
-  layout: 'register'
+  layout: 'register',
+  middleware: ['logger']
 })
 
 const user = ref({ username: '', password: '' })

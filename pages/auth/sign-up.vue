@@ -18,36 +18,28 @@
     <!-- Page 1 :  Personal Information-->
     <div class="space-y-5">
       <Form
-        @submit="next"
+        @submit="next1"
         :validation-schema="schema1"
         class="space-y-4"
         v-if="currentPage == 1"
       >
-        <div class="flex gap-3">
-          <BaseInputField
-            label="ชื่อจริง"
-            id="firstname"
-            required
-            v-model="user.firstname"
-          />
-          <BaseInputField
-            label="นามสกุล"
-            id="lastname"
-            required
-            v-model="user.lastname"
-          />
-        </div>
         <BaseInputField
-          label="Email Address"
-          id="email"
-          required
-          v-model="user.email"
+          label="Username / ชื่อผู้ใช้"
+          id="username"
+          v-model="user.username"
+        />
+        <BaseInputField label="Email Address" id="email" v-model="user.email" />
+        <BaseInputField
+          label="Password"
+          id="rawPassword"
+          type="password"
+          v-model="user.rawPassword"
         />
         <BaseInputField
-          label="Phone Number"
-          id="phoneNumber"
-          required
-          v-model="user.phoneNumber"
+          label="Confirm Password"
+          id="confirmPassword"
+          type="password"
+          v-model="user.confirmPassword"
         />
         <div>
           <BaseButton
@@ -61,12 +53,12 @@
         </div>
       </Form>
       <Form
-        @submit="next(2)"
+        @submit="submitForm"
         :validation-schema="schema2"
         class="space-y-4"
         v-else-if="currentPage == 2"
       >
-        <BaseInputField label="ที่อยู่" id="area" v-model="user.address.area" />
+        <!-- <BaseInputField label="ที่อยู่" id="area" v-model="user.address.area" />
         <BaseDropdown
           class="relative z-40"
           :option-lists="provinceList"
@@ -74,8 +66,7 @@
           v-model="myAddress.province"
           required
           @click="getAmphure(myAddress.province.id)"
-        >
-        </BaseDropdown>
+        />
         <BaseDropdown
           class="relative z-30"
           :option-lists="amphureList"
@@ -84,8 +75,7 @@
           :disabled="!(amphureList.length > 0)"
           required
           @click="getTambon(myAddress.province.id, myAddress.amphure.id)"
-        >
-        </BaseDropdown>
+        />
         <BaseDropdown
           class="relative z-20"
           :option-lists="tambonList"
@@ -93,15 +83,101 @@
           v-model="myAddress.tambon"
           :disabled="!(tambonList.length > 0)"
           required
-        >
-        </BaseDropdown>
+        />
+
         <BaseInput
-          class="sm:col-span-2"
           label="รหัสไปรณีย์"
           id="postalCode"
           v-model="myAddress.tambon.zip_code"
           disabled
-        ></BaseInput>
+        ></BaseInput> -->
+        <div class="flex justify-center gap-3 full">
+          <BaseInputField
+            label="ชื่อจริง"
+            id="firstname"
+            v-model="user.firstname"
+          />
+          <BaseInputField
+            label="นามสกุล"
+            id="lastname"
+            v-model="user.lastname"
+          />
+        </div>
+        <Field v-slot="{ field, errors }" name="dateOfBirth">
+          <BaseDatePicker
+            label="วันเกิด"
+            id="dateOfBirth"
+            placeholder="DD/MM/YYYY"
+            :enable-time-picker="false"
+            v-bind="field"
+            v-model="birthDay"
+            :format="(date) => (date ? moment(date).format('DD/MM/YYYY') : '')"
+            :max-date="new Date()"
+          >
+            <template v-slot:error-message>{{ errors[0] }}</template>
+          </BaseDatePicker>
+        </Field>
+        <BaseInputField
+          label="Phone Number"
+          id="phoneNumber"
+          type="tel"
+          v-model="user.phoneNumber"
+        />
+        <!-- radio: gender -->
+        <div class="sm:col-start-1 sm:col-span-3">
+          <BaseLabel id="gender"> เพศ </BaseLabel>
+          <fieldset class="mt-2">
+            <div
+              class="space-y-4 md:flex md:items-center md:space-x-10 md:space-y-0"
+            >
+              <div
+                v-for="choice in genders"
+                :key="choice.value"
+                class="flex items-center"
+              >
+                <input
+                  :id="choice.value"
+                  :name="choice.value"
+                  type="radio"
+                  :value="choice.value"
+                  v-model="user.gender"
+                  class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
+                />
+                <BaseLabel :id="choice.value" class="ml-3">
+                  {{ choice.text }}
+                </BaseLabel>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <!-- radio: role -->
+        <div class="sm:col-start-1 sm:col-span-3">
+          <BaseLabel id="role"> สถานะ </BaseLabel>
+          <fieldset class="mt-2">
+            <div
+              class="space-y-4 md:flex md:items-center md:space-x-10 md:space-y-0"
+            >
+              <div
+                v-for="choice in roles"
+                :key="choice.value"
+                class="flex items-center"
+              >
+                <input
+                  :id="choice.value"
+                  :name="choice.value"
+                  type="radio"
+                  :value="choice.value"
+                  v-model="user.role"
+                  class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
+                />
+                <BaseLabel :id="choice.value" class="ml-3">
+                  {{ choice.text }}
+                </BaseLabel>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
         <div>
           <div class="flex gap-3 mt-6">
             <BaseButton
@@ -112,13 +188,14 @@
               @click="currentPage--"
               >Back</BaseButton
             >
-            <BaseButton
+            <!-- <BaseButton
               type="submit"
               secondary
               full
               :trailing-icon="ChevronRightIcon"
               >Next</BaseButton
-            >
+            > -->
+            <BaseButton type="submit" full> Sign up </BaseButton>
           </div>
         </div>
       </Form>
@@ -160,31 +237,8 @@
         </div>
       </Form>
 
-      <div class="flex gap-3">
-        <!-- <BaseButton
-          type="button"
-          outline
-          full
-          :leading-icon="ChevronLeftIcon"
-          v-if="currentPage > 1"
-          @click="currentPage--"
-          >Back</BaseButton
-        > -->
-        <!-- <BaseButton
-          type="button"
-          secondary
-          full
-          :trailing-icon="ChevronRightIcon"
-          v-if="currentPage < steps.length"
-          @click="currentPage++"
-          >Next</BaseButton
-        > -->
-        <!-- <BaseButton type="submit" full v-if="currentPage == steps.length">
-          Sign up
-        </BaseButton> -->
-      </div>
       <!-- Steps (Pagination) -->
-      <nav class="flex items-center justify-center" aria-label="Progress">
+      <!-- <nav class="flex items-center justify-center" aria-label="Progress">
         <p class="text-sm font-medium">
           Step
           {{ steps.findIndex((step) => step.step === currentPage) + 1 }} of
@@ -195,9 +249,9 @@
             <div
               :class="[
                 step.step < currentPage
-                  ? 'block bg-blue-600 hover:bg-blue-900 cursor-pointer'
+                  ? 'block bg-blue-600 hover:bg-blue-900'
                   : step.step === currentPage
-                  ? 'relative flex items-center justify-center cursor-pointer'
+                  ? 'relative flex items-center justify-center'
                   : 'block bg-gray-300 hover:bg-gray-400',
                 'h-2.5 w-2.5 rounded-full'
               ]"
@@ -218,7 +272,7 @@
             </div>
           </div>
         </div>
-      </nav>
+      </nav> -->
     </div>
     <!-- </Form> -->
 
@@ -232,107 +286,72 @@
       >
     </p>
   </div>
-  {{ user }} <br />
-  {{ myAddress }}
+  <!-- {{ user }} -->
 </template>
 
 <script setup>
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
 import { Field, ErrorMessage, Form } from 'vee-validate'
-import yup from '@/assets/yup-error.js'
+import moment from 'moment'
 import Swal from 'sweetalert2'
+import yup from '@/assets/yup-error.js'
+
 definePageMeta({
   layout: 'register',
   middleware: ['logger']
 })
 
-const router = useRouter()
-
 const user = ref({
-  address: {
-    // myAddress --> function setAddress() inner getGeoLication()
-    area: '',
-    city: '',
-    country: 'ประเทศไทย',
-    district: '',
-    latitude: null, // function getGeoLication()
-    longitude: null,
-    postalCode: '',
-    subDistrict: ''
-  },
-  email: '',
+  // (1/2)
+  username: 'testuser',
+  email: 'user@gmail.com',
+  rawPassword: '123456789',
+  confirmPassword: '123456789',
+  // (2/2)
   firstname: '',
   lastname: '',
+  dateOfBirth: '', //birthDay
   phoneNumber: '',
-  rawPassword: '',
-  confirmPassword: '',
-  username: '',
+  gender: null,
   role: 'USER'
+  // (3/3) ข้ามได้
+  // userDesc: '',
+  // address: {
+  //   // myAddress --> function setAddress() inner getGeoLication()
+  //   area: '',
+  //   city: '',
+  //   country: 'ประเทศไทย',
+  //   district: '',
+  //   latitude: null, // function getGeoLication()
+  //   longitude: null,
+  //   postalCode: '',
+  //   subDistrict: ''
+  // }
 })
 
-// const schema = yup.object({
-//   username: yup.string().required('กรุณากรอก ชื่อผู้ใช้'),
-//   firstname: yup.string().required('กรุณากรอก ชื่อจริง'),
-//   lastname: yup.string().required('กรุณากรอก นามสกุล'),
-//   email: yup.string().email().required('กรุณากรอก อีเมล').max(320),
-//   rawPassword: yup
-//     .string()
-//     .required('กรุณาตั้งรหัสผ่าน')
-//     .min(8, 'อย่างน้อย 8 ตัวอักษร'),
-//   confirmPassword: yup
-//     .string()
-//     .required('กรุณายืนยันรหัสผ่านอีกครั้ง')
-//     .oneOf([yup.ref('rawPassword'), null], 'รหัสผ่านไม่ตรงกัน')
-// })
+// --- Pagination (Multiform) ---
+// const steps = [
+//   { name: 'Step 1', step: 1 },
+//   { name: 'Step 2', step: 2 },
+//   { name: 'Step 3', step: 3 }
+// ]
+const currentPage = ref(1)
 
-// --- check validate : yup ---
-const phoneRegExp =
-  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
-
-const schema1 = yup.object({
-  firstname: yup.string().required('กรุณากรอก ชื่อจริง'),
-  lastname: yup.string().required('กรุณากรอก นามสกุล'),
-  email: yup.string().email().required('กรุณากรอก อีเมล').max(320),
-  phoneNumber: yup
-    .string()
-    .trim()
-    .required('โปรดระบุ เบอร์โทร')
-    .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
-    .max(10)
-})
-
-const schema2 = yup.object({
-  area: yup.string().required('โปรดระบุ ที่อยู่').max(100)
-})
-
-const schema3 = yup.object({
-  username: yup.string().required('กรุณากรอก ชื่อผู้ใช้'),
-  rawPassword: yup
-    .string()
-    .required('กรุณาตั้งรหัสผ่าน')
-    .min(8, 'อย่างน้อย 8 ตัวอักษร'),
-  confirmPassword: yup
-    .string()
-    .required('กรุณายืนยันรหัสผ่านอีกครั้ง')
-    .oneOf([yup.ref('rawPassword'), null], 'รหัสผ่านไม่ตรงกัน')
-})
-
-const next = async (numPage) => {
+// ------ Multi-Form (1/2) ------
+const next1 = () => {
+  alert('checkuser function')
+  // await checkUser()
   currentPage.value++
-  if (numPage == 2) {
-    await getGeoLication()
-  }
 }
 
-const submitForm = async () => {
-  await register()
-}
-
-const register = async () => {
+const checkUser = async () => {
   try {
-    const res = await useRegister(user.value)
+    const res = await useCheckUser({
+      username: user.value.username,
+      email: user.value.email
+    })
     if (res.value) {
-      router.push('/')
+      currentPage.value++
     }
   } catch (error) {
     console.log(error)
@@ -347,12 +366,100 @@ const register = async () => {
   }
 }
 
-const steps = [
-  { name: 'Step 1', step: 1 },
-  { name: 'Step 2', step: 2 },
-  { name: 'Step 3', step: 3 }
+const schema1 = yup.object({
+  username: yup.string().required('กรุณากรอก ชื่อผู้ใช้'),
+  email: yup.string().email().required('กรุณากรอก อีเมล').max(320),
+  rawPassword: yup
+    .string()
+    .required('กรุณาตั้งรหัสผ่าน')
+    .min(8, 'อย่างน้อย 8 ตัวอักษร'),
+  confirmPassword: yup
+    .string()
+    .required('กรุณายืนยันรหัสผ่านอีกครั้ง')
+    .oneOf([yup.ref('rawPassword'), null], 'รหัสผ่านไม่ตรงกัน')
+})
+
+// ------ Multi-Form (2/2) ------
+// -- datepicker : dateOfBirth --
+const birthDay = ref()
+// const next2 = () => {
+//   if (birthDay.value) {
+//     user.value.dateOfBirth = moment(birthDay.value).format().substring(0, 10)
+//   }
+//   currentPage.value++
+// }
+
+// -- radio : gender --
+const genders = [
+  { text: 'ชาย', value: 'M' },
+  { text: 'หญิง', value: 'F' },
+  { text: 'ไม่ระบุ', value: null }
 ]
-const currentPage = ref(1)
+
+// -- radio : role --
+const roles = [
+  { text: 'นักศึกษา / บุลคลทั่วไป', value: 'USER' },
+  { text: 'ตัวแทน / พนักงานบริษัท', value: 'COMPANY' }
+]
+
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+
+const schema2 = yup.object({
+  // area: yup.string().required('โปรดระบุ ที่อยู่').max(100)
+  firstname: yup.string().required('กรุณากรอก ชื่อจริง'),
+  lastname: yup.string().required('กรุณากรอก นามสกุล'),
+  dateOfBirth: yup.string().nullable().required('โปรดเลือก วันเกิดของคุณ'),
+  phoneNumber: yup
+    .string()
+    .trim()
+    .required('โปรดระบุ เบอร์โทร')
+    .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
+    .max(10)
+})
+
+// const schema3 = yup.object({
+//   username: yup.string().required('กรุณากรอก ชื่อผู้ใช้'),
+//   rawPassword: yup
+//     .string()
+//     .required('กรุณาตั้งรหัสผ่าน')
+//     .min(8, 'อย่างน้อย 8 ตัวอักษร'),
+//   confirmPassword: yup
+//     .string()
+//     .required('กรุณายืนยันรหัสผ่านอีกครั้ง')
+//     .oneOf([yup.ref('rawPassword'), null], 'รหัสผ่านไม่ตรงกัน')
+// })
+
+const submitForm = async () => {
+  if (birthDay.value) {
+    user.value.dateOfBirth = moment(birthDay.value).format().substring(0, 10)
+  }
+  await register()
+}
+
+const register = async () => {
+  try {
+    const res = await useRegister(user.value)
+    if (res.value) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Register successfully',
+        text: 'การลงทะเบียนสำเร็จ',
+        confirmButtonColor: 'blue'
+      })
+    }
+  } catch (error) {
+    console.log(error)
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'Error',
+      text: error.message
+    })
+  }
+}
 
 // --- location: province > amphure > tambon ---
 const sortingThai = (a, b) => {
@@ -455,9 +562,7 @@ const getGeoLication = async () => {
       address.longitude = response.results[0].geometry.location.lng
         .toString()
         .substring(0, 11)
-      // console.log(address.latitude + ',' + address.longitude)
     } else {
-      // console.log('Unable to locate this location.')
       Swal.fire({
         showConfirmButton: true,
         timerProgressBar: true,

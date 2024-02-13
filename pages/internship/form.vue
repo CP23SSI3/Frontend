@@ -385,7 +385,7 @@
             placeholder="Select Closing Date"
             :enable-time-picker="false"
             v-model="closingDate"
-            :format="(date) => moment(date).format('DD/MM/YYYY')"
+            :format="(date) => (date ? moment(date).format('DD/MM/YYYY') : '')"
             :min-date="new Date()"
             fixed-start
             required

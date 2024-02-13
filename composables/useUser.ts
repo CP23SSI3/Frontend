@@ -72,6 +72,44 @@ export async function getUserById(id: string) {
   return data
 }
 
+type checkingUser = {
+  username: string
+  email: string
+}
+type ResponseCheckUser = Response & {
+  data: null
+}
+export async function useCheckUser(params: checkingUser) {
+  console.log(params)
+  const runtimeConfig = useRuntimeConfig()
+  const API_URL = runtimeConfig.public.API_URL
+  const url = `${API_URL}users/username-email-checking`
+  const { data, error } = await useFetch<ResponseCheckUser>(url, {
+    params
+    // headers: {
+    //   'Content-Type': 'application/json'
+    // },
+    // method: 'GET',
+    // body: JSON.stringify(username_email)
+  })
+
+  if (error.value) {
+    console.log(error.value)
+    let errorMessage = {
+      ...error.value,
+      message: `Could not fetch data from ${url}`
+    }
+    if (error.value.statusCode === 500) {
+      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+    } else if (error.value.statusCode === 400) {
+      errorMessage.message = error.value.data.message
+    }
+    throw createError(errorMessage)
+  }
+
+  return data
+}
+
 type ResponseCreateUser = Response & {
   data: UserRegister
 }
@@ -79,11 +117,8 @@ export async function useRegister(newUser: UserRegister) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}users`
-  // const auth = useAuth()
-  // const token = auth.$storage.getUniversal('_token.local') as string
   const { data, error } = await useFetch<ResponseCreateUser>(url, {
     headers: {
-      // Authorization: token,
       'Content-Type': 'application/json'
     },
     method: 'POST',
@@ -91,7 +126,6 @@ export async function useRegister(newUser: UserRegister) {
   })
 
   if (error.value) {
-    console.log(error.value.data)
     let errorMessage = {
       ...error.value,
       message: `Could not fetch data from ${url}`

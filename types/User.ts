@@ -24,7 +24,9 @@ export type UserAuth = {
 
 export type UserRegister = {
   address: Address
+  dateOfBirth: string
   email: string
+  gender: string
   firstname: string
   lastname: string
   phoneNumber: string

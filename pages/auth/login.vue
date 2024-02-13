@@ -16,21 +16,21 @@
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <Form @submit="submitForm" :validation-schema="schema" class="space-y-6">
       <BaseInputField
-        label="Username"
+        label="Email or Username"
         id="username"
         v-model="user.username"
-        placeholder="Enter your username"
+        placeholder="Enter your email or username"
       >
       </BaseInputField>
 
       <div>
         <div class="flex justify-between">
           <BaseLabel id="password">Password</BaseLabel>
-          <div class="text-sm">
+          <!-- <div class="text-sm">
             <a href="#" class="font-semibold text-blue-600 hover:text-blue-500"
               >Forgot password?</a
             >
-          </div>
+          </div> -->
         </div>
         <BaseInputField
           id="password"
@@ -71,7 +71,7 @@ definePageMeta({
 const user = ref({ username: '', password: '' })
 const schema = yup.object({
   username: yup.string(),
-  password: yup.string()
+  password: yup.string().min(8, 'อย่างน้อย 8 ตัวอักษร')
 })
 
 const submitForm = async () => {

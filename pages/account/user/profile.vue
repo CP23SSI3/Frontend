@@ -1,150 +1,233 @@
 <template>
-  <BaseSectionContent class="w-full" v-if="myUser != null">
-    <div>
-      <div class="flex items-center justify-between px-4 py-5 sm:px-10">
-        <BaseTitleForm>Profile Detail</BaseTitleForm>
-        <!-- <BaseButton outline :leading-icon="PencilIcon">Edit</BaseButton> -->
-      </div>
-      <BaseLine />
-
-      <div class="grid gap-6 px-4 py-8 sm:grid-cols-3 sm:px-10">
-        <div
-          class="flex flex-col items-center justify-start gap-4 sm:py-4 sm:col-span-1"
-        >
-          <nuxt-img
-            class="inline-block w-24 h-24 rounded-md"
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            alt=""
-          />
-          <!-- <BaseButton outline>Change</BaseButton> -->
-          <BaseBadge color="blue">{{ myUser.role }}</BaseBadge>
-          <div class="flex gap-6 sm:flex-col">
-            <BaseDescription label="Created Date" class="">
-              {{
-                moment(new Date(myUser.createdDate)).format(
-                  'D MMM YYYY, hh:mm a'
-                )
-              }}
-            </BaseDescription>
-            <BaseDescription label="Last Update" class="">
-              {{
-                moment(new Date(myUser.lastUpdate)).format(
-                  'D MMM YYYY, hh:mm a'
-                )
-              }}
-            </BaseDescription>
-          </div>
+  <div v-if="myUser != null" class="w-auto space-y-6">
+    <BaseSectionContent class="w-full">
+      <div>
+        <div class="flex items-center justify-between px-4 py-5 sm:px-10">
+          <BaseTitleForm>Personal Information</BaseTitleForm>
         </div>
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:col-span-2">
-          <BaseInputField
-            label="Display Name"
-            id="username"
-            v-model="myUser.username"
-          ></BaseInputField>
-          <BaseInputField
-            class="sm:col-span-2"
-            label="User ID"
-            id="userId"
-            v-model="myUser.userId"
-            disabled
-          ></BaseInputField>
-          <BaseInputField
-            class="sm:col-start-1"
-            label="First Name"
-            id="firstname"
-            v-model="myUser.firstname"
-          ></BaseInputField>
-          <BaseInputField
-            label="Last Name"
-            id="lastname"
-            v-model="myUser.lastname"
-          ></BaseInputField>
+        <BaseLine />
+        <Form
+          @submit="submitFormProfile"
+          v-slot="{ meta, values, errors }"
+          :validation-schema="schema"
+          :initial-values="initialValues"
+        >
+          <div class="grid items-start gap-6 px-4 py-8 sm:grid-cols-3 sm:px-10">
+            <div
+              class="flex flex-col items-center justify-start gap-4 sm:py-4 sm:col-span-1"
+            >
+              <BaseProfile
+                size="XL"
+                :fname="myUser.firstname"
+                :lname="myUser.lastname"
+              />
 
-          <BaseInputField
-            class="sm:col-start-1"
-            label="Email Address"
-            id="email"
-            v-model="myUser.email"
-            disabled
-          ></BaseInputField>
-          <BaseInputField
-            label="Phone Number"
-            id="phoneNumbes"
-            v-model="myUser.phoneNumber"
-          ></BaseInputField>
+              <!-- <BaseBadge color="blue">{{ myUser.role }}</BaseBadge> -->
+              <div class="flex gap-6 sm:flex-col">
+                <BaseDescription label="Role">
+                  {{ myUser.role }}
+                </BaseDescription>
+                <BaseDescription label="Created Date">
+                  {{
+                    moment(new Date(myUser.createdDate)).format(
+                      'D MMM YYYY, hh:mm a'
+                    )
+                  }}
+                </BaseDescription>
+                <BaseDescription label="Last Update">
+                  {{
+                    moment(new Date(myUser.lastUpdate)).format(
+                      'D MMM YYYY, hh:mm a'
+                    )
+                  }}
+                </BaseDescription>
+              </div>
+            </div>
 
-          <!-- <BaseDescription
-            label="Home Address"
-            class="sm:col-start-1 sm:col-span-2"
-          >
-            {{
-              `${myUser.address.area} แขวง${myUser.address.subDistrict} เขต${myUser.address.district}, ${myUser.address.city}  ${myUser.address.postalCode}`
-            }}
-          </BaseDescription> -->
-          <BaseLineTopic class="sm:col-start-1 sm:col-span-full"
-            >Address</BaseLineTopic
-          >
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:col-span-2">
+              <BaseInputField
+                class="sm:col-span-2"
+                label="Display Name "
+                id="username"
+                v-model="form.username"
+              ></BaseInputField>
+              <BaseInputField
+                class="sm:col-start-1"
+                label="First Name"
+                id="firstname"
+                v-model="form.firstname"
+              ></BaseInputField>
+              <BaseInputField
+                label="Last Name"
+                id="lastname"
+                v-model="form.lastname"
+              ></BaseInputField>
+              <Field v-slot="{ field }" name="gender">
+                <BaseDropdown
+                  :option-lists="genders"
+                  label="เพศ"
+                  v-model="form.selectedGender"
+                  v-bind="field"
+                  @click="changeGender()"
+              /></Field>
+              <BaseInputField
+                class="sm:col-span-1"
+                label="Email Address"
+                id="email"
+                v-model="form.email"
+                disabled
+              ></BaseInputField>
+              <BaseInputField
+                class="sm:col-span-1"
+                label="Phone Number"
+                id="phoneNumber"
+                type="tel"
+                v-model="form.phoneNumber"
+              ></BaseInputField>
+              <Field v-slot="{ field, errors }" name="dateOfBirth">
+                <BaseDatePicker
+                  label="วันเกิด"
+                  id="dateOfBirth"
+                  placeholder="DD/MM/YYYY"
+                  :enable-time-picker="false"
+                  v-bind="field"
+                  v-model="form.birthDay"
+                  :format="
+                    (date) => (date ? moment(date).format('DD/MM/YYYY') : '')
+                  "
+                  :max-date="new Date()"
+                >
+                  <template v-slot:error-message>{{ errors[0] }}</template>
+                </BaseDatePicker>
+              </Field>
+
+              <BaseLineTopic class="col-start-1 col-span-full"
+                >Profile Detail</BaseLineTopic
+              >
+              <!-- <BaseInputField
+                label="About me"
+                class="sm:col-span-full"
+                id="userDesc"
+                v-model="form.userDesc"
+              ></BaseInputField> -->
+              <Field v-slot="{ field, errors }" name="userDesc">
+                <div class="col-span-full">
+                  <BaseLabel id="userDesc">About me</BaseLabel>
+                  <div class="mt-1 sm:col-span-full">
+                    <textarea
+                      id="userDesc"
+                      name="userDesc"
+                      rows="4"
+                      v-model="form.userDesc"
+                      v-bind="field"
+                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                  <p class="text-sm leading-6 text-gray-600" v-if="!errors[0]">
+                    Write a few sentences about yourself.
+                  </p>
+                  <span class="pl-2 text-xs text-red-500">{{ errors[0] }}</span>
+                </div>
+              </Field>
+            </div>
+          </div>
+          <BaseLine />
+          <div class="flex items-center justify-between px-4 py-5 sm:px-10">
+            <BaseButton
+              :leadingIcon="ArrowRightOnRectangleIcon"
+              type="button"
+              negative
+              @click="auth.logout()"
+              >Log out</BaseButton
+            >
+            <BaseButton
+              :leading-icon="ArrowDownTrayIcon"
+              type="sumbit"
+              :disabled="!meta.dirty || !meta.valid"
+              >Save</BaseButton
+            >
+          </div>
+        </Form>
+      </div>
+    </BaseSectionContent>
+
+    <!-- Form 2 -->
+    <BaseSectionContent class="w-full">
+      <div>
+        <div class="flex items-center justify-between px-4 py-5 sm:px-10">
+          <BaseTitleForm>Address</BaseTitleForm>
+        </div>
+        <BaseLine />
+        <div class="grid items-start gap-6 px-4 py-8 sm:grid-cols-3 sm:px-10">
           <BaseInputField
             label="ที่อยู่ปัจจุบัน"
             id="area"
             class="sm:col-start-1 sm:col-span-2"
-            v-model="myUser.address.area"
+            v-model="form.address.area"
           ></BaseInputField>
-          <BaseInput
-            label="รหัสไปรณีย์"
-            id="postalCode"
-            v-model="myAddress.tambon.zip_code"
-            disabled
-          ></BaseInput>
+
           <BaseDropdown
-            class="relative z-40 sm:col-start-1"
+            class="relative z-40"
             :option-lists="provinceList"
             label="จังหวัด"
-            v-model="myAddress.province"
-            @click="getAmphure(myAddress.province.id)"
+            v-model="form.selectedAddress.province"
+            @click="getAmphure(form.selectedAddress.province.id)"
           />
           <BaseDropdown
             class="relative z-30"
             :option-lists="amphureList"
             label="เขต"
-            v-model="myAddress.amphure"
+            v-model="form.selectedAddress.amphure"
             :disabled="!(amphureList.length > 0)"
-            @click="getTambon(myAddress.province.id, myAddress.amphure.id)"
+            @click="
+              getTambon(
+                form.selectedAddress.province.id,
+                form.selectedAddress.amphure.id
+              )
+            "
           />
           <BaseDropdown
             class="relative z-20"
             :option-lists="tambonList"
             label="แขวง"
-            v-model="myAddress.tambon"
+            v-model="form.selectedAddress.tambon"
             :disabled="!(tambonList.length > 0)"
           />
+          <BaseInput
+            label="รหัสไปรณีย์"
+            id="postalCode"
+            v-model="form.selectedAddress.tambon.zip_code"
+            disabled
+          ></BaseInput>
         </div>
       </div>
       <BaseLine />
-      <div class="flex items-center justify-between px-4 py-5 sm:px-10">
-        <BaseButton
+      <div class="flex items-center justify-end px-4 py-5 sm:px-10">
+        <!-- <BaseButton
           :leadingIcon="ArrowRightOnRectangleIcon"
           type="button"
           negative
           @click="auth.logout()"
           >Log out</BaseButton
-        >
-        <BaseButton>Save</BaseButton>
+        > -->
+        <BaseButton :leading-icon="ArrowDownTrayIcon">Save</BaseButton>
       </div>
-    </div>
-  </BaseSectionContent>
+    </BaseSectionContent>
+  </div>
+  <BaseLoading v-else></BaseLoading>
 
   <!-- {{ myUser }} -->
 </template>
 
 <script setup>
-// import { PencilIcon } from '@heroicons/vue/20/solid'
 import {
-  PencilIcon,
-  ArrowRightOnRectangleIcon
+  ArrowRightOnRectangleIcon,
+  ArrowDownTrayIcon
 } from '@heroicons/vue/24/outline'
 import Swal from 'sweetalert2'
 import moment from 'moment'
+import { Field, ErrorMessage, Form } from 'vee-validate'
+import yup from '@/assets/yup-error.js'
 
 const auth = useAuth()
 const userId = auth.user.userId
@@ -156,6 +239,7 @@ const getUser = async () => {
     const res = await getUserById(userId)
     if (res.value.status == 200) {
       myUser.value = res.value.data
+      console.log(myUser.value)
     }
   } catch (error) {
     Swal.fire({
@@ -171,16 +255,62 @@ const getUser = async () => {
 
 await getUser()
 
+// -- dropdown : gender --
+const genders = [
+  { id: 1, text: 'ชาย', value: 'M' },
+  { id: 2, text: 'หญิง', value: 'F' },
+  { id: 3, text: 'ไม่ระบุ', value: null }
+]
+
+const form = ref({
+  birthDay: null,
+  selectedGender: { id: 0, text: 'เลือก เพศ', value: null },
+  selectedAddress: {
+    province: { id: 0, text: 'เลือก จังหวัด' },
+    amphure: { id: 0, text: 'เลือก เขต' },
+    tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
+  }
+})
+
+const setupForm = () => {
+  for (let key in myUser.value) {
+    if (myUser.value.hasOwnProperty(key)) {
+      form.value[key] = myUser.value[key]
+    }
+  }
+
+  form.value.birthDay = new Date(myUser.value.dateOfBirth)
+  form.value.selectedGender = genders.find(
+    (g) => g.value === myUser.value.gender
+  )
+
+  if (form.value.address == null) {
+    form.value.address = {
+      country: 'ประเทศไทย',
+      postalCode: '',
+      city: '',
+      district: '',
+      subDistrict: '',
+      area: '',
+      latitude: null, // function getGeoLication()
+      longitude: null
+    }
+  } else {
+    setupSelectedAddress()
+  }
+}
+
+const { data } = await useFetch('/api/locations-thai')
 // --- location: province > amphure > tambon ---
 const sortingThai = (a, b) => {
   return a.text.localeCompare(b.text, 'th')
 }
-const myAddress = ref({
-  province: { id: 0, text: 'เลือก จังหวัด' },
-  amphure: { id: 0, text: 'เลือก เขต' },
-  tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
-})
-const { data } = await useFetch('/api/locations-thai')
+// const myAddress = ref({
+//   province: { id: 0, text: 'เลือก จังหวัด' },
+//   amphure: { id: 0, text: 'เลือก เขต' },
+//   tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
+// })
+
 // console.log(data.value)
 const provinceList = ref([])
 const getProvince = () => {
@@ -200,28 +330,38 @@ getProvince()
 
 const amphureList = ref([])
 const getAmphure = (provinceId) => {
-  amphureList.value = []
-  myAddress.value.amphure = { id: 0, text: 'เลือก เขต' }
-  tambonList.value = []
-  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง', zip_code: null }
-  let list = []
-  let result = data.value.find((city) => city.id === provinceId)
-  let amphure
-  result.amphure.forEach((district) => {
-    amphure = {
-      id: district.id,
-      text: district.name_th
+  if (provinceId) {
+    amphureList.value = []
+    form.value.selectedAddress.amphure = { id: 0, text: 'เลือก เขต' }
+    tambonList.value = []
+    form.value.selectedAddress.tambon = {
+      id: 0,
+      text: 'เลือก แขวง',
+      zip_code: null
     }
-    list.push(amphure)
-  })
-  list.sort(sortingThai)
-  amphureList.value = list
+    let list = []
+    let result = data.value.find((city) => city.id === provinceId)
+    let amphure
+    result.amphure.forEach((district) => {
+      amphure = {
+        id: district.id,
+        text: district.name_th
+      }
+      list.push(amphure)
+    })
+    list.sort(sortingThai)
+    amphureList.value = list
+  }
 }
 
 const tambonList = ref([])
 const getTambon = (provinceId, amphureId) => {
   tambonList.value = []
-  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง', zip_code: null }
+  form.value.selectedAddress.tambon = {
+    id: 0,
+    text: 'เลือก แขวง',
+    zip_code: null
+  }
   let province = data.value.find((city) => city.id === provinceId)
   let amphure = province.amphure.find((district) => district.id === amphureId)
   let list = []
@@ -238,92 +378,178 @@ const getTambon = (provinceId, amphureId) => {
   tambonList.value = list
 }
 
+const setupSelectedAddress = () => {
+  if (myUser.value.address != null) {
+    let address = myUser.value.address
+    let selected = form.value.selectedAddress
+    let province = data.value.find((p) => p.name_th.includes(address.city))
+    if (province) {
+      selected.province.id = province.id
+      selected.province.text = province.name_th
+      getAmphure(selected.province.id)
+    }
+    let amphure = amphureList.value.find((a) =>
+      a.text.includes(address.district)
+    )
+    if (amphure) {
+      selected.amphure.id = amphure.id
+      selected.amphure.text = amphure.text
+      getTambon(selected.province.id, selected.amphure.id)
+    }
+    let tambon = tambonList.value.find((t) =>
+      t.text.includes(address.subDistrict)
+    )
+    if (tambon) {
+      selected.tambon.id = tambon.id
+      selected.tambon.text = tambon.text
+      selected.tambon.zip_code = tambon.zip_code
+    } else {
+      selected.tambon.zip_code = address.postalCode
+    }
+  }
+}
+
+setupForm()
+const initialValues = ref({ ...form.value })
+console.log(form.value)
+
+const changeGender = () => {
+  form.value.gender = form.value.selectedGender.value
+}
+
+// --- check validate : yup ---
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+
+const schema = yup.object({
+  username: yup.string().required('กรุณากรอก ชื่อผู้ใช้').max(50),
+  firstname: yup.string().required('กรุณากรอก ชื่อจริง').max(50),
+  lastname: yup.string().required('กรุณากรอก นามสกุล').max(50),
+  dateOfBirth: yup.string().nullable().required('โปรดเลือก วันเกิดของคุณ'),
+  phoneNumber: yup
+    .string()
+    .trim()
+    .required('โปรดระบุ เบอร์โทร')
+    .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
+    .max(10),
+  userDesc: yup.string().nullable().max(1500)
+})
+
+// --- เอาข้อมูลที่เลือกไว้ มาจัดเพื่อเตรียมส่ง --
 const setAddress = () => {
   let address = myUser.value.address
-  ;(address.city = myAddress.value.province.text),
-    (address.district = myAddress.value.amphure.text),
-    (address.subDistrict = myAddress.value.tambon.text),
-    (address.postalCode = myAddress.value.tambon.zip_code)
+  ;(address.city = form.value.selectedAddress.province.text),
+    (address.district = form.value.selectedAddress.amphure.text),
+    (address.subDistrict = form.value.selectedAddress.tambon.text),
+    (address.postalCode = form.value.selectedAddress.tambon.zip_code)
 }
 
-const setupMyAddress = () => {
-  let address = myUser.value.address
-  let province = data.value.find((p) => p.name_th.includes(address.city))
-  if (province) {
-    myAddress.value.province.id = province.id
-    myAddress.value.province.text = province.name_th
-    getAmphure(myAddress.value.province.id)
+const submitFormProfile = async () => {
+  if (form.value.birthDay) {
+    form.value.dateOfBirth = moment(form.value.birthDay)
+      .format()
+      .substring(0, 10)
   }
-  let amphure = amphureList.value.find((a) => a.text.includes(address.district))
-  if (amphure) {
-    myAddress.value.amphure.id = amphure.id
-    myAddress.value.amphure.text = amphure.text
-    getTambon(myAddress.value.province.id, myAddress.value.amphure.id)
+  const {
+    dateOfBirth,
+    firstname,
+    gender,
+    lastname,
+    phoneNumber,
+    userDesc,
+    username
+  } = form.value
+
+  let editUser = {
+    dateOfBirth,
+    firstname,
+    gender,
+    lastname,
+    phoneNumber,
+    userDesc,
+    username
   }
-  let tambon = tambonList.value.find((t) =>
-    t.text.includes(address.subDistrict)
-  )
-  if (tambon) {
-    myAddress.value.tambon.id = tambon.id
-    myAddress.value.tambon.text = tambon.text
-    myAddress.value.tambon.zip_code = tambon.zip_code
-  } else {
-    myAddress.value.tambon.zip_code = address.postalCode
-  }
+  console.log(editUser)
+  await saveUserProfile(editUser)
 }
-
-setupMyAddress()
-
-// --- location: get latitude / longtitude ---
-const getGeoLication = async () => {
-  setAddress()
-  let address = form.value.address
-  let location = address.area.concat(
-    ' ',
-    address.subDistrict,
-    ' ',
-    address.district,
-    ' ',
-    address.city,
-    ' ',
-    address.country,
-    ' ',
-    address.postalCode
-  )
+const saveUserProfile = async (editUser) => {
   try {
-    const res = await useGoogleMap(location)
-    let response = res.value
-    if (response.status == 'OK') {
-      address.latitude = response.results[0].geometry.location.lat
-        .toString()
-        .substring(0, 11)
-      address.longitude = response.results[0].geometry.location.lng
-        .toString()
-        .substring(0, 11)
-      // console.log(address.latitude + ',' + address.longitude)
-    } else {
-      // console.log('Unable to locate this location.')
+    const res = await useUpdateUser(userId, editUser)
+    if (res.value) {
       Swal.fire({
-        showConfirmButton: true,
-        timerProgressBar: true,
+        title: 'Update Post',
         confirmButtonColor: 'blue',
-        icon: 'error',
-        title: 'ที่อยู่ไม่ถูกต้อง',
-        text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
+        text: 'บันทึกการแก้ไข profile สำเร็จ',
+        icon: 'success'
+      }).then((result) => {
+        reloadNuxtApp({
+          path: '/account/user/profile',
+          ttl: 1000
+        })
       })
     }
   } catch (error) {
-    console.error('Error fetching location:', error)
+    console.log(error.message)
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,
       confirmButtonColor: 'blue',
       icon: 'error',
-      title: 'ที่อยู่ไม่ถูกต้อง',
-      text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
+      title: 'Error',
+      text: 'ไม่สามารถบันทึกการแก้ไขนี้ได้'
     })
   }
 }
+// --- location: get latitude / longtitude ---
+// const getGeoLication = async () => {
+//   setAddress()
+//   let address = form.value.selectedAddress
+//   let location = address.area.concat(
+//     ' ',
+//     address.subDistrict,
+//     ' ',
+//     address.district,
+//     ' ',
+//     address.city,
+//     ' ',
+//     address.country,
+//     ' ',
+//     address.postalCode
+//   )
+//   try {
+//     const res = await useGoogleMap(location)
+//     let response = res.value
+//     if (response.status == 'OK') {
+//       address.latitude = response.results[0].geometry.location.lat
+//         .toString()
+//         .substring(0, 11)
+//       address.longitude = response.results[0].geometry.location.lng
+//         .toString()
+//         .substring(0, 11)
+//       // console.log(address.latitude + ',' + address.longitude)
+//     } else {
+//       // console.log('Unable to locate this location.')
+//       Swal.fire({
+//         showConfirmButton: true,
+//         timerProgressBar: true,
+//         confirmButtonColor: 'blue',
+//         icon: 'error',
+//         title: 'ที่อยู่ไม่ถูกต้อง',
+//         text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
+//       })
+//     }
+//   } catch (error) {
+//     console.error('Error fetching location:', error)
+//     Swal.fire({
+//       showConfirmButton: true,
+//       timerProgressBar: true,
+//       confirmButtonColor: 'blue',
+//       icon: 'error',
+//       title: 'ที่อยู่ไม่ถูกต้อง',
+//       text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
+//     })
+//   }
+// }
 
 // {
 //     "address": {

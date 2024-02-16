@@ -31,6 +31,10 @@ const styleColor = computed(() => {
     return 'bg-red-100 text-red-600'
   } else if (props.color === 'blue') {
     return 'bg-blue-100 text-blue-600'
+  } else if (props.color === 'pink') {
+    return 'bg-pink-100 text-pink-600'
+  } else if (props.color === 'purple') {
+    return 'bg-purple-100 text-purple-600'
   } else {
     return 'bg-gray-100 text-gray-600'
   }
@@ -45,6 +49,10 @@ const styleFillColor = computed(() => {
     return 'fill-red-500'
   } else if (props.color === 'blue') {
     return 'fill-blue-500'
+  } else if (props.color === 'pink') {
+    return 'fill-pink-500'
+  } else if (props.color === 'purple') {
+    return 'fill-purple-500'
   } else {
     return 'fill-gray-400'
   }

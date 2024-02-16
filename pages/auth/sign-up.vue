@@ -14,7 +14,6 @@
   </div>
 
   <div class="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
-    <!-- <Form @submit="submitForm" :validation-schema="schema"> -->
     <!-- Page 1 :  Personal Information-->
     <div class="space-y-5">
       <Form
@@ -40,6 +39,7 @@
           id="confirmPassword"
           type="password"
           v-model="user.confirmPassword"
+          autocomplete="off"
         />
         <div>
           <BaseButton
@@ -58,39 +58,6 @@
         class="space-y-4"
         v-else-if="currentPage == 2"
       >
-        <!-- <BaseInputField label="ที่อยู่" id="area" v-model="user.address.area" />
-        <BaseDropdown
-          class="relative z-40"
-          :option-lists="provinceList"
-          label="จังหวัด"
-          v-model="myAddress.province"
-          required
-          @click="getAmphure(myAddress.province.id)"
-        />
-        <BaseDropdown
-          class="relative z-30"
-          :option-lists="amphureList"
-          label="เขต"
-          v-model="myAddress.amphure"
-          :disabled="!(amphureList.length > 0)"
-          required
-          @click="getTambon(myAddress.province.id, myAddress.amphure.id)"
-        />
-        <BaseDropdown
-          class="relative z-20"
-          :option-lists="tambonList"
-          label="แขวง"
-          v-model="myAddress.tambon"
-          :disabled="!(tambonList.length > 0)"
-          required
-        />
-
-        <BaseInput
-          label="รหัสไปรณีย์"
-          id="postalCode"
-          v-model="myAddress.tambon.zip_code"
-          disabled
-        ></BaseInput> -->
         <div class="flex justify-center gap-3 full">
           <BaseInputField
             label="ชื่อจริง"
@@ -125,7 +92,7 @@
         />
         <!-- radio: gender -->
         <div class="sm:col-start-1 sm:col-span-3">
-          <BaseLabel id="gender"> เพศ </BaseLabel>
+          <BaseLabel id="gender">เพศ</BaseLabel>
           <fieldset class="mt-2">
             <div
               class="space-y-4 md:flex md:items-center md:space-x-10 md:space-y-0"
@@ -143,7 +110,7 @@
                   v-model="user.gender"
                   class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
                 />
-                <BaseLabel :id="choice.value" class="ml-3">
+                <BaseLabel :id="choice.text" class="ml-3">
                   {{ choice.text }}
                 </BaseLabel>
               </div>
@@ -188,13 +155,6 @@
               @click="currentPage--"
               >Back</BaseButton
             >
-            <!-- <BaseButton
-              type="submit"
-              secondary
-              full
-              :trailing-icon="ChevronRightIcon"
-              >Next</BaseButton
-            > -->
             <BaseButton type="submit" full> Sign up </BaseButton>
           </div>
         </div>
@@ -274,8 +234,6 @@
         </div>
       </nav> -->
     </div>
-    <!-- </Form> -->
-
     <p class="mt-6 text-sm text-center text-gray-500">
       Already have an account?
       {{ ' ' }}
@@ -303,10 +261,10 @@ definePageMeta({
 
 const user = ref({
   // (1/2)
-  username: 'testuser',
-  email: 'user@gmail.com',
-  rawPassword: '123456789',
-  confirmPassword: '123456789',
+  username: '',
+  email: '',
+  rawPassword: '',
+  confirmPassword: '',
   // (2/2)
   firstname: '',
   lastname: '',
@@ -314,19 +272,6 @@ const user = ref({
   phoneNumber: '',
   gender: null,
   role: 'USER'
-  // (3/3) ข้ามได้
-  // userDesc: '',
-  // address: {
-  //   // myAddress --> function setAddress() inner getGeoLication()
-  //   area: '',
-  //   city: '',
-  //   country: 'ประเทศไทย',
-  //   district: '',
-  //   latitude: null, // function getGeoLication()
-  //   longitude: null,
-  //   postalCode: '',
-  //   subDistrict: ''
-  // }
 })
 
 // --- Pagination (Multiform) ---
@@ -339,9 +284,7 @@ const currentPage = ref(1)
 
 // ------ Multi-Form (1/2) ------
 const next1 = () => {
-  alert('checkuser function')
-  // await checkUser()
-  currentPage.value++
+  checkUser()
 }
 
 const checkUser = async () => {
@@ -350,8 +293,8 @@ const checkUser = async () => {
       username: user.value.username,
       email: user.value.email
     })
-    if (res.value) {
-      currentPage.value++
+    if (res.value.status == 200) {
+      currentPage.value = currentPage.value + 1
     }
   } catch (error) {
     console.log(error)
@@ -367,7 +310,7 @@ const checkUser = async () => {
 }
 
 const schema1 = yup.object({
-  username: yup.string().required('กรุณากรอก ชื่อผู้ใช้'),
+  username: yup.string().required('กรุณากรอก ชื่อผู้ใช้').max(50),
   email: yup.string().email().required('กรุณากรอก อีเมล').max(320),
   rawPassword: yup
     .string()
@@ -382,12 +325,6 @@ const schema1 = yup.object({
 // ------ Multi-Form (2/2) ------
 // -- datepicker : dateOfBirth --
 const birthDay = ref()
-// const next2 = () => {
-//   if (birthDay.value) {
-//     user.value.dateOfBirth = moment(birthDay.value).format().substring(0, 10)
-//   }
-//   currentPage.value++
-// }
 
 // -- radio : gender --
 const genders = [
@@ -406,9 +343,8 @@ const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
 const schema2 = yup.object({
-  // area: yup.string().required('โปรดระบุ ที่อยู่').max(100)
-  firstname: yup.string().required('กรุณากรอก ชื่อจริง'),
-  lastname: yup.string().required('กรุณากรอก นามสกุล'),
+  firstname: yup.string().required('กรุณากรอก ชื่อจริง').max(50),
+  lastname: yup.string().required('กรุณากรอก นามสกุล').max(50),
   dateOfBirth: yup.string().nullable().required('โปรดเลือก วันเกิดของคุณ'),
   phoneNumber: yup
     .string()
@@ -417,18 +353,6 @@ const schema2 = yup.object({
     .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
     .max(10)
 })
-
-// const schema3 = yup.object({
-//   username: yup.string().required('กรุณากรอก ชื่อผู้ใช้'),
-//   rawPassword: yup
-//     .string()
-//     .required('กรุณาตั้งรหัสผ่าน')
-//     .min(8, 'อย่างน้อย 8 ตัวอักษร'),
-//   confirmPassword: yup
-//     .string()
-//     .required('กรุณายืนยันรหัสผ่านอีกครั้ง')
-//     .oneOf([yup.ref('rawPassword'), null], 'รหัสผ่านไม่ตรงกัน')
-// })
 
 const submitForm = async () => {
   if (birthDay.value) {
@@ -446,6 +370,13 @@ const register = async () => {
         title: 'Register successfully',
         text: 'การลงทะเบียนสำเร็จ',
         confirmButtonColor: 'blue'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          reloadNuxtApp({
+            path: '/auth/login',
+            ttl: 1000
+          })
+        }
       })
     }
   } catch (error) {
@@ -457,130 +388,6 @@ const register = async () => {
       icon: 'error',
       title: 'Error',
       text: error.message
-    })
-  }
-}
-
-// --- location: province > amphure > tambon ---
-const sortingThai = (a, b) => {
-  return a.text.localeCompare(b.text, 'th')
-}
-const myAddress = ref({
-  province: { id: 0, text: 'เลือก จังหวัด' },
-  amphure: { id: 0, text: 'เลือก เขต' },
-  tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
-})
-const { data } = await useFetch('/api/locations-thai')
-// console.log(data.value)
-const provinceList = ref([])
-const getProvince = () => {
-  let list = []
-  let province
-  data.value.forEach((city) => {
-    province = {
-      id: city.id,
-      text: city.name_th
-    }
-    list.push(province)
-  })
-  list.sort(sortingThai)
-  provinceList.value = list
-}
-getProvince()
-
-const amphureList = ref([])
-const getAmphure = (provinceId) => {
-  amphureList.value = []
-  myAddress.value.amphure = { id: 0, text: 'เลือก เขต' }
-  tambonList.value = []
-  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง', zip_code: null }
-  let list = []
-  let result = data.value.find((city) => city.id === provinceId)
-  let amphure
-  result.amphure.forEach((district) => {
-    amphure = {
-      id: district.id,
-      text: district.name_th
-    }
-    list.push(amphure)
-  })
-  list.sort(sortingThai)
-  amphureList.value = list
-}
-
-const tambonList = ref([])
-const getTambon = (provinceId, amphureId) => {
-  tambonList.value = []
-  myAddress.value.tambon = { id: 0, text: 'เลือก แขวง', zip_code: null }
-  let province = data.value.find((city) => city.id === provinceId)
-  let amphure = province.amphure.find((district) => district.id === amphureId)
-  let list = []
-  let tambon
-  amphure.tambon.forEach((subDistrict) => {
-    tambon = {
-      id: subDistrict.id,
-      text: subDistrict.name_th,
-      zip_code: subDistrict.zip_code
-    }
-    list.push(tambon)
-  })
-  list.sort(sortingThai)
-  tambonList.value = list
-}
-
-const setAddress = () => {
-  let address = user.value.address
-  ;(address.city = myAddress.value.province.text),
-    (address.district = myAddress.value.amphure.text),
-    (address.subDistrict = myAddress.value.tambon.text),
-    (address.postalCode = myAddress.value.tambon.zip_code)
-}
-
-// --- location: get latitude / longtitude ---
-const getGeoLication = async () => {
-  setAddress()
-  let address = user.value.address
-  let location = address.area.concat(
-    ' ',
-    address.subDistrict,
-    ' ',
-    address.district,
-    ' ',
-    address.city,
-    ' ',
-    address.country,
-    ' ',
-    address.postalCode
-  )
-  try {
-    const res = await useGoogleMap(location)
-    let response = res.value
-    if (response.status == 'OK') {
-      address.latitude = response.results[0].geometry.location.lat
-        .toString()
-        .substring(0, 11)
-      address.longitude = response.results[0].geometry.location.lng
-        .toString()
-        .substring(0, 11)
-    } else {
-      Swal.fire({
-        showConfirmButton: true,
-        timerProgressBar: true,
-        confirmButtonColor: 'blue',
-        icon: 'error',
-        title: 'ที่อยู่ไม่ถูกต้อง',
-        text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
-      })
-    }
-  } catch (error) {
-    console.error('Error fetching location:', error)
-    Swal.fire({
-      showConfirmButton: true,
-      timerProgressBar: true,
-      confirmButtonColor: 'blue',
-      icon: 'error',
-      title: 'ที่อยู่ไม่ถูกต้อง',
-      text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
     })
   }
 }

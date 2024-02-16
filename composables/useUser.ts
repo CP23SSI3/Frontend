@@ -140,3 +140,62 @@ export async function useRegister(newUser: UserRegister) {
 
   return data
 }
+
+export async function useDeleteUser(id: string) {
+  const runtimeConfig = useRuntimeConfig()
+  const API_URL = runtimeConfig.public.API_URL
+  const url = `${API_URL}users/${id}`
+  const { data, error } = await useFetch<ResponseCheckUser>(url, {
+    // headers: {
+    //   Authorization: token,
+    // },
+    method: 'DELETE'
+  })
+
+  if (error.value) {
+    let errorMessage = {
+      ...error.value,
+      message: `Could not fetch data from ${url}`
+    }
+    if (error.value.statusCode === 500) {
+      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+    } else if (error.value.statusCode === 400) {
+      errorMessage.message = error.value.data.message
+    }
+    throw createError(errorMessage)
+  }
+
+  return data
+}
+
+export async function useUpdateUser(userId: string, editUser: any) {
+  const runtimeConfig = useRuntimeConfig()
+  const API_URL = runtimeConfig.public.API_URL
+  const url = `${API_URL}users/${userId}`
+  // const auth = useAuth()
+  // const token = auth.$storage.getUniversal('_token.local') as string
+  const { data, error } = await useFetch(url, {
+    headers: {
+      // Authorization: token,
+      'Content-Type': 'application/json'
+    },
+    method: 'PUT',
+    body: JSON.stringify(editUser)
+  })
+
+  if (error.value) {
+    console.log(error.value)
+    let errorMessage = {
+      ...error.value,
+      message: `Could not fetch data from ${url}`
+    }
+    if (error.value.statusCode === 500) {
+      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+    } else if (error.value.statusCode === 400) {
+      errorMessage.message = error.value.data.message
+    }
+    throw createError(errorMessage)
+  }
+
+  return data
+}

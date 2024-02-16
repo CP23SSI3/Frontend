@@ -993,18 +993,10 @@ const props = defineProps({
 })
 
 form.value = props?.post
-// const initialValues = ref(form.value)
 positionList.value = props?.post.openPositionList
 setupWorkTime() // workStartTime, workEndTime ---> workTime
 setupClosedDate() // closeedDate ---> closingDate, statusClosingDate
 setupMyAddress() // address ---> myAddress
-
-// console.log('props')
-// console.log(props.post)
-// console.log('form')
-// console.log(form.value)
-// console.log('initialValues')
-// console.log(initialValues.value)
 
 // -- quill editor ---
 const quillToolbar = [

@@ -391,7 +391,16 @@ const fetchDeletePost = async () => {
         confirmButtonColor: 'blue'
       }).then(() => back())
     }
-  } catch (error) {}
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'Error',
+      text: error
+    })
+  }
 }
 </script>
 

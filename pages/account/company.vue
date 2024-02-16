@@ -1,5 +1,5 @@
 <template>
-  <div class="grid items-start gap-6 lg:grid-cols-12">
+  <!-- <div class="grid items-start gap-6 lg:grid-cols-12">
     <BaseSidebar
       class="lg:col-span-3"
       :route-path="route.path"
@@ -9,6 +9,14 @@
     <div
       class="flex flex-col w-full col-span-1 gap-4 px-1 lg:col-span-9 sm:px-0"
     >
+      <NuxtPage />
+    </div>
+  </div> -->
+  <div class="flex flex-col gap-3">
+    <BaseTitle>{{ auth.user ? auth.user.username : 'My Account' }}</BaseTitle>
+    <BaseTabs :route-path="route.path" :tabs="tabs"></BaseTabs>
+
+    <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
       <NuxtPage />
     </div>
   </div>
@@ -23,8 +31,9 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
+const auth = useAuth()
 
-const navigation = [
+const tabs = [
   {
     name: 'Profile',
     href: '/account/company/profile',
@@ -39,14 +48,6 @@ const navigation = [
     name: 'Manage Posts',
     href: '/account/company/posts',
     icon: PencilSquareIcon
-  },
-  {
-    name: 'BaseLine'
-  },
-  {
-    name: 'Logout',
-    href: '/auth/logout',
-    icon: ArrowRightOnRectangleIcon
   }
 ]
 </script>

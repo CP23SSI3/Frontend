@@ -7,7 +7,7 @@
             <div class="flex items-center">
               <div class="flex-shrink-0">
                 <NuxtLink href="/">
-                  <nuxt-img
+                  <img
                     class="w-auto h-11"
                     src="/InternHub-logo.svg"
                     alt="InternHub"

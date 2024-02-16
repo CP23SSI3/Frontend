@@ -28,13 +28,15 @@ export default defineNuxtConfig({
         )
     }
   },
-
   app: {
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
       title: 'InternHub',
       link: [{ rel: 'icon', type: 'svg', href: '/internhub-icon.svg' }]
-    }
+    },
+    baseURL: '/ssi3a/'
   }
+  
+
 })

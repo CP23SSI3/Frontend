@@ -2,7 +2,7 @@ export default defineEventHandler((event) => {
   let locations = [
     {
       id: 1,
-      name_th: 'กรุงเทพมหานคร',
+      name_th: 'กรุงเทพ',
       name_en: 'Bangkok',
       geography_id: 2,
       amphure: [

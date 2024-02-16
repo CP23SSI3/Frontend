@@ -15,6 +15,15 @@
     >
       {{ data.category }}
     </BaseDropdown>
+
+    <BaseDropdown
+      :option-lists="categoryLists"
+      label="หมวดหมู่งาน"
+      disabled
+      v-model="data.color"
+    >
+      {{ data.color }}
+    </BaseDropdown>
   </div>
 </template>
 
@@ -32,7 +41,8 @@ const provinceList = ref([
 ])
 
 const data = ref({
-  category: { id: 0, text: '--Select--', value: 'default' }
+  category: { id: 0, text: '--Select--', value: 'default' },
+  color: { id: 0, text: '--Select--', color: '' }
 })
 
 const categoryLists = [

@@ -1,6 +1,7 @@
 <template>
   <div class="font-thai">
     <div class="sticky top-0 z-50">
+<<<<<<< HEAD
       <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
         <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div class="flex items-center justify-between h-16">
@@ -199,6 +200,9 @@
           }}
         </h2>
       </div> -->
+=======
+      <Navbar />
+>>>>>>> 54bbf075f63a5d94fc045fbfa106454e2a829961
     </div>
     <div class="relative h-auto py-5">
       <!-- <header>
@@ -211,7 +215,7 @@
         </div>
       </header> -->
       <main>
-        <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="max-w-full px-2 mx-auto sm:px-8 lg:px-12">
           <!-- Your content -->
           <slot></slot>
         </div>
@@ -221,37 +225,7 @@
 </template>
 
 <script setup>
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems
-} from '@headlessui/vue'
-import {
-  Bars3Icon,
-  BellIcon,
-  XMarkIcon,
-  UserCircleIcon
-} from '@heroicons/vue/24/outline'
-
-const route = useRoute()
-const navigation = ref([
-  {
-    name: 'Internship',
-    href: '/internship'
-  }
-  // {
-  //   name: 'Component',
-  //   href: '/components'
-  // },
-  // {
-  //   name: 'Test',
-  //   href: '/test'
-  // }
-])
+import Navbar from '../components/layout-component/navbar.vue'
 </script>
 
 <style lang="scss" scoped></style>

@@ -575,7 +575,7 @@ const postId = route.params.postId
 const router = useRouter()
 const gotoBack = () => {
   Swal.fire({
-    title: 'Cancel create this post',
+    title: 'Cancel edit this post',
     text: 'คุณแน่ใจจะยกเลิกการแก้ไข Post นี้?',
     icon: 'warning',
     confirmButtonText: 'Comfirm',

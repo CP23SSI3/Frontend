@@ -31,6 +31,15 @@
             class="flex-shrink-0 w-5 h-5 mr-3 rounded-full"
             v-if="modelValue.img"
           /> -->
+          <svg
+            v-if="modelValue.color"
+            class="w-2 h-2 mr-2"
+            :class="modelValue.color"
+            viewBox="0 0 6 6"
+            aria-hidden="true"
+          >
+            <circle cx="3" cy="3" r="3" />
+          </svg>
           <span class="block truncate">{{ modelValue.text }}</span>
         </span>
 
@@ -63,12 +72,15 @@
               ]"
             >
               <div class="flex items-center">
-                <!-- <nuxt-img
-                  :src="option.img"
-                  alt=""
-                  class="flex-shrink-0 w-5 h-5 mr-3 rounded-full"
-                  v-if="option.img"
-                /> -->
+                <svg
+                  v-if="option.color"
+                  class="w-2 h-2 mr-2"
+                  :class="option.color"
+                  viewBox="0 0 6 6"
+                  aria-hidden="true"
+                >
+                  <circle cx="3" cy="3" r="3" />
+                </svg>
                 <span
                   :class="[
                     selected && modelValue.value != '' && option.id != 0
@@ -108,7 +120,7 @@ import {
 } from '@headlessui/vue'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/vue/20/solid'
 
-defineProps({
+const props = defineProps({
   optionLists: {
     type: Array as any,
     default: []
@@ -128,8 +140,24 @@ defineProps({
   required: {
     type: Boolean,
     default: false
+  },
+  color: {
+    type: String,
+    default: ''
   }
 })
 
 defineEmits(['update:modelValue', 'reset'])
+
+const styleFillColor = computed(() => {
+  if (props.color === 'green') {
+    return 'fill-green-500'
+  } else if (props.color === 'yellow') {
+    return 'fill-yellow-500'
+  } else if (props.color === 'red') {
+    return 'fill-red-500'
+  } else {
+    return 'fill-gray-400'
+  }
+})
 </script>

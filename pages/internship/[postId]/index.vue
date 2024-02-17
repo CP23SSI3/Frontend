@@ -11,7 +11,7 @@
           alt="Your Company"
         />
 
-        <div class="flex flex-col-reverse lg:flex-col lg:pr-[300px]">
+        <div class="flex flex-col-reverse lg:flex-col lg:pr-[350px]">
           <h2 class="text-lg font-semibold lg:text-lg">
             {{ post.title }}
           </h2>
@@ -25,15 +25,17 @@
             <span class="text-xs text-gray-500">
               {{ moment(new Date(post.lastUpdateDate)).format('DD/MM/YYYY') }}
             </span>
+            <span class="text-xs text-gray-500"> | </span>
+            <BaseItem :icon="EyeIcon"> views: {{ post.totalView }}</BaseItem>
           </div>
         </div>
       </div>
       <div class="flex items-center gap-2 sm:absolute sm:right-0">
         <BaseBadge
-          :color="statusClosedDate(post.closedDate).color"
+          :color="statusClosedDate(post.status, post.closedDate).color"
           class="absolute top-0 right-0 sm:static sm:right-auto sm:top-auto"
         >
-          {{ statusClosedDate(post.closedDate).text }}
+          {{ statusClosedDate(post.status, post.closedDate).text }}
         </BaseBadge>
         <BaseButton
           :leadingIcon="statusStar ? ActiveStarIcon : StarIcon"
@@ -42,7 +44,10 @@
           @click="changeStarButton()"
           ><span class="w-auto text-gray-700">Favorite</span></BaseButton
         >
-        <BaseButton :trailingIcon="ShareIcon" class="w-full sm:w-auto"
+        <BaseButton
+          :trailingIcon="ShareIcon"
+          class="w-full sm:w-auto"
+          @click="copyLinkToClipboard()"
           >Share</BaseButton
         >
       </div>
@@ -167,7 +172,10 @@
           >
         </NuxtLink>
       </div>
-      <div class="space-x-3">
+      <div
+        class="space-x-3"
+        v-if="auth.user?.role == 'ADMIN' || auth.user?.role == 'COMPANY'"
+      >
         <BaseButton :leadingIcon="TrashIcon" negative @click="removePost()"
           >Delete</BaseButton
         >
@@ -183,7 +191,8 @@
 import {
   ChevronLeftIcon,
   ShareIcon,
-  StarIcon as ActiveStarIcon
+  StarIcon as ActiveStarIcon,
+  EyeIcon
 } from '@heroicons/vue/24/solid'
 import {
   StarIcon,
@@ -196,6 +205,7 @@ import {
 import Swal from 'sweetalert2'
 import moment from 'moment'
 
+const auth = useAuth()
 const route = useRoute()
 const postId = route.params.postId
 const router = useRouter()
@@ -213,49 +223,61 @@ const props = defineProps({
 
 post.value = props?.post
 
-// const getPostDetail = async () => {
-//   loading.value = true
-//   try {
-//     const res = await getPostById(postId)
-//     if (res.value) {
-//       post.value = res.value.data
-//       loading.value = false
-//     }
-//   } catch (error) {
-//     Swal.fire({
-//       showConfirmButton: true,
-//       timerProgressBar: true,
-//       icon: 'error',
-//       title: 'Error',
-//       text: 'ระบบผิดพลาด'
-//     })
-//   }
-// }
+useSeoMeta({
+  title: 'InternHub - ' + props.title,
+  ogTitle: props.title,
+  description: props.description,
+  ogDescription: props.description,
+  ogImage: '../../../public/InternHub-logo.svg'
+})
 
-// await getPostDetail()
+// -- share --
+const copyLinkToClipboard = () => {
+  const currentUrl = window.location.href // Replace with your actual link
 
-// -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
-const statusClosedDate = (postCloseDate) => {
-  if (postCloseDate == null) {
-    return { text: 'เปิดรับตลอด', color: 'green' }
-  } else {
-    let endDate = new Date(new Date(postCloseDate).setHours(23, 59, 0, 0))
-    let closedDate = moment(endDate).format('DD/MM/YYYY')
-    if (new Date() > endDate) {
-      return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
-    } else {
-      // ถ้ายังไม่เลยวันที่ปิดรับสมัคร ดูว่าใกล้ปิดภายใน 7 วันหรือไม่
-      if (
-        new Date(moment(endDate).subtract(7, 'days')) <= new Date() &&
-        new Date() <= endDate
-      ) {
-        return { text: 'ปิดรับสมัคร ' + closedDate, color: 'yellow' }
-      }
-      return { text: 'ปิดรับสมัคร ' + closedDate }
-    }
-  }
+  navigator.clipboard
+    .writeText(currentUrl)
+    .then(() => {
+      Swal.fire({
+        showConfirmButton: true,
+        timerProgressBar: true,
+        confirmButtonColor: 'blue',
+        icon: 'success',
+        title: 'Link copied to clipboard',
+        text: 'คัดลอกลิ้งค์ สำเร็จ'
+      })
+    })
+    .catch((error) => {
+      Swal.fire({
+        showConfirmButton: true,
+        timerProgressBar: true,
+        confirmButtonColor: 'red',
+        icon: 'error',
+        title: 'Unable to copy link to clipboard',
+        text: error
+      })
+    })
 }
 
+// -- แสดงสถานะของ Badge (วันที่ปิดรับสมัคร)---
+const statusClosedDate = (postStatus, postClosedDate) => {
+  let closedDate
+  if (postClosedDate != null) {
+    closedDate = moment(new Date(postClosedDate)).format('DD/MM/YYYY')
+  }
+  switch (postStatus) {
+    case 'OPENED':
+      return closedDate
+        ? { text: 'ปิดรับสมัคร ' + closedDate }
+        : { text: 'เปิดรับตลอด', color: 'green' }
+    case 'ALWAYS_OPENED':
+      return { text: 'เปิดรับตลอด', color: 'green' }
+    case 'NEARLY_CLOSED':
+      return { text: 'ปิดรับสมัคร ' + closedDate, color: 'yellow' }
+    case 'CLOSED':
+      return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
+  }
+}
 // --- Favorite Button ---
 const statusStar = ref(false)
 const changeStarButton = () => {
@@ -373,7 +395,16 @@ const fetchDeletePost = async () => {
         confirmButtonColor: 'blue'
       }).then(() => back())
     }
-  } catch (error) {}
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'Error',
+      text: error
+    })
+  }
 }
 </script>
 

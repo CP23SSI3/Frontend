@@ -22,6 +22,7 @@ export type Company = {
   lastActive: Date
   lastUpdate: Date
 }
+
 export type Position = {
   openPositionDesc: string
   openPositionId: string

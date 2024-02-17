@@ -15,9 +15,9 @@
     </div>
   </div>
   <div class="flex flex-col gap-2">
-    <div class="grid grid-cols-4">
+    <div class="flex flex-col justify-between gap-4 sm:flex-row">
       <BaseInput
-        class="col-span-1s"
+        class="w-full sm:w-auto"
         label=""
         type="search"
         id="search"
@@ -25,6 +25,9 @@
         :iconInput="MagnifyingGlassIcon"
         v-model="searchValue"
       ></BaseInput>
+      <BaseButton :leadingIcon="PlusCircleIcon" class="w-full sm:w-auto"
+        >Add User</BaseButton
+      >
     </div>
     <BaseLoading v-if="loading" />
     <EasyDataTable
@@ -102,7 +105,7 @@ import type {
   HeaderItemClassNameFunction
 } from 'vue3-easy-data-table'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-import { TrashIcon } from '@heroicons/vue/24/outline'
+import { TrashIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
 import { User } from '~/types/User'
 import { Address, Company } from '~/types/Post'
 import Swal from 'sweetalert2'

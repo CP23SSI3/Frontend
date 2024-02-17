@@ -299,7 +299,8 @@ const setupForm = async () => {
   }
 }
 
-const { data } = await useFetch('/api/locations-thai')
+// const { data } = await useFetch('/api/locations-thai')
+const data = useLocationThai()
 // --- location: province > amphure > tambon ---
 const sortingThai = (a, b) => {
   return a.text.localeCompare(b.text, 'th')
@@ -310,12 +311,12 @@ const sortingThai = (a, b) => {
 //   tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
 // })
 
-// console.log(data.value)
+// console.log(data.location)
 const provinceList = ref([])
 const getProvince = () => {
   let list = []
   let province
-  data.value.forEach((city) => {
+  data.location.forEach((city) => {
     province = {
       id: city.id,
       text: city.name_th
@@ -339,7 +340,7 @@ const getAmphure = (provinceId) => {
       zip_code: null
     }
     let list = []
-    let result = data.value.find((city) => city.id === provinceId)
+    let result = data.location.find((city) => city.id === provinceId)
     let amphure
     result.amphure.forEach((district) => {
       amphure = {
@@ -361,7 +362,7 @@ const getTambon = (provinceId, amphureId) => {
     text: 'เลือก แขวง',
     zip_code: null
   }
-  let province = data.value.find((city) => city.id === provinceId)
+  let province = data.location.find((city) => city.id === provinceId)
   let amphure = province.amphure.find((district) => district.id === amphureId)
   let list = []
   let tambon
@@ -381,7 +382,7 @@ const setupSelectedAddress = () => {
   if (myUser.value.address != null) {
     let address = myUser.value.address
     let selected = form.value.selectedAddress
-    let province = data.value.find((p) => p.name_th.includes(address.city))
+    let province = data.location.find((p) => p.name_th.includes(address.city))
     if (province) {
       selected.province.id = province.id
       selected.province.text = province.name_th

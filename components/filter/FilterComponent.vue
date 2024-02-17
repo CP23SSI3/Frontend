@@ -164,10 +164,11 @@ const getListPositionTag = async () => {
 await getListPositionTag()
 
 const listLocation = ref([])
-const { data } = await useFetch('/api/locations-thai')
+// const { data } = await useFetch('/api/locations-thai')
+const data = useLocationThai()
 
 const setListLocation = () => {
-  data.value.forEach((city) => {
+  data.location.forEach((city) => {
     listLocation.value.push(city.name_th)
     city.amphure.forEach((district) => {
       let text = district.name_th + ', ' + city.name_th

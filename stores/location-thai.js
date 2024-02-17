@@ -1,5 +1,5 @@
-export default defineEventHandler((event) => {
-  let locations = [
+export const useLocationThai = defineStore('data', () => {
+  const location = [
     {
       id: 1,
       name_th: 'กรุงเทพ',
@@ -61209,5 +61209,12 @@ export default defineEventHandler((event) => {
       ]
     }
   ]
-  return locations
+
+  return {
+    location
+  }
 })
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useLocationThai, import.meta.hot))
+}

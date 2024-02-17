@@ -17,8 +17,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       API_URL: process.env.API_URL,
-      KEY_API_MAP: process.env.KEY_API_GOOGLE_MAP,
-      base: '/ssi3/'
+      KEY_API_MAP: process.env.KEY_API_GOOGLE_MAP
+      // base: '/ssi3a/'
     }
   },
   generate: { fallback: '404.html' },

@@ -55,6 +55,7 @@
       <Form
         @submit="submitForm"
         :validation-schema="schema2"
+        v-slot="{ meta, errors }"
         class="space-y-4"
         v-else-if="currentPage == 2"
       >
@@ -93,6 +94,7 @@
         <!-- radio: gender -->
         <div class="sm:col-start-1 sm:col-span-3">
           <BaseLabel id="gender">เพศ</BaseLabel>
+
           <fieldset class="mt-2">
             <div
               class="space-y-4 md:flex md:items-center md:space-x-10 md:space-y-0"
@@ -145,58 +147,27 @@
           </fieldset>
         </div>
 
-        <div>
-          <div class="flex gap-3 mt-6">
-            <BaseButton
-              type="button"
-              outline
-              full
-              :leading-icon="ChevronLeftIcon"
-              @click="currentPage--"
-              >Back</BaseButton
-            >
-            <BaseButton type="submit" full> Sign up </BaseButton>
-          </div>
-        </div>
-      </Form>
-      <Form
-        @submit="submitForm"
-        :validation-schema="schema3"
-        class="space-y-4"
-        v-else-if="currentPage == 3"
-      >
         <BaseInputField
-          label="Username / ชื่อผู้ใช้"
-          id="username"
-          v-model="user.username"
+          v-if="user.role == 'COMPANY'"
+          label="ชื่อบริษัท"
+          id="compName"
+          v-model="user.company"
         />
-        <BaseInputField
-          label="Password"
-          id="rawPassword"
-          type="password"
-          v-model="user.rawPassword"
-        />
-        <BaseInputField
-          label="Confirm Password"
-          id="confirmPassword"
-          type="password"
-          v-model="user.confirmPassword"
-        />
-        <div>
-          <div class="flex gap-3 mt-6">
-            <BaseButton
-              type="button"
-              outline
-              full
-              :leading-icon="ChevronLeftIcon"
-              @click="currentPage--"
-              >Back</BaseButton
-            >
-            <BaseButton type="submit" full> Sign up </BaseButton>
-          </div>
-        </div>
-      </Form>
 
+        <div>
+          <div class="flex gap-3 mt-6">
+            <BaseButton
+              type="button"
+              outline
+              full
+              :leading-icon="ChevronLeftIcon"
+              @click="currentPage--"
+              >Back</BaseButton
+            >
+            <BaseButton type="submit" full> Sign up </BaseButton>
+          </div>
+        </div>
+      </Form>
       <!-- Steps (Pagination) -->
       <!-- <nav class="flex items-center justify-center" aria-label="Progress">
         <p class="text-sm font-medium">
@@ -261,10 +232,10 @@ definePageMeta({
 
 const user = ref({
   // (1/2)
-  username: '',
-  email: '',
-  rawPassword: '',
-  confirmPassword: '',
+  username: 'user1',
+  email: 'exmaple1@gmail',
+  rawPassword: 'internhub',
+  confirmPassword: 'internhub',
   // (2/2)
   firstname: '',
   lastname: '',
@@ -336,7 +307,7 @@ const genders = [
 // -- radio : role --
 const roles = [
   { text: 'นักศึกษา / บุลคลทั่วไป', value: 'USER' },
-  { text: 'ตัวแทน / พนักงานบริษัท', value: 'COMPANY' }
+  { text: 'ตัวแทนบริษัท', value: 'COMPANY' }
 ]
 
 const phoneRegExp =
@@ -351,7 +322,25 @@ const schema2 = yup.object({
     .trim()
     .required('โปรดระบุ เบอร์โทร')
     .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
-    .max(10)
+    .max(10),
+  compName: yup
+    .string()
+    .max(100)
+    .test('check null', 'โปรดระบุ ชื่อบริษัท', function (value) {
+      if (user.value.role == 'COMPANY') {
+        return value != null
+      } else {
+        return value == null
+      }
+    })
+  // .when('role', (role, schema2) => {
+  //   if (role == 'COMPANY') {
+  //     return schema2.required('โปรดระบุ ชื่อบริษัท')
+  //   }
+  //   return schema2
+  //   // is: 'COMPANY',
+  //   // then: yup.string().required('โปรดระบุ ชื่อบริษัท').max(100)
+  // })
 })
 
 const submitForm = async () => {

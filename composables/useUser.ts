@@ -1,4 +1,4 @@
-import { ResponseList, Response } from '~/types/Response'
+import { Response } from '~/types/Response'
 import { User, UserRegister } from '~/types/User'
 import { Address, Company } from '~/types/Post'
 
@@ -7,7 +7,7 @@ type UserData = User & {
   company: Company | null
 }
 
-type ResponseUserList = ResponseList & {
+type ResponseUserList = Response & {
   data: {
     number: number
     size: number

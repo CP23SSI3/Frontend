@@ -385,7 +385,7 @@
             placeholder="Select Closing Date"
             :enable-time-picker="false"
             v-model="closingDate"
-            :format="(date) => moment(date).format('DD/MM/YYYY')"
+            :format="(date) => (date ? moment(date).format('DD/MM/YYYY') : '')"
             :min-date="new Date()"
             fixed-start
             required
@@ -790,13 +790,14 @@ const myAddress = ref({
   amphure: { id: 0, text: 'เลือก เขต' },
   tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
 })
-const { data } = await useFetch('/api/locations-thai')
-// console.log(data.value)
+// const { data } = await useFetch('/api/locations-thai')
+const data = useLocationThai()
+// console.log(data.location)
 const provinceList = ref([])
 const getProvince = () => {
   let list = []
   let province
-  data.value.forEach((city) => {
+  data.location.forEach((city) => {
     province = {
       id: city.id,
       text: city.name_th
@@ -815,7 +816,7 @@ const getAmphure = (provinceId) => {
   tambonList.value = []
   myAddress.value.tambon = { id: 0, text: 'เลือก แขวง', zip_code: null }
   let list = []
-  let result = data.value.find((city) => city.id === provinceId)
+  let result = data.location.find((city) => city.id === provinceId)
   let amphure
   result.amphure.forEach((district) => {
     amphure = {
@@ -832,7 +833,7 @@ const tambonList = ref([])
 const getTambon = (provinceId, amphureId) => {
   tambonList.value = []
   myAddress.value.tambon = { id: 0, text: 'เลือก แขวง', zip_code: null }
-  let province = data.value.find((city) => city.id === provinceId)
+  let province = data.location.find((city) => city.id === provinceId)
   let amphure = province.amphure.find((district) => district.id === amphureId)
   let list = []
   let tambon

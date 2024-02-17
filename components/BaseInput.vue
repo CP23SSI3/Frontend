@@ -89,26 +89,14 @@ const props = defineProps({
 })
 defineEmits(['update:modelValue'])
 
-// const styleInput = computed(() => {
-//   if (props.disabled) {
-//     return 'bg-gray-100 !boder-gray-200 !text-gray-400'
-//   }
-// })
-
 const styleInputPadding = computed(() => {
   if (props.iconInput) {
     return 'pl-10'
   } else if (props.unit) {
     return 'pr-16'
-    // } else if (props.imgIcon != null) {
-    //   //ถ้าเป็น duo-coin
-    //   return 'pl-16'
   } else {
     return ''
   }
-  // else if (props.imgIcon != null) {
-  //   return 'pl-14'
-  // }
 })
 </script>
 

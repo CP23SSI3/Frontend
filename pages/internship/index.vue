@@ -38,7 +38,10 @@
           </button>
         </div>
         <NuxtLink :to="{ path: '/internship/form' }">
-          <BaseButton :leadingIcon="PlusCircleIcon" class="w-full md:w-auto"
+          <BaseButton
+            :leadingIcon="PlusCircleIcon"
+            class="w-full md:w-auto"
+            v-if="auth.user?.role == 'ADMIN' || auth.user?.role == 'COMPANY'"
             >Add Post</BaseButton
           >
         </NuxtLink>
@@ -234,6 +237,8 @@ import { StarIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
 import FilterComponent from '~/components/filter/FilterComponent.vue'
 import moment from 'moment'
 import Swal from 'sweetalert2'
+
+const auth = useAuth()
 
 // -- Filter : Mobile  --
 const filterMobile = ref(false)

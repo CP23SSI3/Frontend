@@ -172,7 +172,10 @@
           >
         </NuxtLink>
       </div>
-      <div class="space-x-3">
+      <div
+        class="space-x-3"
+        v-if="auth.user?.role == 'ADMIN' || auth.user?.role == 'COMPANY'"
+      >
         <BaseButton :leadingIcon="TrashIcon" negative @click="removePost()"
           >Delete</BaseButton
         >
@@ -202,6 +205,7 @@ import {
 import Swal from 'sweetalert2'
 import moment from 'moment'
 
+const auth = useAuth()
 const route = useRoute()
 const postId = route.params.postId
 const router = useRouter()
@@ -391,7 +395,16 @@ const fetchDeletePost = async () => {
         confirmButtonColor: 'blue'
       }).then(() => back())
     }
-  } catch (error) {}
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'Error',
+      text: error
+    })
+  }
 }
 </script>
 

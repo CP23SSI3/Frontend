@@ -22,7 +22,7 @@
     <!-- <section class="bg-white dark:bg-gray-900"> -->
     <div class="container flex items-center min-h-full px-6 py-12 mx-auto">
       <div>
-        <div v-if="error.statusCode">
+        <div v-if="error">
           <p class="text-sm font-medium text-blue-500">
             {{ error.statusCode }} error
           </p>

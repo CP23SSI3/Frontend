@@ -1,18 +1,13 @@
 <template>
-  <!-- <div class="grid items-start gap-6 lg:grid-cols-12"> -->
   <div class="flex flex-col gap-3">
-    <!-- <BaseSidebar
-      class="lg:col-span-3"
-      :route-path="route.path"
-      :items="navigation"
-    ></BaseSidebar> -->
-    <BaseTitle>My Account</BaseTitle>
+    <BaseTitle
+      >Admin {{ auth.user ? ': ' + auth.user.username : '' }}</BaseTitle
+    >
     <BaseTabs :route-path="route.path" :tabs="tabs"></BaseTabs>
 
     <div>
       <NuxtPage />
     </div>
-    <!-- </div> -->
   </div>
 </template>
 
@@ -20,11 +15,11 @@
 import {
   UserIcon,
   UserGroupIcon,
-  BuildingOfficeIcon,
-  PencilSquareIcon
+  BuildingOfficeIcon
 } from '@heroicons/vue/24/solid'
 
 const route = useRoute()
+const auth = useAuth()
 
 const tabs = [
   {
@@ -41,11 +36,6 @@ const tabs = [
     name: 'Manage Company',
     href: '/account/admin/companies',
     icon: BuildingOfficeIcon
-  },
-  {
-    name: 'Manage Posts',
-    href: '/account/admin/posts',
-    icon: PencilSquareIcon
   }
 ]
 </script>

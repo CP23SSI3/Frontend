@@ -2,15 +2,8 @@ import { resolveDirective } from 'nuxt/dist/app/compat/capi'
 import { UserAuth } from '~/types/User'
 
 export default defineNuxtRouteMiddleware((to, from) => {
-  console.log(to)
-  console.log(from)
-  // const auth = useAuth()
-  // auth.checkStatusAuth()
-  // if (to.path.includes('/account') && auth.statusLogin) {
-  //   console.log('Page login')
-  // } else {
-  //   console.log('Page not login')
-  // }
+  // console.log(to)
+  // console.log(from)
 
   if (to.path.includes('/account')) {
     const auth = useAuth()

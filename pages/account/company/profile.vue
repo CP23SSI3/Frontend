@@ -1,7 +1,9 @@
 <template>
-  <div>ProFile Page</div>
+  <FormUserProfile />
 </template>
 
-<script setup></script>
+<script setup>
+import FormUserProfile from '~/components/form/FormUserProfile.vue'
+</script>
 
 <style lang="scss" scoped></style>

@@ -146,8 +146,8 @@
             </div>
           </fieldset>
         </div>
-
-        <!-- <BaseInputField
+        <!-- 
+        <BaseInputField
           v-if="user.role == 'COMPANY'"
           label="ชื่อบริษัท"
           id="compName"
@@ -232,10 +232,10 @@ definePageMeta({
 
 const user = ref({
   // (1/2)
-  username: 'user1',
-  email: 'exmaple1@gmail',
-  rawPassword: 'internhub',
-  confirmPassword: 'internhub',
+  username: '',
+  email: '',
+  rawPassword: '',
+  confirmPassword: '',
   // (2/2)
   firstname: '',
   lastname: '',
@@ -324,6 +324,7 @@ const schema2 = yup.object({
     .required('โปรดระบุ เบอร์โทร')
     .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
     .max(10)
+  // role:yup.string(),
   // compName: yup
   //   .string()
   //   .max(100)
@@ -339,8 +340,8 @@ const schema2 = yup.object({
   //     return schema2.required('โปรดระบุ ชื่อบริษัท')
   //   }
   //   return schema2
-  //   // is: 'COMPANY',
-  //   // then: yup.string().required('โปรดระบุ ชื่อบริษัท').max(100)
+  // is: 'COMPANY',
+  // then: yup.string().required('โปรดระบุ ชื่อบริษัท').max(100)
   // })
 })
 

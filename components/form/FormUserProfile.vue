@@ -12,6 +12,8 @@
           :validation-schema="schema"
           :initial-values="initialValues"
         >
+          <!-- valid: {{ meta.valid }} / dirty : {{ meta.dirty }} / error:
+          {{ errors }} -->
           <div class="grid items-start gap-6 px-4 py-8 sm:grid-cols-3 sm:px-10">
             <div
               class="flex flex-col items-center justify-start gap-4 sm:py-4 sm:col-span-1"
@@ -45,32 +47,42 @@
             </div>
 
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:col-span-2">
-              <BaseInputField
-                class="sm:col-span-2"
-                label="Username "
-                id="username"
-                v-model="form.username"
-                @blur="checkUsername()"
-              ></BaseInputField>
+              <!-- <div>{{ initialValues }}</div>
+              <div>{{ form }}</div> -->
+              <div class="sm:col-span-2">
+                <BaseInputField
+                  label="Username"
+                  id="username"
+                  v-model="form.username"
+                  @blur="checkUsername()"
+                />
+                <span
+                  class="pl-2 text-xs text-red-500"
+                  v-if="errorExistUsername != null"
+                >
+                  {{ errorExistUsername }}
+                </span>
+              </div>
+
               <BaseInputField
                 class="sm:col-start-1"
                 label="First Name"
                 id="firstname"
                 v-model="form.firstname"
               ></BaseInputField>
+
               <BaseInputField
                 label="Last Name"
                 id="lastname"
                 v-model="form.lastname"
               ></BaseInputField>
-              <Field v-slot="{ field }" name="gender">
-                <BaseDropdown
-                  :option-lists="genders"
-                  label="เพศ"
-                  v-model="form.selectedGender"
-                  v-bind="field"
-                  @click="changeGender()"
-              /></Field>
+
+              <BaseDropdown
+                :option-lists="genders"
+                label="เพศ"
+                v-model="form.selectedGender"
+                @click="changeGender()"
+              />
               <BaseInputField
                 class="sm:col-span-1"
                 label="Email Address"
@@ -115,11 +127,11 @@
                 v-if="auth.user.role !== 'ADMIN'"
               >
                 <div class="col-span-full">
-                  <BaseLabel id="userDesc">About me</BaseLabel>
+                  <BaseLabel id="userDescrciption">About me</BaseLabel>
                   <div class="mt-1 sm:col-span-full">
                     <textarea
-                      id="userDesc"
-                      name="userDesc"
+                      id="userDescrciption"
+                      name="userDescrciption"
                       rows="4"
                       v-model="form.userDesc"
                       v-bind="field"
@@ -198,7 +210,11 @@
             <BaseButton
               :leading-icon="ArrowDownTrayIcon"
               type="sumbit"
-              :disabled="!meta.dirty"
+              :disabled="
+                errorExistUsername ||
+                !meta.valid ||
+                JSON.stringify(form) === JSON.stringify(initialValues)
+              "
               >Save</BaseButton
             >
           </div>
@@ -287,7 +303,6 @@ const getUser = async () => {
     const res = await getUserById(userId)
     if (res.value.status == 200) {
       myUser.value = res.value.data
-      console.log(myUser.value)
     }
   } catch (error) {
     Swal.fire({
@@ -318,19 +333,19 @@ const form = ref({
   }
 })
 
+await getUser()
+const initialValues = ref()
 const setupForm = async () => {
-  await getUser()
+  // -- merge object ---
   for (let key in myUser.value) {
     if (myUser.value.hasOwnProperty(key)) {
       form.value[key] = myUser.value[key]
     }
   }
-
   form.value.birthDay = new Date(myUser.value.dateOfBirth)
   form.value.selectedGender = genders.find(
     (g) => g.value === myUser.value.gender
   )
-
   if (form.value.address == null) {
     form.value.address = {
       country: 'ประเทศไทย',
@@ -345,8 +360,8 @@ const setupForm = async () => {
   } else {
     setupSelectedAddress()
   }
-
   console.log(form.value)
+  initialValues.value = JSON.parse(JSON.stringify(form.value))
 }
 
 // const { data } = await useFetch('/api/locations-thai')
@@ -429,8 +444,8 @@ const getTambon = (provinceId, amphureId) => {
 }
 
 const setupSelectedAddress = () => {
-  if (myUser.value.address != null) {
-    let address = myUser.value.address
+  if (form.value.address != null) {
+    let address = form.value.address
     let selected = form.value.selectedAddress
     let province = data.location.find((p) => p.name_th.includes(address.city))
     if (province) {
@@ -460,7 +475,6 @@ const setupSelectedAddress = () => {
 }
 
 await setupForm()
-const initialValues = ref({ ...form.value })
 
 const changeGender = () => {
   form.value.gender = form.value.selectedGender.value
@@ -474,7 +488,7 @@ const schema = yup.object({
   username: yup.string().required('กรุณากรอก ชื่อผู้ใช้').max(50),
   firstname: yup.string().required('กรุณากรอก ชื่อจริง').max(50),
   lastname: yup.string().required('กรุณากรอก นามสกุล').max(50),
-  dateOfBirth: yup.string().nullable().required('โปรดเลือก วันเกิดของคุณ'),
+  dateOfBirth: yup.string().required('โปรดเลือก วันเกิดของคุณ'),
   phoneNumber: yup
     .string()
     .trim()
@@ -482,7 +496,16 @@ const schema = yup.object({
     .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
     .max(10),
   userDesc: yup.string().nullable().max(1500),
-  area: yup.string().required('โปรดระบุ ที่อยู่').max(100)
+  area: yup
+    .string()
+    .max(100)
+    .test('check null', 'โปรดระบุ ที่อยู่', function (value) {
+      if (auth.user?.role == 'ADMIN') {
+        return value == null
+      } else {
+        return value != null
+      }
+    })
 })
 
 // --- เอาข้อมูลที่เลือกไว้ มาจัดเพื่อเตรียมส่ง --
@@ -527,43 +550,26 @@ const submitFormProfile = async () => {
   await saveUserProfile(editUser)
 }
 const saveUserProfile = async (editUser) => {
-  console.log(editUser)
-  try {
-    const res = await useUpdateUser(userId, editUser)
-    console.log(res.value)
-    if (res.value) {
-      Swal.fire({
-        title: 'Update Post',
-        confirmButtonColor: 'blue',
-        text: 'บันทึกการแก้ไข profile สำเร็จ',
-        icon: 'success'
-      }).then((result) => {
-        let role = auth.user.role
-        reloadNuxtApp({
-          path: `/account/${role.toLowerCase()}/profile`,
-          ttl: 1000
-        })
-      })
-    }
-  } catch (error) {
-    console.log(error.message)
-    Swal.fire({
-      showConfirmButton: true,
-      timerProgressBar: true,
-      confirmButtonColor: 'blue',
-      icon: 'error',
-      title: 'Error',
-      text: 'ไม่สามารถบันทึกการแก้ไขนี้ได้'
-    })
-  }
-}
-
-const checkUsername = async () => {
-  if (myUser.value.username !== form.value.username) {
+  if (JSON.stringify(form.value) !== JSON.stringify(initialValues.value)) {
     try {
-      const res = await useCheckUsername({
-        username: form.value.username
-      })
+      const res = await useUpdateUser(userId, editUser)
+      console.log(res.value)
+      if (res.value.status == 200) {
+        Swal.fire({
+          title: 'Update Post',
+          confirmButtonColor: 'blue',
+          text: 'บันทึกการแก้ไข profile สำเร็จ',
+          icon: 'success'
+        }).then((result) => {
+          myUser.value = res.value.data
+          setupForm()
+          //   let role = auth.user.role
+          //   reloadNuxtApp({
+          //     path: `/account/${role.toLowerCase()}/profile`,
+          //     ttl: 1000
+          //   })
+        })
+      }
     } catch (error) {
       Swal.fire({
         showConfirmButton: true,
@@ -573,6 +579,21 @@ const checkUsername = async () => {
         title: 'Error',
         text: error.message
       })
+    }
+  }
+}
+const errorExistUsername = ref(null)
+const checkUsername = async () => {
+  errorExistUsername.value = null
+  if (myUser.value.username !== form.value.username) {
+    try {
+      const res = await useCheckUsername({ username: form.value.username })
+      if (res.value) {
+        errorExistUsername.value = null
+      }
+      console.log(res.value)
+    } catch (error) {
+      errorExistUsername.value = error.message
     }
   }
 }

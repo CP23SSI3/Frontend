@@ -95,7 +95,7 @@
         </div>
       </template>
     </EasyDataTable>
-    {{ items }}
+    <!-- {{ items }} -->
   </div>
 </template>
 

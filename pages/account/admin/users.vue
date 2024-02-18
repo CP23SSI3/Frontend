@@ -25,9 +25,9 @@
         :iconInput="MagnifyingGlassIcon"
         v-model="searchValue"
       ></BaseInput>
-      <BaseButton :leadingIcon="PlusCircleIcon" class="w-full sm:w-auto"
+      <!-- <BaseButton :leadingIcon="PlusCircleIcon" class="w-full sm:w-auto"
         >Add User</BaseButton
-      >
+      > -->
     </div>
     <BaseLoading v-if="loading" />
     <EasyDataTable

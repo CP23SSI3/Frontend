@@ -72,18 +72,52 @@ export async function getUserById(id: string) {
   return data
 }
 
-type checkingUser = {
+type checkingUsernameEmail = {
   username: string
   email: string
 }
 type ResponseCheckUser = Response & {
   data: null
 }
-export async function useCheckUser(params: checkingUser) {
+export async function useCheckUsernameEmail(params: checkingUser) {
   console.log(params)
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}users/username-email-checking`
+  const { data, error } = await useFetch<checkingUsernameEmail>(url, {
+    params
+    // headers: {
+    //   'Content-Type': 'application/json'
+    // },
+    // method: 'GET',
+    // body: JSON.stringify(username_email)
+  })
+
+  if (error.value) {
+    console.log(error.value)
+    let errorMessage = {
+      ...error.value,
+      message: `Could not fetch data from ${url}`
+    }
+    if (error.value.statusCode === 500) {
+      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+    } else if (error.value.statusCode === 400) {
+      errorMessage.message = error.value.data.message
+    }
+    throw createError(errorMessage)
+  }
+
+  return data
+}
+
+type checkingUsername = {
+  username: string
+}
+export async function useCheckUsername(params: checkingUsername) {
+  console.log(params)
+  const runtimeConfig = useRuntimeConfig()
+  const API_URL = runtimeConfig.public.API_URL
+  const url = `${API_URL}users/username-checking`
   const { data, error } = await useFetch<ResponseCheckUser>(url, {
     params
     // headers: {

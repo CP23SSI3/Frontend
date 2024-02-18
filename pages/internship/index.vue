@@ -154,6 +154,7 @@
                 ]"
                 aria-hidden="true"
                 @click="changeStarButton()"
+                v-if="auth.statusLogin"
               />
             </div>
           </div>

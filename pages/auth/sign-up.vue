@@ -147,12 +147,12 @@
           </fieldset>
         </div>
 
-        <BaseInputField
+        <!-- <BaseInputField
           v-if="user.role == 'COMPANY'"
           label="ชื่อบริษัท"
           id="compName"
           v-model="user.company"
-        />
+        /> -->
 
         <div>
           <div class="flex gap-3 mt-6">
@@ -242,7 +242,8 @@ const user = ref({
   dateOfBirth: '', //birthDay
   phoneNumber: '',
   gender: null,
-  role: 'USER'
+  role: 'USER',
+  address: null
 })
 
 // --- Pagination (Multiform) ---
@@ -260,7 +261,7 @@ const next1 = () => {
 
 const checkUser = async () => {
   try {
-    const res = await useCheckUser({
+    const res = await useCheckUsernameEmail({
       username: user.value.username,
       email: user.value.email
     })
@@ -322,17 +323,17 @@ const schema2 = yup.object({
     .trim()
     .required('โปรดระบุ เบอร์โทร')
     .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
-    .max(10),
-  compName: yup
-    .string()
-    .max(100)
-    .test('check null', 'โปรดระบุ ชื่อบริษัท', function (value) {
-      if (user.value.role == 'COMPANY') {
-        return value != null
-      } else {
-        return value == null
-      }
-    })
+    .max(10)
+  // compName: yup
+  //   .string()
+  //   .max(100)
+  //   .test('check null', 'โปรดระบุ ชื่อบริษัท', function (value) {
+  //     if (user.value.role == 'COMPANY') {
+  //       return value != null
+  //     } else {
+  //       return value == null
+  //     }
+  //   })
   // .when('role', (role, schema2) => {
   //   if (role == 'COMPANY') {
   //     return schema2.required('โปรดระบุ ชื่อบริษัท')

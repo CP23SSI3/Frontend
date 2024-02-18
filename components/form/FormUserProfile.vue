@@ -47,9 +47,10 @@
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:col-span-2">
               <BaseInputField
                 class="sm:col-span-2"
-                label="Display Name "
+                label="Username "
                 id="username"
                 v-model="form.username"
+                @blur="checkUsername()"
               ></BaseInputField>
               <BaseInputField
                 class="sm:col-start-1"
@@ -97,7 +98,9 @@
                   "
                   :max-date="new Date()"
                 >
-                  <template v-slot:error-message>{{ errors[0] }}</template>
+                  <template v-slot:error-message v-if="errors">{{
+                    errors[0]
+                  }}</template>
                 </BaseDatePicker>
               </Field>
 
@@ -126,9 +129,61 @@
                   <p class="text-sm leading-6 text-gray-600" v-if="!errors[0]">
                     Write a few sentences about yourself.
                   </p>
-                  <span class="pl-2 text-xs text-red-500">{{ errors[0] }}</span>
+                  <span class="pl-2 text-xs text-red-500" v-else>{{
+                    errors[0]
+                  }}</span>
                 </div>
               </Field>
+              <BaseLineTopic
+                class="col-start-1 col-span-full"
+                v-if="auth.user?.role !== 'ADMIN'"
+                >Address</BaseLineTopic
+              >
+              <div
+                class="grid items-start gap-6 col-span-full sm:grid-cols-3"
+                v-if="auth.user?.role !== 'ADMIN'"
+              >
+                <BaseInputField
+                  label="ที่อยู่ปัจจุบัน"
+                  id="area"
+                  class="sm:col-start-1 sm:col-span-2"
+                  v-model="form.address.area"
+                ></BaseInputField>
+
+                <BaseDropdown
+                  class="relative z-40"
+                  :option-lists="provinceList"
+                  label="จังหวัด"
+                  v-model="form.selectedAddress.province"
+                  @click="getAmphure(form.selectedAddress.province.id)"
+                />
+                <BaseDropdown
+                  class="relative z-30"
+                  :option-lists="amphureList"
+                  label="เขต"
+                  v-model="form.selectedAddress.amphure"
+                  :disabled="!(amphureList.length > 0)"
+                  @click="
+                    getTambon(
+                      form.selectedAddress.province.id,
+                      form.selectedAddress.amphure.id
+                    )
+                  "
+                />
+                <BaseDropdown
+                  class="relative z-20"
+                  :option-lists="tambonList"
+                  label="แขวง"
+                  v-model="form.selectedAddress.tambon"
+                  :disabled="!(tambonList.length > 0)"
+                />
+                <BaseInput
+                  label="รหัสไปรณีย์"
+                  id="postalCode"
+                  v-model="form.selectedAddress.tambon.zip_code"
+                  disabled
+                ></BaseInput>
+              </div>
             </div>
           </div>
           <BaseLine />
@@ -143,7 +198,7 @@
             <BaseButton
               :leading-icon="ArrowDownTrayIcon"
               type="sumbit"
-              :disabled="!meta.dirty || !meta.valid"
+              :disabled="!meta.dirty"
               >Save</BaseButton
             >
           </div>
@@ -152,7 +207,7 @@
     </BaseSectionContent>
 
     <!-- Form 2 -->
-    <BaseSectionContent class="w-full">
+    <!-- <BaseSectionContent class="w-full">
       <div>
         <div class="flex items-center justify-between px-4 py-5 sm:px-10">
           <BaseTitleForm>Address</BaseTitleForm>
@@ -198,21 +253,14 @@
             id="postalCode"
             v-model="form.selectedAddress.tambon.zip_code"
             disabled
-          ></BaseInput>
+          ></BaseInput> 
         </div>
       </div>
       <BaseLine />
       <div class="flex items-center justify-end px-4 py-5 sm:px-10">
-        <!-- <BaseButton
-          :leadingIcon="ArrowRightOnRectangleIcon"
-          type="button"
-          negative
-          @click="auth.logout()"
-          >Log out</BaseButton
-        > -->
         <BaseButton :leading-icon="ArrowDownTrayIcon">Save</BaseButton>
       </div>
-    </BaseSectionContent>
+    </BaseSectionContent> -->
   </div>
   <BaseLoading v-else></BaseLoading>
 
@@ -297,6 +345,8 @@ const setupForm = async () => {
   } else {
     setupSelectedAddress()
   }
+
+  console.log(form.value)
 }
 
 // const { data } = await useFetch('/api/locations-thai')
@@ -431,16 +481,17 @@ const schema = yup.object({
     .required('โปรดระบุ เบอร์โทร')
     .matches(phoneRegExp, 'เบอร์โทรไม่ถูกต้อง')
     .max(10),
-  userDesc: yup.string().nullable().max(1500)
+  userDesc: yup.string().nullable().max(1500),
+  area: yup.string().required('โปรดระบุ ที่อยู่').max(100)
 })
 
 // --- เอาข้อมูลที่เลือกไว้ มาจัดเพื่อเตรียมส่ง --
 const setAddress = () => {
-  let address = myUser.value.address
-  ;(address.city = form.value.selectedAddress.province.text),
-    (address.district = form.value.selectedAddress.amphure.text),
-    (address.subDistrict = form.value.selectedAddress.tambon.text),
-    (address.postalCode = form.value.selectedAddress.tambon.zip_code)
+  let address = form.value.address
+  address.city = form.value.selectedAddress.province.text
+  address.district = form.value.selectedAddress.amphure.text
+  address.subDistrict = form.value.selectedAddress.tambon.text
+  address.postalCode = form.value.selectedAddress.tambon.zip_code
 }
 
 const submitFormProfile = async () => {
@@ -449,6 +500,8 @@ const submitFormProfile = async () => {
       .format()
       .substring(0, 10)
   }
+
+  await getGeoLication()
   const {
     dateOfBirth,
     firstname,
@@ -456,7 +509,8 @@ const submitFormProfile = async () => {
     lastname,
     phoneNumber,
     userDesc,
-    username
+    username,
+    address
   } = form.value
 
   let editUser = {
@@ -466,14 +520,17 @@ const submitFormProfile = async () => {
     lastname,
     phoneNumber,
     userDesc,
-    username
+    username,
+    address
   }
-  console.log(editUser)
+
   await saveUserProfile(editUser)
 }
 const saveUserProfile = async (editUser) => {
+  console.log(editUser)
   try {
     const res = await useUpdateUser(userId, editUser)
+    console.log(res.value)
     if (res.value) {
       Swal.fire({
         title: 'Update Post',
@@ -500,56 +557,75 @@ const saveUserProfile = async (editUser) => {
     })
   }
 }
+
+const checkUsername = async () => {
+  if (myUser.value.username !== form.value.username) {
+    try {
+      const res = await useCheckUsername({
+        username: form.value.username
+      })
+    } catch (error) {
+      Swal.fire({
+        showConfirmButton: true,
+        timerProgressBar: true,
+        confirmButtonColor: 'blue',
+        icon: 'error',
+        title: 'Error',
+        text: error.message
+      })
+    }
+  }
+}
 // --- location: get latitude / longtitude ---
-// const getGeoLication = async () => {
-//   setAddress()
-//   let address = form.value.selectedAddress
-//   let location = address.area.concat(
-//     ' ',
-//     address.subDistrict,
-//     ' ',
-//     address.district,
-//     ' ',
-//     address.city,
-//     ' ',
-//     address.country,
-//     ' ',
-//     address.postalCode
-//   )
-//   try {
-//     const res = await useGoogleMap(location)
-//     let response = res.value
-//     if (response.status == 'OK') {
-//       address.latitude = response.results[0].geometry.location.lat
-//         .toString()
-//         .substring(0, 11)
-//       address.longitude = response.results[0].geometry.location.lng
-//         .toString()
-//         .substring(0, 11)
-//       // console.log(address.latitude + ',' + address.longitude)
-//     } else {
-//       // console.log('Unable to locate this location.')
-//       Swal.fire({
-//         showConfirmButton: true,
-//         timerProgressBar: true,
-//         confirmButtonColor: 'blue',
-//         icon: 'error',
-//         title: 'ที่อยู่ไม่ถูกต้อง',
-//         text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
-//       })
-//     }
-//   } catch (error) {
-//     console.error('Error fetching location:', error)
-//     Swal.fire({
-//       showConfirmButton: true,
-//       timerProgressBar: true,
-//       confirmButtonColor: 'blue',
-//       icon: 'error',
-//       title: 'ที่อยู่ไม่ถูกต้อง',
-//       text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
-//     })
-//   }
-// }
+const getGeoLication = async () => {
+  setAddress()
+  let address = form.value.address
+  let location = address.area.concat(
+    ' ',
+    address.subDistrict,
+    ' ',
+    address.district,
+    ' ',
+    address.city,
+    ' ',
+    address.country,
+    ' ',
+    address.postalCode
+  )
+  try {
+    const res = await useGoogleMap(location)
+    let response = res.value
+    if (response.status == 'OK') {
+      address.latitude = response.results[0].geometry.location.lat
+        .toString()
+        .substring(0, 11)
+      address.longitude = response.results[0].geometry.location.lng
+        .toString()
+        .substring(0, 11)
+      // console.log(address.latitude + ',' + address.longitude)
+    } else {
+      // console.log('Unable to locate this location.')
+      Swal.fire({
+        showConfirmButton: true,
+        timerProgressBar: true,
+        confirmButtonColor: 'blue',
+        icon: 'error',
+        title: 'ที่อยู่ไม่ถูกต้อง',
+        text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
+      })
+    }
+  } catch (error) {
+    console.error('Error fetching location:', error)
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'ที่อยู่ไม่ถูกต้อง',
+      text: 'กรุณากรอกที่อยู่ใหม่อีกครั้ง'
+    })
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

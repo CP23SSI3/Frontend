@@ -38,6 +38,7 @@
           {{ statusClosedDate(post.status, post.closedDate).text }}
         </BaseBadge>
         <BaseButton
+          v-if="auth.user"
           :leadingIcon="statusStar ? ActiveStarIcon : StarIcon"
           outline
           :class="[statusStar ? 'text-yellow-500' : '', 'w-full sm:w-auto']"

@@ -1,7 +1,7 @@
 # Stage 1: Build the Node.js application
 FROM node:18.6 AS build
 
-ENV API_URL=/api/v1/
+ENV API_URL=http://cp23ssi3a.sit.kmutt.ac.th:8080/api/v1/
 ENV KEY_API_GOOGLE_MAP=AIzaSyD6ZM0YIEty5m93gpjqkwV6wc7s9rzh7fM
 
 # Set the working directory in the container

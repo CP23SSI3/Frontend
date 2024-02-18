@@ -18,12 +18,16 @@ export default defineNuxtConfig({
     public: {
       API_URL: process.env.API_URL,
       KEY_API_MAP: process.env.KEY_API_GOOGLE_MAP,
-      base: '/ssi3/'
+      // base: '/ssi3/'
     }
   },
-  // generate: { fallback: '404.html' },
+  generate: { fallback: '404.html' },
   // devServer: {
   //   port: 80
+  // },
+  // server: {
+  //   port: 30,
+  //   host: '0.0.0.0', // or 'localhost' or '127.0.0.1'
   // },
   vue: {
     compilerOptions: {
@@ -39,7 +43,8 @@ export default defineNuxtConfig({
       viewport: 'width=device-width, initial-scale=1',
       title: 'InternHub',
       link: [{ rel: 'icon', type: 'svg', href: '/internhub-icon.svg' }]
-    },
-    baseURL: '/ssi3a/'
+    }
+    // ,
+    // baseURL: '/ssi3a/'
   }
 })

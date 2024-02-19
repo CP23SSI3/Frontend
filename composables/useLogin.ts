@@ -22,7 +22,7 @@ export default async (user: any) => {
     if (error.value.statusCode === 500) {
       errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
     } else if (error.value.statusCode === 400) {
-      errorMessage.message = 'Username หรือ Password ไม่ถูกต้อง'
+      errorMessage.message = 'Password ไม่ถูกต้อง'
     } else if (error.value.statusCode === 404) {
       errorMessage.message = 'ไม่พบ Username นี้'
     }

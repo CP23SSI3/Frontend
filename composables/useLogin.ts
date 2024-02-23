@@ -4,7 +4,8 @@ export default async (user: any) => {
   console.log(user)
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
-  const url = `${API_URL}auth/login`
+  const NODE_ENV = runtimeConfig.public.NODE_ENV
+  const url = `${NODE_ENV==='PROD'?'/ssi3a/':''}${API_URL}auth/login` // https://capstone23.sit.kmutt.ac.th/api/v1/auth/login
 
   const { data, error } = await useFetch<UserAuth>(url, {
     headers: {

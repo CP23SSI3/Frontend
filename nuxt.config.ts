@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   // ใช้ต่อ api ใน .env
   runtimeConfig: {
     public: {
-      API_URL: process.env.API_URL,
+      API_URL: `${process.env.NODE_ENV==='PROD'?'/ssi3a':''}${process.env.API_URL}`,
       KEY_API_MAP: process.env.KEY_API_GOOGLE_MAP,
       // base: '/ssi3/'
     }
@@ -44,7 +44,7 @@ export default defineNuxtConfig({
       title: 'InternHub',
       link: [{ rel: 'icon', type: 'svg', href: '/internhub-icon.svg' }]
     }
-    // ,
-    // baseURL: '/ssi3a/'
+    ,
+    baseURL: '/ssi3a/'
   }
 })

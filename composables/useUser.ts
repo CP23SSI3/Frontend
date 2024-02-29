@@ -62,7 +62,9 @@ export async function getUserById(id: string) {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
     } else if (error.value.statusCode === 404) {
       errorMessage.message = `User id ${id} not found`
     }
@@ -79,8 +81,7 @@ type checkingUsernameEmail = {
 type ResponseCheckUser = Response & {
   data: null
 }
-export async function useCheckUsernameEmail(params: checkingUser) {
-  console.log(params)
+export async function useCheckUsernameEmail(params: checkingUsernameEmail) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}users/username-email-checking`
@@ -100,7 +101,9 @@ export async function useCheckUsernameEmail(params: checkingUser) {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
     } else if (error.value.statusCode === 400) {
       errorMessage.message = error.value.data.message
     }
@@ -134,7 +137,9 @@ export async function useCheckUsername(params: checkingUsername) {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
     } else if (error.value.statusCode === 400) {
       errorMessage.message = error.value.data.message
     }
@@ -165,7 +170,9 @@ export async function useRegister(newUser: UserRegister) {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
     } else if (error.value.statusCode === 400) {
       errorMessage.message = error.value.data.message
     }
@@ -224,7 +231,9 @@ export async function useUpdateUser(userId: string, editUser: any) {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
     } else if (error.value.statusCode === 400) {
       errorMessage.message = error.value.data.message
     }

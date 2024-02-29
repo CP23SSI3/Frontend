@@ -20,7 +20,9 @@ export default async (user: any) => {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
     } else if (error.value.statusCode === 400) {
       errorMessage.message = 'Password ไม่ถูกต้อง'
     } else if (error.value.statusCode === 404) {

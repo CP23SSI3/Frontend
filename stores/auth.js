@@ -1,11 +1,10 @@
 import Swal from 'sweetalert2'
-import { reloadNuxtApp } from 'nuxt/app'
 
 export const useAuth = defineStore('auth', () => {
   const statusLogin = ref(false)
   const user = useCookie('user')
-  // const accessToken = useCookie('accessToken')
-  // const refreshToken = useCookie('refreshToken')
+  const router = useRouter()
+  const email = ref()
 
   const checkStatusAuth = () => {
     if (user.value == undefined) {
@@ -24,13 +23,9 @@ export const useAuth = defineStore('auth', () => {
       accessToken: respone.accessToken,
       refreshToken: respone.refreshToken
     }
-    // accessToken.value = respone.accessToken
-    // refreshToken.value = respone.refreshToken
     statusLogin.value = true
-    reloadNuxtApp({
-      path: '/',
-      ttl: 1000
-    })
+    location.reload()
+    router.push({ path: '/' })
   }
 
   const logout = function () {
@@ -47,13 +42,9 @@ export const useAuth = defineStore('auth', () => {
     }).then((result) => {
       if (result.isConfirmed) {
         user.value = null
-        // accessToken.value = null
-        // refreshToken.value = null
         statusLogin.value = false
-        reloadNuxtApp({
-          path: '/',
-          ttl: 1000
-        })
+        location.reload()
+        router.push({ path: '/' })
       }
     })
   }
@@ -61,8 +52,8 @@ export const useAuth = defineStore('auth', () => {
   return {
     statusLogin,
     user,
-    // accessToken,
-    // refreshToken,
+    router,
+    email,
 
     login,
     logout,

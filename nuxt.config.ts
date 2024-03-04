@@ -27,6 +27,10 @@ export default defineNuxtConfig({
   // devServer: {
   //   port: 80
   // },
+  // server: {
+  //   port: 30,
+  //   host: '0.0.0.0', // or 'localhost' or '127.0.0.1'
+  // },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) =>
@@ -35,7 +39,7 @@ export default defineNuxtConfig({
         )
     }
   },
-  app: {
+   app: {
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
@@ -44,7 +48,7 @@ export default defineNuxtConfig({
       // link: [{ rel: 'icon', type: 'svg', href: '/ssi3a/internhub-icon.svg' }] // -- run on server
     }
     // --- เอา comment ออก ถ้ารันบน server ---
-    // ,
-    // baseURL: '/ssi3a/'
+    ,
+    baseURL: '/ssi3a/'
   }
 })

@@ -1,5 +1,6 @@
 <template>
-  <div v-if="myUser != null" class="w-auto space-y-6">
+  <BaseLoading v-if="loading"></BaseLoading>
+  <div v-else-if="myUser != null" class="w-auto space-y-6">
     <BaseSectionContent class="w-full">
       <div>
         <div class="flex items-center justify-between px-4 py-5 sm:px-10">
@@ -118,13 +119,13 @@
 
               <BaseLineTopic
                 class="col-start-1 col-span-full"
-                v-if="auth.user.role !== 'ADMIN'"
+                v-if="auth.user?.role !== 'ADMIN'"
                 >Profile Detail</BaseLineTopic
               >
               <Field
                 v-slot="{ field, errors }"
                 name="userDesc"
-                v-if="auth.user.role !== 'ADMIN'"
+                v-if="auth.user?.role !== 'ADMIN'"
               >
                 <div class="col-span-full">
                   <BaseLabel id="userDescrciption">About me</BaseLabel>
@@ -278,7 +279,7 @@
       </div>
     </BaseSectionContent> -->
   </div>
-  <BaseLoading v-else></BaseLoading>
+  <p class="mt-4 text-gray-500" v-else>No information found this user</p>
 
   <!-- {{ myUser }} -->
 </template>
@@ -298,11 +299,14 @@ const userId = auth.user.userId
 
 // --- GET : User by id ---
 const myUser = ref()
+const loading = ref(false)
 const getUser = async () => {
+  loading.value = true
   try {
     const res = await getUserById(userId)
     if (res.value.status == 200) {
       myUser.value = res.value.data
+      loading.value = false
     }
   } catch (error) {
     Swal.fire({
@@ -313,6 +317,7 @@ const getUser = async () => {
       title: 'Error',
       text: error.message
     })
+    loading.value = false
   }
 }
 
@@ -336,32 +341,39 @@ const form = ref({
 await getUser()
 const initialValues = ref()
 const setupForm = async () => {
-  // -- merge object ---
-  for (let key in myUser.value) {
-    if (myUser.value.hasOwnProperty(key)) {
-      form.value[key] = myUser.value[key]
+  loading.value = true
+  if (myUser.value) {
+    // -- merge object ---
+    for (let key in myUser.value) {
+      if (myUser.value.hasOwnProperty(key)) {
+        form.value[key] = myUser.value[key]
+      }
     }
-  }
-  form.value.birthDay = new Date(myUser.value.dateOfBirth)
-  form.value.selectedGender = genders.find(
-    (g) => g.value === myUser.value.gender
-  )
-  if (form.value.address == null) {
-    form.value.address = {
-      country: 'ประเทศไทย',
-      postalCode: '',
-      city: '',
-      district: '',
-      subDistrict: '',
-      area: '',
-      latitude: null, // function getGeoLication()
-      longitude: null
+    form.value.birthDay = new Date(myUser.value.dateOfBirth)
+    form.value.selectedGender = genders.find(
+      (g) => g.value === myUser.value.gender
+    )
+    if (form.value.address == null) {
+      form.value.address = {
+        country: 'ประเทศไทย',
+        postalCode: '',
+        city: '',
+        district: '',
+        subDistrict: '',
+        area: '',
+        latitude: null, // function getGeoLication()
+        longitude: null
+      }
+    } else {
+      setupSelectedAddress()
     }
+    console.log(form.value)
+    initialValues.value = JSON.parse(JSON.stringify(form.value))
+    loading.value = false
   } else {
-    setupSelectedAddress()
+    console.log("Can't found this user")
+    loading.value = false
   }
-  console.log(form.value)
-  initialValues.value = JSON.parse(JSON.stringify(form.value))
 }
 
 // const { data } = await useFetch('/api/locations-thai')

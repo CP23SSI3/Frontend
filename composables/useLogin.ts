@@ -1,18 +1,29 @@
 import { UserAuth } from '~/types/User'
+import { Response } from '~/types/Response'
+
+type ResponseAuth = Response & {
+  data: UserAuth
+}
 
 export default async (user: any) => {
-  console.log(user)
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}auth/login`
-
-  const { data, error } = await useFetch<UserAuth>(url, {
+  const token = useToken()
+  const { data, error } = await useFetch<ResponseAuth>(url, {
     headers: {
       'Content-Type': 'application/json'
     },
     method: 'POST',
-    body: JSON.stringify(user)
+    body: JSON.stringify(user),
+    onResponse({ response }) {
+      token.setToken(
+        response.headers.get('access-token'),
+        response.headers.get('refresh-token')
+      )
+    }
   })
+
   if (error.value) {
     console.log(error.value.statusCode)
     let errorMessage = {
@@ -30,6 +41,33 @@ export default async (user: any) => {
     }
     // มี email , username ผิด
     throw createError(errorMessage)
+  }
+  return data
+}
+
+export async function getRefreshToken() {
+  const runtimeConfig = useRuntimeConfig()
+  const API_URL = runtimeConfig.public.API_URL
+  const url = `${API_URL}auth/refresh-token`
+  const token = useToken()
+  const { data, error } = await useFetch<ResponseAuth>(url, {
+    headers: {
+      Authorization: 'Bearer ' + token.getRefreshToken()
+    },
+    method: 'POST',
+    onResponse({ response }) {
+      token.setToken(
+        response.headers.get('access-token'),
+        response.headers.get('refresh-token')
+      )
+    }
+  })
+  if (error.value) {
+    console.log(error.value)
+    throw createError({
+      ...error.value,
+      statusMessage: `Could not fetch data from ${url}`
+    })
   }
   return data
 }

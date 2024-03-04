@@ -72,7 +72,7 @@
                       >My Profile</NuxtLink
                     >
                   </MenuItem>
-                  <!-- <MenuItem v-slot="{ active }">
+                  <MenuItem v-slot="{ active }">
                     <a
                       href="#"
                       :class="[
@@ -81,7 +81,7 @@
                       ]"
                       >Settings</a
                     >
-                  </MenuItem> -->
+                  </MenuItem>
                   <MenuItem v-slot="{ active }">
                     <div
                       @click="auth.logout()"
@@ -147,10 +147,8 @@
             <UserCircleIcon class="w-10 h-10 text-gray-300 rounded-full" />
           </div>
           <div class="ml-3">
-            <div class="text-base font-medium text-white">
-              {{ auth.user.username }}
-            </div>
-            <!-- <div class="text-sm font-medium text-gray-400">tom@example.com</div> -->
+            <div class="text-base font-medium text-white">Tom Cook</div>
+            <div class="text-sm font-medium text-gray-400">tom@example.com</div>
           </div>
           <button
             type="button"
@@ -169,12 +167,12 @@
             class="block px-3 py-2 text-base font-medium text-gray-400 rounded-md hover:bg-gray-700 hover:text-white"
             >My Profile</DisclosureButton
           >
-          <!-- <DisclosureButton
+          <DisclosureButton
             as="a"
             href="#"
             class="block px-3 py-2 text-base font-medium text-gray-400 rounded-md hover:bg-gray-700 hover:text-white"
             >Settings</DisclosureButton
-          > -->
+          >
           <DisclosureButton
             as="a"
             href="#"

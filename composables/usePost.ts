@@ -15,16 +15,17 @@ export default async (params: any) => {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}posts`
-  const token = useToken()
+  // const auth = useAuth()
+  // const token = auth.$storage.getUniversal('_token.local') as string
   const { data, error } = await useFetch<ResponsePostList>(url, {
-    params,
-    headers: token.getAccessToken()
-      ? {
-          Authorization: 'Bearer ' + token.getAccessToken()
-        }
-      : undefined
+    params
+    // headers: {
+    // Authorization: token
+    //   content: 'application/json'
+    // }
   })
   if (error.value) {
+    // console.log(error.value)
     throw createError({
       ...error.value,
       statusMessage: `Could not fetch data from ${url}`
@@ -41,13 +42,12 @@ export async function getPostById(id: string) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}posts/${id}`
-  const token = useToken()
+  // const auth = useAuth()
+  // const token = auth.$storage.getUniversal('_token.local') as string
   const { data, error } = await useFetch<ResponsePost>(url, {
-    headers: token.getAccessToken()
-      ? {
-          Authorization: 'Bearer ' + token.getAccessToken()
-        }
-      : undefined
+    // headers: {
+    //   Authorization: token
+    // }
   })
 
   if (error.value) {
@@ -56,9 +56,7 @@ export async function getPostById(id: string) {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.statusMessage = 'Internal server error'
-      errorMessage.message =
-        'Something has gone wrong on the server hosting a website'
+      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
     } else if (error.value.statusCode === 404) {
       errorMessage.message = `Post id ${id} not found`
     }
@@ -72,14 +70,13 @@ export async function createNewPost(newPost: any) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}posts`
-  const token = useToken()
+  // const auth = useAuth()
+  // const token = auth.$storage.getUniversal('_token.local') as string
   const { data, error } = await useFetch(url, {
-    headers: token.getAccessToken()
-      ? {
-          Authorization: 'Bearer ' + token.getAccessToken(),
-          'Content-Type': 'application/json'
-        }
-      : { 'Content-Type': 'application/json' },
+    headers: {
+      // Authorization: token,
+      'Content-Type': 'application/json'
+    },
     method: 'POST',
     body: JSON.stringify(newPost)
   })
@@ -98,13 +95,12 @@ export async function deletePost(id: string) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}posts/${id}`
-  const token = useToken()
+  // const auth = useAuth()
+  // const token = auth.$storage.getUniversal('_token.local') as string
   const { data, error } = await useFetch(url, {
-    headers: token.getAccessToken()
-      ? {
-          Authorization: 'Bearer ' + token.getAccessToken()
-        }
-      : undefined,
+    // headers: {
+    //   Authorization: token,
+    // },
     method: 'DELETE'
   })
 
@@ -122,14 +118,13 @@ export async function updatePost(postId: string, editPost: any) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}posts/${postId}`
-  const token = useToken()
+  // const auth = useAuth()
+  // const token = auth.$storage.getUniversal('_token.local') as string
   const { data, error } = await useFetch(url, {
-    headers: token.getAccessToken()
-      ? {
-          Authorization: 'Bearer ' + token.getAccessToken(),
-          'Content-Type': 'application/json'
-        }
-      : { 'Content-Type': 'application/json' },
+    headers: {
+      // Authorization: token,
+      'Content-Type': 'application/json'
+    },
     method: 'PUT',
     body: JSON.stringify(editPost)
   })

@@ -15,8 +15,8 @@ export type User = {
 }
 
 export type UserAuth = {
-  // accessToken: string
-  // refreshToken: string
+  accessToken: string
+  refreshToken: string
   role: string
   userId: string
   username: string

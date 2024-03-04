@@ -1,12 +1,11 @@
 import Swal from 'sweetalert2'
+import { reloadNuxtApp } from 'nuxt/app'
 
 export const useAuth = defineStore('auth', () => {
   const statusLogin = ref(false)
   const user = useCookie('user')
-  const router = useRouter()
-  const email = ref()
-
-  const token = useToken()
+  // const accessToken = useCookie('accessToken')
+  // const refreshToken = useCookie('refreshToken')
 
   const checkStatusAuth = () => {
     if (user.value == undefined) {
@@ -17,19 +16,21 @@ export const useAuth = defineStore('auth', () => {
     return statusLogin.value
   }
 
-  const getRole = () => (user.value ? user.value.role : null)
-
   const login = (respone) => {
-    console.log('get token in login function')
-    console.log(respone)
     user.value = {
       userId: respone.userId,
       username: respone.username,
-      role: respone.role
+      role: respone.role,
+      accessToken: respone.accessToken,
+      refreshToken: respone.refreshToken
     }
+    // accessToken.value = respone.accessToken
+    // refreshToken.value = respone.refreshToken
     statusLogin.value = true
-    location.reload()
-    router.push({ path: '/' })
+    reloadNuxtApp({
+      path: '/',
+      ttl: 1000
+    })
   }
 
   const logout = function () {
@@ -46,10 +47,13 @@ export const useAuth = defineStore('auth', () => {
     }).then((result) => {
       if (result.isConfirmed) {
         user.value = null
-        token.removeToken()
+        // accessToken.value = null
+        // refreshToken.value = null
         statusLogin.value = false
-        location.reload()
-        router.push({ path: '/' })
+        reloadNuxtApp({
+          path: '/',
+          ttl: 1000
+        })
       }
     })
   }
@@ -57,13 +61,12 @@ export const useAuth = defineStore('auth', () => {
   return {
     statusLogin,
     user,
-    router,
-    email,
+    // accessToken,
+    // refreshToken,
 
     login,
     logout,
-    checkStatusAuth,
-    getRole
+    checkStatusAuth
   }
 })
 

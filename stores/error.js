@@ -10,7 +10,7 @@ export const storesError = defineStore('error', () => {
   const err500 = {
     statusCode: 500,
     statusMessage: 'Internal server error',
-    message: 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+    message: 'Something has gone wrong on the server hosting a website'
   }
 
   return {

@@ -16,19 +16,19 @@ type ResponseUserList = Response & {
     content: UserData[]
   }
 }
-// --- getAllUserList ---
+// --- getAllUserList for ADMIN only ---
 export default async (params: any) => {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}users`
-  // const auth = useAuth()
-  // const token = auth.$storage.getUniversal('_token.local') as string
+  const token = useToken()
   const { data, error } = await useFetch<ResponseUserList>(url, {
-    params
-    // headers: {
-    // Authorization: token
-    //   content: 'application/json'
-    // }
+    params,
+    headers: token.getAccessToken()
+      ? {
+          Authorization: 'Bearer ' + token.getAccessToken()
+        }
+      : undefined
   })
   if (error.value) {
     // console.log(error.value)
@@ -43,16 +43,18 @@ export default async (params: any) => {
 type ResponseUser = Response & {
   data: UserData
 }
+
 export async function getUserById(id: string) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}users/${id}`
-  // const auth = useAuth()
-  // const token = auth.$storage.getUniversal('_token.local') as string
+  const token = useToken()
   const { data, error } = await useFetch<ResponseUser>(url, {
-    // headers: {
-    //   Authorization: token
-    // }
+    headers: token.getAccessToken()
+      ? {
+          Authorization: 'Bearer ' + token.getAccessToken()
+        }
+      : undefined
   })
 
   if (error.value) {
@@ -62,7 +64,9 @@ export async function getUserById(id: string) {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
     } else if (error.value.statusCode === 404) {
       errorMessage.message = `User id ${id} not found`
     }
@@ -79,18 +83,14 @@ type checkingUsernameEmail = {
 type ResponseCheckUser = Response & {
   data: null
 }
-export async function useCheckUsernameEmail(params: checkingUser) {
-  console.log(params)
+
+// --- check username, email when login ---
+export async function useCheckUsernameEmail(params: checkingUsernameEmail) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}users/username-email-checking`
   const { data, error } = await useFetch<checkingUsernameEmail>(url, {
     params
-    // headers: {
-    //   'Content-Type': 'application/json'
-    // },
-    // method: 'GET',
-    // body: JSON.stringify(username_email)
   })
 
   if (error.value) {
@@ -100,7 +100,9 @@ export async function useCheckUsernameEmail(params: checkingUser) {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
     } else if (error.value.statusCode === 400) {
       errorMessage.message = error.value.data.message
     }
@@ -113,18 +115,20 @@ export async function useCheckUsernameEmail(params: checkingUser) {
 type checkingUsername = {
   username: string
 }
+
+// --- check username when edit user ---
 export async function useCheckUsername(params: checkingUsername) {
-  console.log(params)
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}users/username-checking`
+  const token = useToken()
   const { data, error } = await useFetch<ResponseCheckUser>(url, {
-    params
-    // headers: {
-    //   'Content-Type': 'application/json'
-    // },
-    // method: 'GET',
-    // body: JSON.stringify(username_email)
+    params,
+    headers: token.getAccessToken()
+      ? {
+          Authorization: 'Bearer ' + token.getAccessToken()
+        }
+      : undefined
   })
 
   if (error.value) {
@@ -134,7 +138,9 @@ export async function useCheckUsername(params: checkingUsername) {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
     } else if (error.value.statusCode === 400) {
       errorMessage.message = error.value.data.message
     }
@@ -165,7 +171,9 @@ export async function useRegister(newUser: UserRegister) {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
     } else if (error.value.statusCode === 400) {
       errorMessage.message = error.value.data.message
     }
@@ -179,10 +187,13 @@ export async function useDeleteUser(id: string) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}users/${id}`
+  const token = useToken()
   const { data, error } = await useFetch<ResponseCheckUser>(url, {
-    // headers: {
-    //   Authorization: token,
-    // },
+    headers: token.getAccessToken()
+      ? {
+          Authorization: 'Bearer ' + token.getAccessToken()
+        }
+      : undefined,
     method: 'DELETE'
   })
 
@@ -206,13 +217,14 @@ export async function useUpdateUser(userId: string, editUser: any) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
   const url = `${API_URL}users/${userId}`
-  // const auth = useAuth()
-  // const token = auth.$storage.getUniversal('_token.local') as string
+  const token = useToken()
   const { data, error } = await useFetch(url, {
-    headers: {
-      // Authorization: token,
-      'Content-Type': 'application/json'
-    },
+    headers: token.getAccessToken()
+      ? {
+          Authorization: 'Bearer ' + token.getAccessToken(),
+          'Content-Type': 'application/json'
+        }
+      : undefined,
     method: 'PUT',
     body: JSON.stringify(editUser)
   })
@@ -224,7 +236,9 @@ export async function useUpdateUser(userId: string, editUser: any) {
       message: `Could not fetch data from ${url}`
     }
     if (error.value.statusCode === 500) {
-      errorMessage.message = 'เกิดข้อผิดพลาดเซิร์ฟเวอร์ภายใน'
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
     } else if (error.value.statusCode === 400) {
       errorMessage.message = error.value.data.message
     }

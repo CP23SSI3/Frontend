@@ -27,7 +27,7 @@
         :close-on-select="false"
         :searchable="true"
         :create-option="false"
-        :options="listPositionTag"
+        :options="optionList"
         class="multiselect-blue"
         :max="5"
         noResultsText="-- ไม่พบข้อมูล --"
@@ -134,34 +134,38 @@ const props = defineProps({
   filter: {
     type: Object,
     required: true
+  },
+  optionList: {
+    type: Array,
+    required: true
   }
 })
 
 defineEmits(['cancel', 'search', 'setLocation', 'clearLocation'])
 
-// --- GET : position-tag (postTag) ---
-const listPositionTag = ref([])
-const getListPositionTag = async () => {
-  listPositionTag.value = []
-  try {
-    const res = await usePositionTag()
-    if (res.value.status === 200) {
-      res.value.data.forEach((item) => {
-        listPositionTag.value.push(item.positionTagName)
-      })
-    }
-  } catch (error) {
-    Swal.fire({
-      showConfirmButton: true,
-      timerProgressBar: true,
-      confirmButtonColor: 'blue',
-      icon: 'error',
-      title: 'Error',
-      text: 'get /position-tag ใช้งานไม่ได้'
-    })
-  }
-}
-await getListPositionTag()
+// // --- GET : position-tag (postTag) ---
+// const listPositionTag = ref([])
+// const getListPositionTag = async () => {
+//   listPositionTag.value = []
+//   try {
+//     const res = await usePositionTag()
+//     if (res.value.status === 200) {
+//       res.value.data.forEach((item) => {
+//         listPositionTag.value.push(item.positionTagName)
+//       })
+//     }
+//   } catch (error) {
+//     Swal.fire({
+//       showConfirmButton: true,
+//       timerProgressBar: true,
+//       confirmButtonColor: 'blue',
+//       icon: 'error',
+//       title: 'Error',
+//       text: 'get /position-tag ใช้งานไม่ได้'
+//     })
+//   }
+// }
+// await getListPositionTag()
 
 const listLocation = ref([])
 // const { data } = await useFetch('/api/locations-thai')

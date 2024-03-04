@@ -6,6 +6,7 @@
     >
       <FilterComponent
         :filter="filter"
+        :option-list="listPositionTag"
         @cancel="clearFilterValue()"
         @search="search()"
         @setLocation="setFilterLocation()"
@@ -78,6 +79,7 @@
             <!-- filter for mobile size -->
             <FilterComponent
               :filter="filter"
+              :option-list="listPositionTag"
               @cancel="clearFilterValue()"
               @search="search()"
               @setLocation="setFilterLocation()"
@@ -104,7 +106,7 @@
             <div class="flex items-center gap-2 lg:gap-6">
               <!-- * add Logo Company -->
               <nuxt-img
-                class="w-10 h-10 rounded-full shadow-md lg:w-12 lg:h-12 lg:rounded-sm bg-gray-50"
+                class="w-10 h-10 rounded-md shadow-md lg:w-12 lg:h-12 lg:rounded-sm bg-gray-50"
                 src="../public/logo-test.png"
                 :alt="post.comp.compName"
               />
@@ -248,6 +250,29 @@ const openFilter = () => {
 }
 const closeFilter = () => {
   filterMobile.value = false
+}
+
+// --- GET : position-tag (postTag) ---
+const listPositionTag = ref([])
+const getListPositionTag = async () => {
+  listPositionTag.value = []
+  try {
+    const res = await usePositionTag()
+    if (res.value.status === 200) {
+      res.value.data.forEach((item) => {
+        listPositionTag.value.push(item.positionTagName)
+      })
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: 'Error',
+      text: 'get /position-tag ใช้งานไม่ได้'
+    })
+  }
 }
 
 const filter = ref({
@@ -447,7 +472,9 @@ const getPost = async () => {
     loading.value = false
   }
 }
+
 await getPost()
+await getListPositionTag()
 
 // --- Favorite Button ---
 const statusStar = ref(false)

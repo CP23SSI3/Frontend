@@ -1,30 +1,26 @@
-import { resolveDirective } from 'nuxt/dist/app/compat/capi'
-import { UserAuth } from '~/types/User'
-
 export default defineNuxtRouteMiddleware((to, from) => {
   // console.log(to)
   // console.log(from)
 
   if (to.path.includes('/account')) {
     const auth = useAuth()
-    auth.checkStatusAuth()
-
     const error = storesError()
+
+    auth.checkStatusAuth()
     if (!auth.statusLogin && auth.user == undefined) {
       return navigateTo('/auth/login')
     } else {
-      // let thisUser: UserAuth | null | undefined = null
-      let thisUser: UserAuth = auth.user
+      let thisRole = auth.getRole()
       if (to.path.includes('/admin')) {
-        if (thisUser?.role !== 'ADMIN') {
+        if (thisRole !== 'ADMIN') {
           return abortNavigation(error.err403)
         }
       } else if (to.path.includes('/company')) {
-        if (thisUser?.role !== 'COMPANY') {
+        if (thisRole !== 'COMPANY') {
           return abortNavigation(error.err403)
         }
       } else if (to.path.includes('/user')) {
-        if (thisUser?.role !== 'USER') {
+        if (thisRole !== 'USER') {
           return abortNavigation(error.err403)
         }
       }

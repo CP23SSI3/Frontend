@@ -6,6 +6,8 @@ export const useAuth = defineStore('auth', () => {
   const router = useRouter()
   const email = ref()
 
+  const token = useToken()
+
   const checkStatusAuth = () => {
     if (user.value == undefined) {
       statusLogin.value = false
@@ -15,13 +17,15 @@ export const useAuth = defineStore('auth', () => {
     return statusLogin.value
   }
 
+  const getRole = () => (user.value ? user.value.role : null)
+
   const login = (respone) => {
+    console.log('get token in login function')
+    console.log(respone)
     user.value = {
       userId: respone.userId,
       username: respone.username,
-      role: respone.role,
-      accessToken: respone.accessToken,
-      refreshToken: respone.refreshToken
+      role: respone.role
     }
     statusLogin.value = true
     location.reload()
@@ -42,6 +46,7 @@ export const useAuth = defineStore('auth', () => {
     }).then((result) => {
       if (result.isConfirmed) {
         user.value = null
+        token.removeToken()
         statusLogin.value = false
         location.reload()
         router.push({ path: '/' })
@@ -57,7 +62,8 @@ export const useAuth = defineStore('auth', () => {
 
     login,
     logout,
-    checkStatusAuth
+    checkStatusAuth,
+    getRole
   }
 })
 

@@ -433,14 +433,16 @@ const checkUser = async () => {
     }
   } catch (error) {
     const sentences = error.message.match(/[^.!?]+[.!?]+/g)
-    if (sentences.length > 1) {
-      errorMessageCheckUsername.value = sentences[0]
-      errorMessageCheckEmail.value = sentences[1]
-    } else if (sentences.length == 1) {
-      if (sentences[0].includes('email')) {
-        errorMessageCheckEmail.value = sentences[0]
-      } else if (sentences[0].includes('username')) {
+    if (sentences) {
+      if (sentences.length > 1) {
         errorMessageCheckUsername.value = sentences[0]
+        errorMessageCheckEmail.value = sentences[1]
+      } else if (sentences.length == 1) {
+        if (sentences[0].includes('email')) {
+          errorMessageCheckEmail.value = sentences[0]
+        } else if (sentences[0].includes('username')) {
+          errorMessageCheckUsername.value = sentences[0]
+        }
       }
     }
   }

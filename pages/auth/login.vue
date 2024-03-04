@@ -68,7 +68,7 @@ definePageMeta({
   middleware: ['logger']
 })
 
-const user = ref({ username: '', password: '' })
+const user = ref({ username: 'testuser', password: 'userpassword' })
 const schema = yup.object({
   username: yup.string(),
   password: yup.string().min(8, 'อย่างน้อย 8 ตัวอักษร')
@@ -81,7 +81,7 @@ const submitForm = async () => {
 const login = async () => {
   try {
     const res = await useLogin(user.value)
-    auth.login(res.value)
+    auth.login(res.value.data)
   } catch (error) {
     Swal.fire({
       showConfirmButton: true,

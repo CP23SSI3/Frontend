@@ -5,7 +5,7 @@
         <BaseTitleForm>Experiences</BaseTitleForm>
       </div>
       <BaseLine />
-      <div class="flex flex-col gap-2 px-4 py-4 sm:px-10">
+      <div class="flex flex-col gap-2 px-4 pt-4 pb-8 sm:px-10">
         <!-- List All Experience -->
         <div
           v-for="(experiences, index) in experiencesList"
@@ -93,6 +93,7 @@
               </div>
             </div>
           </div>
+
           <!-- Sub-Form Edit Experience -->
           <FormExperience
             v-if="statusEditExper && editingExper.id == index"
@@ -104,8 +105,8 @@
         </div>
 
         <!-- Button add new exper. -->
-        <BaseLineTopic v-if="!statusAddExper && !statusEditExper"
-          ><BaseButton
+        <BaseLineTopic center v-if="!statusAddExper && !statusEditExper">
+          <BaseButton
             class="mt-1"
             type="button"
             :leadingIcon="PlusIcon"
@@ -126,12 +127,12 @@
         />
       </div>
     </div>
-    <BaseLine />
   </BaseSectionContent>
   {{ experiencesList }} / {{ editingExper }}
 </template>
 
 <script setup>
+const test = ref('description textarea')
 import {
   PlusIcon,
   ChevronRightIcon,
@@ -149,6 +150,11 @@ import {
   UsersIcon,
   TagIcon
 } from '@heroicons/vue/24/outline'
+import { Field, ErrorMessage, Form } from 'vee-validate'
+import yup from '@/assets/yup-error.js'
+import moment from 'moment'
+import Swal from 'sweetalert2'
+
 const loading = ref(false)
 const experiencesList = ref([
   // {

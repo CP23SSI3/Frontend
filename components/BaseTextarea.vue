@@ -1,13 +1,16 @@
 <template>
   <Field v-slot="{ field, errors }" :name="id">
     <div class="col-span-full">
-      <BaseLabel v-if="label" :id="name" :required="required" :name="name">{{
-        label
-      }}</BaseLabel>
+      <BaseLabel
+        v-if="label"
+        :id="nametag"
+        :required="required"
+        :name="nametag"
+        >{{ label }}</BaseLabel
+      >
       <div class="mt-1 sm:col-span-full">
         <textarea
-          :id="name"
-          :name="name"
+          :id="nametag"
           rows="4"
           :value="value"
           @input="$emit('update:value', $event)"
@@ -33,7 +36,7 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  name: {
+  nametag: {
     type: String,
     required: true
   },

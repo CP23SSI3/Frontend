@@ -114,7 +114,7 @@
             secondary
             @click="showAddExperMode()"
             :disabled="statusEditExper"
-            >Add new data
+            >Add Experience
           </BaseButton>
         </BaseLineTopic>
 
@@ -128,14 +128,11 @@
       </div>
     </div>
   </BaseSectionContent>
-  {{ experiencesList }} / {{ editingExper }}
 </template>
 
 <script setup>
-const test = ref('description textarea')
 import {
   PlusIcon,
-  ChevronRightIcon,
   PencilIcon,
   EllipsisVerticalIcon,
   TrashIcon as TrashIconSolid,
@@ -143,65 +140,31 @@ import {
 } from '@heroicons/vue/24/solid'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 
-import {
-  TrashIcon,
-  BriefcaseIcon,
-  CurrencyDollarIcon,
-  UsersIcon,
-  TagIcon
-} from '@heroicons/vue/24/outline'
+import { TrashIcon, BriefcaseIcon } from '@heroicons/vue/24/outline'
 import { Field, ErrorMessage, Form } from 'vee-validate'
 import yup from '@/assets/yup-error.js'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 
 const loading = ref(false)
-const experiencesList = ref([
-  // {
-  //   id: 1,
-  //   title: 'ทำงานพิเศษ',
-  //   description:
-  //     'ทำงาน Part-time หารายได้เสริมระหว่างเรียน ตอนxu 1-2  deadadwd dwaddw',
-  //   position: 'พนักงานขาย',
-  //   startedYear: 2020,
-  //   endedYear: 2020,
-  //   workplace: 'Big C พระราม2'
-  // },
-  // {
-  //   id: 2,
-  //   title: 'งาน Commisssion',
-  //   description: 'รับจ้างวาดภาพในเพจเฟสบุ๊ค',
-  //   position: 'ฟรีแลนซ์',
-  //   startedYear: 2022,
-  //   endedYear: 2024,
-  //   workplace: 'anywhere'
-  // }
-])
 
-// const experience = ref({
-//   title: 'New experience',
-//   description: 'New experience description',
-//   position: 'New position',
-//   startedYear: 2024,
-//   endedYear: 2024,
-//   workplace: 'anywhere'
-// })
-
+// ---- Part: Experience ----
+const experiencesList = ref([])
 const statusAddExper = ref(false)
 const experience = ref({
-  // title: '',
-  // description: '',
-  // position: '',
-  // startedYear: null,
-  // endedYear: null,
-  // workplace: ''
-  //----
-  title: 'New experience',
-  description: 'New experience description',
-  position: 'New position',
-  startedYear: 2024,
-  endedYear: 2024,
-  workplace: 'anywhere'
+  title: '',
+  description: '',
+  position: '',
+  startedYear: null,
+  endedYear: null,
+  workplace: ''
+  //---- example data ---
+  // title: 'New experience',
+  // description: 'New experience description',
+  // position: 'New position',
+  // startedYear: 2024,
+  // endedYear: 2024,
+  // workplace: 'anywhere'
 })
 
 const resetExperience = () => {

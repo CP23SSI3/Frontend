@@ -1,6 +1,6 @@
 <template>
   <Form
-    @submit="submitForm"
+    @submit="$emit('submit')"
     v-slot="{ meta, values, errors }"
     :validation-schema="schema"
   >
@@ -32,48 +32,61 @@
         v-model="experience.workplace"
         required
       ></BaseInputField>
-      <BaseYearPicker
-        class="sm:col-span-1"
-        label="Start year"
-        id="startedYear"
-        v-model="experience.startedYear"
-        placeholder="Select start year"
-        :year-range="[new Date().getFullYear() - 50, new Date().getFullYear()]"
-      >
-      </BaseYearPicker>
-      <BaseYearPicker
-        class="sm:col-span-1"
-        label="End year"
-        id="endedYear"
-        v-model="experience.endedYear"
-        placeholder="Select end year"
-        :year-range="[
-          experience.startedYear
-            ? experience.startedYear
-            : new Date().getFullYear() - 50,
-          new Date().getFullYear()
-        ]"
-      >
-      </BaseYearPicker>
+      <Field v-slot="{ field, errors }" name="startedYear">
+        <BaseYearPicker
+          class="sm:col-span-1"
+          label="Start year"
+          id="startedYear"
+          required
+          v-model="experience.startedYear"
+          v-bind="field"
+          placeholder="Select start year"
+          :year-range="[
+            new Date().getFullYear() - 50,
+            new Date().getFullYear()
+          ]"
+        >
+          <template v-slot:error-message v-if="errors"
+            >{{ errors[0] }}
+          </template>
+        </BaseYearPicker>
+      </Field>
+      <Field v-slot="{ field, errors }" name="endedYear">
+        <BaseYearPicker
+          class="sm:col-span-1"
+          label="End year"
+          id="endedYear"
+          required
+          v-model="experience.endedYear"
+          v-bind="field"
+          placeholder="Select end year"
+          :year-range="[
+            experience.startedYear
+              ? experience.startedYear
+              : new Date().getFullYear() - 50,
+            new Date().getFullYear()
+          ]"
+        >
+          <template v-slot:error-message v-if="errors"
+            >{{ errors[0] }}
+          </template>
+        </BaseYearPicker>
+      </Field>
       <BaseTextarea
         label="Description"
         id="experienceDesc"
-        name="description"
+        nametag="description"
         required
         :rows="10"
         v-model="experience.description"
       ></BaseTextarea>
       <div class="flex flex-row-reverse gap-3 sm:col-span-full">
-        <BaseButton
-          :leadingIcon="CheckIcon"
-          @click="$emit('submit')"
-          type="submit"
-        >
+        <BaseButton :leadingIcon="CheckIcon" type="submit">
           {{ editmode ? 'Save' : 'Add' }}
         </BaseButton>
         <BaseButton negative @click="$emit('cancel', experience)" type="button">
-          Cancel</BaseButton
-        >
+          Cancel
+        </BaseButton>
       </div>
     </div>
   </Form>
@@ -109,8 +122,8 @@ const schema = yup.object({
   title: yup.string().required().max(100),
   experienceDesc: yup.string().required().max(1500),
   position: yup.string().required().max(100),
-  startedYear: yup.number().nonNullable('Please select the working year'),
-  endedYear: yup.number().nonNullable('Please select the working year'),
+  startedYear: yup.number().required("Please 'select' the working year"),
+  endedYear: yup.number().required("Please 'select' the working year"),
   workplace: yup.string().required().max(200)
 })
 </script>

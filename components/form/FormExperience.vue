@@ -2,7 +2,7 @@
   <Form
     @submit="$emit('submit')"
     v-slot="{ meta, values, errors }"
-    :validation-schema="schema"
+    :validation-schema="schemaExperience"
   >
     <div
       class="grid items-start grid-cols-1 px-6 py-4 mt-1 rounded-md gap-x-3 gap-y-4 sm:grid-cols-4 bg-blue-50"
@@ -32,9 +32,12 @@
         v-model="experience.workplace"
         required
       ></BaseInputField>
-      <Field v-slot="{ field, errors }" name="startedYear">
+      <Field
+        v-slot="{ field, errors }"
+        name="startedYear"
+        class="sm:col-span-2 lg:col-span-1"
+      >
         <BaseYearPicker
-          class="sm:col-span-1"
           label="Start year"
           id="startedYear"
           required
@@ -51,15 +54,15 @@
           </template>
         </BaseYearPicker>
       </Field>
-      <Field v-slot="{ field, errors }" name="endedYear">
+      <Field v-slot="{ field, errors }" name="endedYear" class="sm:col-span-1">
         <BaseYearPicker
-          class="sm:col-span-1"
           label="End year"
           id="endedYear"
           required
           v-model="experience.endedYear"
           v-bind="field"
           placeholder="Select end year"
+          :disable="!experience.startedYear"
           :year-range="[
             experience.startedYear
               ? experience.startedYear
@@ -84,7 +87,7 @@
         <BaseButton :leadingIcon="CheckIcon" type="submit">
           {{ editmode ? 'Save' : 'Add' }}
         </BaseButton>
-        <BaseButton negative @click="$emit('cancel', experience)" type="button">
+        <BaseButton negative @click="$emit('cancel')" type="button">
           Cancel
         </BaseButton>
       </div>
@@ -105,20 +108,11 @@ const props = defineProps({
   editmode: {
     type: Boolean,
     default: false
-  },
-  statusButton: {
-    type: Boolean,
-    default: false
   }
 })
 defineEmits(['submit', 'cancel'])
-console.log(props.experience)
 
-const submitForm = () => {
-  console.log('Test Formexperience')
-}
-
-const schema = yup.object({
+const schemaExperience = yup.object({
   title: yup.string().required().max(100),
   experienceDesc: yup.string().required().max(1500),
   position: yup.string().required().max(100),

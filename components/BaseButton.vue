@@ -1,14 +1,4 @@
 <template>
-  <!-- <button
-    v-bind="$attrs"
-    :disabled="disabled"
-    class="rounded-md px-6 py-2.5 text-sm shadow-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-    :class="[styleButton, { 'w-full': full }]"
-  >
-    <component :is="icon" class="w-6 h-6 shrink-0" aria-hidden="true" />
-    <slot></slot>
-  </button> -->
-
   <button
     v-bind="$attrs"
     class="px-3 py-2 text-sm font-medium rounded-md shadow-sm ring-1 ring-inset focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:text-white disabled:ring-0 disabled:bg-gray-300"

@@ -17,11 +17,12 @@
           </h2>
 
           <div class="flex items-center gap-2">
-            <div
-              class="text-xs font-semibold leading-6 text-gray-600 lg:text-sm"
+            <NuxtLink
+              :to="`/internship/company/${post.comp.compId}`"
+              class="text-xs font-semibold leading-6 text-gray-600 cursor-pointer lg:text-sm hover:text-blue-800"
             >
               {{ post.comp.compName }}
-            </div>
+            </NuxtLink>
             <span class="text-xs text-gray-500">
               {{ moment(new Date(post.lastUpdateDate)).format('DD/MM/YYYY') }}
             </span>

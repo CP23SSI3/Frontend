@@ -2,10 +2,17 @@
   <span
     :style="`background-color:
     ${stringToHslColor(fname + '' + lname, 40, 60)};`"
-    :class="['inline-flex items-center justify-center rounded-full', styleSize]"
+    :class="[
+      'inline-flex items-center justify-center',
+      styleSize,
+      company ? 'rounded-md' : 'rounded-full'
+    ]"
   >
     <span class="font-medium leading-none text-white">
-      {{ fname[0].toUpperCase() + lname[0].toUpperCase() }}
+      {{
+        (fname ? fname[0].toUpperCase() : '') +
+        (lname ? lname[0].toUpperCase() : '')
+      }}
     </span>
   </span>
 </template>
@@ -22,6 +29,10 @@ const props = defineProps({
   size: {
     type: String,
     default: 'M'
+  },
+  company: {
+    type: Boolean,
+    default: false
   }
 })
 

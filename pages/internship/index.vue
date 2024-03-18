@@ -120,12 +120,17 @@
                 <div
                   class="flex flex-col gap-0 sm:gap-2 item-start sm:items-center sm:flex-row"
                 >
-                  <div class="text-sm font-semibold leading-6 text-gray-600">
+                  <NuxtLink
+                    :to="`/internship/company/${post.comp.compId}`"
+                    class="text-sm font-semibold leading-6 text-gray-600 cursor-pointer hover:text-blue-800"
+                  >
                     {{ post.comp.compName }}
-                  </div>
+                  </NuxtLink>
                   <span class="text-xs text-gray-500">
                     {{
-                      moment(new Date(post.lastUpdateDate)).format('DD/MM/YYYY')
+                      post.cloedDate
+                        ? moment(new Date(post.cloedDate)).format('DD/MM/YYYY')
+                        : ''
                     }}
                     <BaseBadge
                       :color="
@@ -475,6 +480,8 @@ const getPost = async () => {
 
 await getPost()
 await getListPositionTag()
+
+console.log(listPost.value)
 
 // --- Favorite Button ---
 const statusStar = ref(false)

@@ -40,7 +40,7 @@
 
 <script setup>
 import { CheckIcon } from '@heroicons/vue/24/solid'
-import { Field, ErrorMessage, Form } from 'vee-validate'
+import { Form } from 'vee-validate'
 import * as yup from 'yup'
 
 const props = defineProps({

@@ -25,7 +25,10 @@
         <div class="w-full text-end">
           <div class="flex items-center justify-end gap-6">
             <BaseItem :icon="AcademicCapIcon" class="min-w-max">
-              {{ education.startedYear }} - {{ education.graduatedYear }}
+              {{ education.startedYear }} -
+              {{
+                education.graduatedYear ? education.graduatedYear : 'Present'
+              }}
             </BaseItem>
             <div class="flex items-center text-xs text-gray-500 lg:text-sm">
               Grade : {{ education.grade ? education.grade : '-' }}
@@ -130,64 +133,71 @@ import {
 } from '@heroicons/vue/24/solid'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { AcademicCapIcon } from '@heroicons/vue/24/outline'
+const props = defineProps({
+  myUser: {
+    type: Object,
+    required: true
+  }
+})
+
 // ---- Part: Education ----
 const educationList = ref([
-  {
-    degree: 'อนุบาล',
-    educationDesc: '',
-    field: null,
-    grade: '3.97',
-    startedYear: 2005,
-    graduatedYear: 2013,
-    schoolName: 'โรงเรียนศิรินุสรณ์วิทยา'
-  },
-  {
-    degree: 'มัธยมศึกษาตอนต้น',
-    educationDesc: 'เรียนห้องพิเศษ SMT',
-    field: null,
-    grade: '3.92',
-    startedYear: 2013,
-    graduatedYear: 2016,
-    schoolName: 'โรงเรียนรัตนโกสินทร์สมโภชบางขุนเทียน'
-  },
-  {
-    degree: 'มัธยมศึกษาตอนปลาย',
-    educationDesc: 'เรียนร่วมกับโครงการห้องเรียนพิเศษ SMT',
-    field: null,
-    grade: '3.93',
-    startedYear: 2017,
-    graduatedYear: 2019,
-    schoolName: 'โรงเรียนรัตนโกสินทร์สมโภชบางขุนเทียน'
-  },
-  {
-    degree: 'ปริญญาตรี',
-    educationDesc: '',
-    field: 'คณะเทคโนโลยีสารสนเทศ สาขาเทคโนโลยีสารสนเทศ',
-    grade: '3.93',
-    startedYear: 2020,
-    graduatedYear: 2024,
-    schoolName: 'มหาวิทยาลัยเทคโนโลยีสารสนเทศพระจอมเกล้าธนบุรี'
-  }
+  // {
+  //   degree: 'อนุบาล',
+  //   educationDesc: '',
+  //   field: null,
+  //   grade: '3.97',
+  //   startedYear: 2005,
+  //   graduatedYear: 2013,
+  //   schoolName: 'โรงเรียนศิรินุสรณ์วิทยา'
+  // },
+  // {
+  //   degree: 'มัธยมศึกษาตอนต้น',
+  //   educationDesc: 'เรียนห้องพิเศษ SMT',
+  //   field: null,
+  //   grade: '3.92',
+  //   startedYear: 2013,
+  //   graduatedYear: 2016,
+  //   schoolName: 'โรงเรียนรัตนโกสินทร์สมโภชบางขุนเทียน'
+  // },
+  // {
+  //   degree: 'มัธยมศึกษาตอนปลาย',
+  //   educationDesc: 'เรียนร่วมกับโครงการห้องเรียนพิเศษ SMT',
+  //   field: null,
+  //   grade: '3.93',
+  //   startedYear: 2017,
+  //   graduatedYear: 2019,
+  //   schoolName: 'โรงเรียนรัตนโกสินทร์สมโภชบางขุนเทียน'
+  // },
+  // {
+  //   degree: 'ปริญญาตรี',
+  //   educationDesc: '',
+  //   field: 'คณะเทคโนโลยีสารสนเทศ สาขาเทคโนโลยีสารสนเทศ',
+  //   grade: '3.93',
+  //   startedYear: 2020,
+  //   graduatedYear: 2024,
+  //   schoolName: 'มหาวิทยาลัยเทคโนโลยีสารสนเทศพระจอมเกล้าธนบุรี'
+  // }
 ])
+educationList.value = props.myUser.educations
 const statusAddEducation = ref(false)
 const education = ref({
-  // degree: '',
-  // educationDesc:
-  //   '',
-  // educationId: '',
-  // field: null,
-  // grade: null,
-  // graduatedYear: null,
-  // schoolName: '',
-  // startedYear: null,
+  degree: '',
+  educationDesc: '',
+  educationId: '',
+  field: null,
+  grade: null,
+  graduatedYear: null,
+  schoolName: '',
+  startedYear: null
   //---- example data ---
-  degree: 'New Degree',
-  educationDesc: 'Description.... ',
-  field: 'field',
-  grade: 'A',
-  startedYear: 2020,
-  graduatedYear: 2024,
-  schoolName: 'New shcool name'
+  // degree: 'New Degree',
+  // educationDesc: 'Description.... ',
+  // field: 'field',
+  // grade: 'A',
+  // startedYear: 2020,
+  // graduatedYear: 2024,
+  // schoolName: 'New shcool name'
 })
 
 const resetEducation = () => {
@@ -208,7 +218,6 @@ const hideAddEducationMode = () => {
   resetEducation()
 }
 const addNewEducation = () => {
-  console.log('add')
   educationList.value.push({
     id: educationList.value.length,
     ...education.value

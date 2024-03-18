@@ -222,62 +222,6 @@
         </Form>
       </div>
     </BaseSectionContent>
-
-    <!-- Form 2 -->
-    <!-- <BaseSectionContent class="w-full">
-      <div>
-        <div class="flex items-center justify-between px-4 py-5 sm:px-10">
-          <BaseTitleForm>Address</BaseTitleForm>
-        </div>
-        <BaseLine />
-        <div class="grid items-start gap-6 px-4 py-8 sm:grid-cols-3 sm:px-10">
-          <BaseInputField
-            label="ที่อยู่ปัจจุบัน"
-            id="area"
-            class="sm:col-start-1 sm:col-span-2"
-            v-model="form.address.area"
-          ></BaseInputField>
-
-          <BaseDropdown
-            class="relative z-40"
-            :option-lists="provinceList"
-            label="จังหวัด"
-            v-model="form.selectedAddress.province"
-            @click="getAmphure(form.selectedAddress.province.id)"
-          />
-          <BaseDropdown
-            class="relative z-30"
-            :option-lists="amphureList"
-            label="เขต"
-            v-model="form.selectedAddress.amphure"
-            :disabled="!(amphureList.length > 0)"
-            @click="
-              getTambon(
-                form.selectedAddress.province.id,
-                form.selectedAddress.amphure.id
-              )
-            "
-          />
-          <BaseDropdown
-            class="relative z-20"
-            :option-lists="tambonList"
-            label="แขวง"
-            v-model="form.selectedAddress.tambon"
-            :disabled="!(tambonList.length > 0)"
-          />
-          <BaseInput
-            label="รหัสไปรณีย์"
-            id="postalCode"
-            v-model="form.selectedAddress.tambon.zip_code"
-            disabled
-          ></BaseInput> 
-        </div>
-      </div>
-      <BaseLine />
-      <div class="flex items-center justify-end px-4 py-5 sm:px-10">
-        <BaseButton :leading-icon="ArrowDownTrayIcon">Save</BaseButton>
-      </div>
-    </BaseSectionContent> -->
   </div>
   <p class="mt-4 text-gray-500" v-else>No information found this user</p>
 
@@ -294,32 +238,40 @@ import moment from 'moment'
 import { Field, ErrorMessage, Form } from 'vee-validate'
 import yup from '@/assets/yup-error.js'
 
+const props = defineProps({
+  myUser: {
+    type: Object,
+    required: true
+  }
+})
+
 const auth = useAuth()
 const userId = auth.user.userId
 
 // --- GET : User by id ---
 const myUser = ref()
+myUser.value = props.myUser
 const loading = ref(false)
-const getUser = async () => {
-  loading.value = true
-  try {
-    const res = await getUserById(userId)
-    if (res.value.status == 200) {
-      myUser.value = res.value.data
-      loading.value = false
-    }
-  } catch (error) {
-    Swal.fire({
-      showConfirmButton: true,
-      timerProgressBar: true,
-      confirmButtonColor: 'blue',
-      icon: 'error',
-      title: 'Error',
-      text: error.message
-    })
-    loading.value = false
-  }
-}
+// const getUser = async () => {
+//   loading.value = true
+//   try {
+//     const res = await getUserById(userId)
+//     if (res.value.status == 200) {
+//       myUser.value = res.value.data
+//       loading.value = false
+//     }
+//   } catch (error) {
+//     Swal.fire({
+//       showConfirmButton: true,
+//       timerProgressBar: true,
+//       confirmButtonColor: 'blue',
+//       icon: 'error',
+//       title: 'Error',
+//       text: error.message
+//     })
+//     loading.value = false
+//   }
+// }
 
 // -- dropdown : gender --
 const genders = [
@@ -338,7 +290,7 @@ const form = ref({
   }
 })
 
-await getUser()
+// await getUser()
 const initialValues = ref()
 const setupForm = async () => {
   loading.value = true

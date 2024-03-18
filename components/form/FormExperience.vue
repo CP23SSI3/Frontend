@@ -13,8 +13,8 @@
       <BaseInputField
         class="sm:col-span-4"
         label="Title"
-        id="title"
-        v-model="experience.title"
+        id="experienceName"
+        v-model="experience.experienceName"
         required
       ></BaseInputField>
 
@@ -28,8 +28,8 @@
       <BaseInputField
         class="sm:col-span-2"
         label="Workplace"
-        id="workplace"
-        v-model="experience.workplace"
+        id="compName"
+        v-model="experience.compName"
         required
       ></BaseInputField>
       <Field
@@ -78,10 +78,10 @@
       <BaseTextarea
         label="Description"
         id="experienceDesc"
-        nametag="description"
+        nametag="experienceDesc"
         required
         :rows="10"
-        v-model="experience.description"
+        v-model="experience.experienceDesc"
       ></BaseTextarea>
       <div class="flex flex-row-reverse gap-3 sm:col-span-full">
         <BaseButton :leadingIcon="CheckIcon" type="submit">
@@ -113,12 +113,12 @@ const props = defineProps({
 defineEmits(['submit', 'cancel'])
 
 const schemaExperience = yup.object({
-  title: yup.string().required().max(100),
+  experienceName: yup.string().required().max(100),
   experienceDesc: yup.string().required().max(1500),
   position: yup.string().required().max(100),
   startedYear: yup.number().required("Please 'select' the working year"),
   endedYear: yup.number().required("Please 'select' the working year"),
-  workplace: yup.string().required().max(200)
+  compName: yup.string().required().max(200)
 })
 </script>
 

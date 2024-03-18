@@ -22,8 +22,11 @@
             {{ experiences.position }}
           </div>
 
-          <BaseText :label="experiences.title" class="w-full lg:max-w-lg">
-            {{ experiences.description }}
+          <BaseText
+            :label="experiences.experienceName"
+            class="w-full lg:max-w-lg"
+          >
+            {{ experiences.experienceDesc }}
           </BaseText>
           <div class="w-full text-end">
             <div class="flex items-center justify-end gap-6">
@@ -270,35 +273,43 @@ import moment from 'moment'
 import Swal from 'sweetalert2'
 import FormSkill from '~/components/form/FormSkill.vue'
 
+const props = defineProps({
+  myUser: {
+    type: Object,
+    required: true
+  }
+})
+
 const loading = ref(false)
 
 // ---- Part: Experience ----
 const experiencesList = ref([])
+experiencesList.value = props.myUser.experiences
 const statusAddExper = ref(false)
 const experience = ref({
-  // title: '',
-  // description: '',
-  // position: '',
-  // startedYear: null,
-  // endedYear: null,
-  // workplace: ''
+  experienceName: '',
+  experienceDesc: '',
+  position: '',
+  startedYear: null,
+  endedYear: null,
+  compName: ''
   //---- example data ---
-  title: 'New experience',
-  description: 'New experience description',
-  position: 'New position',
-  startedYear: 2024,
-  endedYear: 2024,
-  workplace: 'anywhere'
+  // experienceName: 'New experience',
+  // experienceDesc: 'New experience description',
+  // position: 'New position',
+  // startedYear: 2024,
+  // endedYear: 2024,
+  // compName: 'anywhere'
 })
 
 const resetExperience = () => {
   experience.value = {
-    title: '',
-    description: '',
+    experienceName: '',
+    experienceDesc: '',
     position: '',
     startedYear: null,
     endedYear: null,
-    workplace: ''
+    compName: ''
   }
 }
 const showAddExperMode = () => (statusAddExper.value = true)
@@ -341,13 +352,14 @@ const deleteExper = (index) => {
 
 // ---- Part: Skill ----
 const skillsList = ref([])
+skillsList.value = props.myUser.skills
 const statusAddSkill = ref(false)
 const skill = ref({
-  // skillName: '',
-  // skillDesc: ''
-  //---- example data ---
-  skillName: 'New skill',
-  skillDesc: 'New skill description'
+  skillName: '',
+  skillDesc: ''
+  // //---- example data ---
+  // skillName: 'New skill',
+  // skillDesc: 'New skill description'
 })
 
 const resetSkill = () => {
@@ -396,11 +408,12 @@ const deleteSkill = (index) => {
 
 // ---- Part: Languages ----
 const languagesList = ref([])
+languagesList.value = props.myUser.languages
 const statusAddLanguage = ref(false)
 const language = ref({
-  // languageName: '',
+  languageName: ''
   //---- example data ---
-  languageName: 'New language'
+  // languageName: 'New language'
 })
 
 const resetLanguage = () => {

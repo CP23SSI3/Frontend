@@ -5,10 +5,16 @@
       class="relative flex flex-col w-full gap-2 sm:justify-between sm:flex-row sm:items-start lg:px-4"
     >
       <div class="flex flex-col gap-2 lg:items-start lg:gap-6 lg:flex-row">
-        <nuxt-img
+        <!-- <nuxt-img
           class="w-20 h-20 rounded-sm shadow-md lg:h-12 lg:w-12 bg-gray-50"
           src="/logo-test.png"
           alt="Your Company"
+        /> -->
+        <BaseProfile
+          company
+          class="w-20 h-20 text-xl rounded-md shadow-md lg:h-12 lg:w-12 lg:rounded-md bg-gray-50 lg:text-lg"
+          :fname="wordForProfileCompany(post.comp.compName, 0)"
+          :lname="wordForProfileCompany(post.comp.compName, 1)"
         />
 
         <div class="flex flex-col-reverse lg:flex-col lg:pr-[350px]">
@@ -213,6 +219,11 @@ const postId = route.params.postId
 const router = useRouter()
 const back = () => router.push({ path: '/internship' })
 const goToEdit = () => router.push({ path: `/internship/${postId}/edit` })
+
+const wordForProfileCompany = (compName, index) => {
+  let words = compName.split(' ')
+  return words[index]
+}
 
 // ---- GET : LIST POST ----
 // const loading = ref(false)

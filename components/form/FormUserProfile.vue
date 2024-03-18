@@ -26,7 +26,7 @@
               />
 
               <!-- <BaseBadge color="blue">{{ myUser.role }}</BaseBadge> -->
-              <div class="flex gap-6 sm:flex-col">
+              <div class="flex flex-col gap-6">
                 <BaseDescription label="Role">
                   {{ form.role }}
                 </BaseDescription>

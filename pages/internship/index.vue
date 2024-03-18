@@ -105,10 +105,16 @@
           <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-2 lg:gap-6">
               <!-- * add Logo Company -->
-              <nuxt-img
+              <!-- <nuxt-img
                 class="w-10 h-10 rounded-md shadow-md lg:w-12 lg:h-12 lg:rounded-sm bg-gray-50"
                 src="../public/logo-test.png"
                 :alt="post.comp.compName"
+              /> -->
+              <BaseProfile
+                company
+                class="w-10 h-10 rounded-md shadow-md lg:w-12 lg:h-12 lg:rounded-md bg-gray-50"
+                :fname="wordForProfileCompany(post.comp.compName, 0)"
+                :lname="wordForProfileCompany(post.comp.compName, 1)"
               />
               <div class="flex flex-col-reverse lg:flex-col">
                 <h2
@@ -255,6 +261,11 @@ const openFilter = () => {
 }
 const closeFilter = () => {
   filterMobile.value = false
+}
+
+const wordForProfileCompany = (compName, index) => {
+  let words = compName.split(' ')
+  return words[index]
 }
 
 // --- GET : position-tag (postTag) ---

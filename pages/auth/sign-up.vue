@@ -253,7 +253,7 @@
           v-model="user.compName"
         />
 
-        <BaseInputField
+        <!-- <BaseInputField
           label="Company logo link"
           id="compLogoKey"
           v-model="user.compLogoKey"
@@ -261,7 +261,6 @@
           placeholder="Paste copy image address"
         />
 
-        <!-- <BaseLabel id="preview-logo">Company logo link</BaseLabel> -->
         <div v-if="imageVisible">
           <BaseLabel id="preview-logo">Preview Logo</BaseLabel>
           <div
@@ -293,7 +292,7 @@
               </p>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <div>
           <div class="flex gap-3 mt-8">
@@ -360,7 +359,7 @@ const user = ref({
   address: null,
   // (3/3) for company only
   compName: '',
-  compLogoKey: ''
+  compLogoKey: '/logo-image.jpg'
 })
 
 // --- Pagination (Multiform) ---
@@ -489,8 +488,8 @@ const schema2 = yup.object({
 
 // ------ Multi-Form (3/3) for company ------
 const schema3 = yup.object({
-  compName: yup.string().required('กรุณากรอก ชื่อบริษัทของคุณ').max(50),
-  compLogoKey: yup.string().required('Please, Paste image address').max(5000)
+  compName: yup.string().required('กรุณากรอก ชื่อบริษัทของคุณ').max(50)
+  // compLogoKey: yup.string().required('Please, Paste image address').max(5000)
 })
 
 const submitForm = async () => {
@@ -522,8 +521,6 @@ const checkImage = () => {
   }
   img.src = user.value.compLogoKey // Attempt to load the image
 }
-
-// checkImage()
 
 const register = async () => {
   try {

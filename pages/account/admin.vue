@@ -6,7 +6,7 @@
     <BaseTabs :route-path="route.path" :tabs="tabs"></BaseTabs>
 
     <div>
-      <NuxtPage />
+      <NuxtPage :myUser="myUser?.data" />
     </div>
   </div>
 </template>
@@ -20,6 +20,9 @@ import {
 
 const route = useRoute()
 const auth = useAuth()
+const userId = auth.user.userId
+
+const myUser = await getUserById(userId)
 
 const tabs = [
   {

@@ -6,7 +6,7 @@
     <!-- <div class="px-2 sm:mx-auto max-w-7xl sm:px-6 lg:px-8"> -->
     <div class="relative h-auto py-2">
       <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <NuxtPage />
+        <NuxtPage :myUser="myUser?.data" />
       </div>
     </div>
     <!-- </div> -->
@@ -26,6 +26,9 @@ import {
 
 const route = useRoute()
 const auth = useAuth()
+const userId = auth.user.userId
+
+const myUser = await getUserById(userId)
 
 const tabs = [
   {

@@ -54,7 +54,10 @@
           </div>
         </template> -->
         <template #item-address="item">
-          <div class="flex w-full gap-4 text-sm text-gray-500">
+          <div
+            class="flex w-full gap-4 text-sm text-gray-500"
+            v-if="item.address != null"
+          >
             {{
               `${item.address.area} ${item.address.subDistrict} ${item.address.district} ${item.address.city} ${item.address.postalCode} `
             }}

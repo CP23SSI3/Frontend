@@ -58,6 +58,9 @@
       <BaseDescription label="About Company">
         {{ company.data.compDesc }}
       </BaseDescription>
+      <BaseDescription label="Basic Welfare">
+        <div v-html="company.data.defaultWelfare"></div>
+      </BaseDescription>
       <BaseDescription label="Address">
         {{
           `${company.data.address.area} แขวง${company.data.address.subDistrict} เขต${company.data.address.district}, ${company.data.address.city}  ${company.data.address.postalCode}`
@@ -67,44 +70,23 @@
         :lat="company.data.address.latitude"
         :lng="company.data.address.longitude"
       />
-      <BaseDescription label="Basic Welfare">
-        <div v-html="company.data.defaultWelfare"></div>
-      </BaseDescription>
     </BaseSectionContent>
   </div>
 </template>
 
 <script setup>
 import { ChevronLeftIcon } from '@heroicons/vue/24/solid'
+import { LinkIcon } from '@heroicons/vue/20/solid'
 const route = useRoute()
 const compId = route.params.compId
 const company = await getCompanyById(compId)
 
-import { LinkIcon } from '@heroicons/vue/20/solid'
 const router = useRouter()
 const wordForProfileCompany = (compName, index) => {
   let words = compName.split(' ')
   return words[index]
 }
 const back = () => router.go(-1)
-
-const profile = {
-  name: 'Ricardo Cooper',
-  email: 'ricardo.cooper@example.com',
-  avatar:
-    'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80',
-  backgroundImage: '@/public/background-company.jpg',
-  fields: [
-    ['Phone', '(555) 123-4567'],
-    ['Email', 'ricardocooper@example.com'],
-    ['Title', 'Senior Front-End Developer'],
-    ['Team', 'Product Development'],
-    ['Location', 'San Francisco'],
-    ['Sits', 'Oasis, 4th floor'],
-    ['Salary', '$145,000'],
-    ['Birthday', 'June 8, 1990']
-  ]
-}
 </script>
 
 <style lang="scss" scoped></style>

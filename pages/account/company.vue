@@ -31,7 +31,7 @@ const tabs = [
   },
   {
     name: 'Company',
-    href: '/account/company/about-me',
+    href: '/account/company/about-company',
     icon: BuildingOfficeIcon
   },
   {

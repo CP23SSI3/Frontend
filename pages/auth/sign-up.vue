@@ -250,13 +250,13 @@
         <BaseInputField
           label="Your company name"
           id="compName"
-          v-model="user.compName"
+          v-model="user.company.compName"
         />
 
         <!-- <BaseInputField
           label="Company logo link"
           id="compLogoKey"
-          v-model="user.compLogoKey"
+          v-model="user.company.compLogoKey"
           @input="checkImage()"
           placeholder="Paste copy image address"
         />
@@ -358,8 +358,10 @@ const user = ref({
   role: 'USER',
   address: null,
   // (3/3) for company only
-  compName: '',
-  compLogoKey: '/logo-image.jpg'
+  company: {
+    compName: '',
+    compLogoKey: '/logo-image.jpg'
+  }
 })
 
 // --- Pagination (Multiform) ---

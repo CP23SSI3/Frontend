@@ -21,8 +21,8 @@
             >
               <BaseProfile
                 size="XL"
-                :fname="myUser.firstname"
-                :lname="myUser.lastname"
+                :fname="form.firstname"
+                :lname="form.lastname"
               />
 
               <!-- <BaseBadge color="blue">{{ myUser.role }}</BaseBadge> -->
@@ -48,12 +48,11 @@
             </div>
 
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:col-span-2">
-              <!-- <div>{{ initialValues }}</div>
-              <div>{{ form }}</div> -->
               <div class="sm:col-span-2">
                 <BaseInputField
                   label="Username"
                   id="username"
+                  required
                   v-model="form.username"
                   @blur="checkUsername()"
                 />
@@ -69,12 +68,14 @@
                 class="sm:col-start-1"
                 label="First Name"
                 id="firstname"
+                required
                 v-model="form.firstname"
               ></BaseInputField>
 
               <BaseInputField
                 label="Last Name"
                 id="lastname"
+                required
                 v-model="form.lastname"
               ></BaseInputField>
 
@@ -102,6 +103,7 @@
                 <BaseDatePicker
                   label="วันเกิด"
                   id="dateOfBirth"
+                  required
                   placeholder="DD/MM/YYYY"
                   :enable-time-picker="false"
                   v-bind="field"
@@ -122,7 +124,7 @@
                 v-if="auth.user?.role !== 'ADMIN'"
                 >Profile Detail</BaseLineTopic
               >
-              <Field
+              <!-- <Field
                 v-slot="{ field, errors }"
                 name="userDesc"
                 v-if="auth.user?.role !== 'ADMIN'"
@@ -146,7 +148,18 @@
                     errors[0]
                   }}</span>
                 </div>
-              </Field>
+              </Field> -->
+              <BaseTextarea
+                label="About me"
+                id="userDescrciption"
+                nametag="userDescrciption"
+                :rows="4"
+                v-model="form.userDesc"
+              >
+                <p class="text-sm leading-6 text-gray-600" v-if="!errors[0]">
+                  Write a few sentences about yourself.
+                </p>
+              </BaseTextarea>
               <BaseLineTopic
                 class="col-start-1 col-span-full"
                 v-if="auth.user?.role !== 'ADMIN'"
@@ -385,26 +398,28 @@ const getAmphure = (provinceId) => {
 
 const tambonList = ref([])
 const getTambon = (provinceId, amphureId) => {
-  tambonList.value = []
-  form.value.selectedAddress.tambon = {
-    id: 0,
-    text: 'เลือก แขวง',
-    zip_code: null
-  }
-  let province = data.location.find((city) => city.id === provinceId)
-  let amphure = province.amphure.find((district) => district.id === amphureId)
-  let list = []
-  let tambon
-  amphure.tambon.forEach((subDistrict) => {
-    tambon = {
-      id: subDistrict.id,
-      text: subDistrict.name_th,
-      zip_code: subDistrict.zip_code
+  if (amphureId) {
+    tambonList.value = []
+    form.value.selectedAddress.tambon = {
+      id: 0,
+      text: 'เลือก แขวง',
+      zip_code: null
     }
-    list.push(tambon)
-  })
-  list.sort(sortingThai)
-  tambonList.value = list
+    let province = data.location.find((city) => city.id === provinceId)
+    let amphure = province.amphure.find((district) => district.id === amphureId)
+    let list = []
+    let tambon
+    amphure.tambon.forEach((subDistrict) => {
+      tambon = {
+        id: subDistrict.id,
+        text: subDistrict.name_th,
+        zip_code: subDistrict.zip_code
+      }
+      list.push(tambon)
+    })
+    list.sort(sortingThai)
+    tambonList.value = list
+  }
 }
 
 const setupSelectedAddress = () => {

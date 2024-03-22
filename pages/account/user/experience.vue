@@ -199,7 +199,7 @@
               ? 'flex'
               : 'hidden'
           "
-          class="flex flex-col items-start justify-between gap-2 px-5 py-4 bg-white border-0 rounded-md lg:gap-8 lg:items-center ring-inset ring-1 ring-gray-200 lg:flex-row"
+          class="flex items-start justify-between gap-2 px-5 py-4 bg-white border-0 rounded-md lg:gap-8 lg:items-center ring-inset ring-1 ring-gray-200"
         >
           <BaseText :label="lang.languageName" class="w-full lg:max-w-lg">
           </BaseText>
@@ -214,7 +214,7 @@
               <BaseItem
                 class="block px-4 py-2 text-sm text-gray-900 cursor-pointer hover:underline"
                 :icon="TrashIconSolid"
-                @click="deleteLanguage(index)"
+                @click="removeLanguage(lang, index)"
                 >Delete</BaseItem
               >
             </div>
@@ -279,6 +279,8 @@ const props = defineProps({
     required: true
   }
 })
+
+console.log(props.myUser)
 
 const loading = ref(false)
 
@@ -426,12 +428,8 @@ const hideAddLanguageMode = () => {
   statusAddLanguage.value = false
   resetLanguage()
 }
-const addNewLanguage = () => {
-  languagesList.value.push({
-    id: languagesList.value.length,
-    ...language.value
-  })
-  hideAddLanguageMode()
+const addNewLanguage = async () => {
+  await addLanguage()
 }
 
 const editingLanguage = ref(null)
@@ -444,19 +442,100 @@ const hideEditLanguageMode = () => {
 const editLanguage = (editLanguage, index) => {
   if (!statusAddLanguage.value && editingLanguage.value == null) {
     editingLanguage.value = { ...editLanguage, id: index }
+
     showEditLanguageMode()
   }
 }
-const saveLanguage = () => {
-  const { id } = editingLanguage.value
-  languagesList.value[id] = editingLanguage.value
-  hideEditLanguageMode()
+const saveLanguage = async () => {
+  await updateLanguage()
 }
-const deleteLanguage = (index) => {
-  if (index > -1) {
-    languagesList.value.splice(index, 1)
+
+const removeLanguage = async (lang, index) => {
+  // Swal.fire({
+  //   title: 'Are you sure remove this post?',
+  //   text: 'คุณต้องการลบโพสต์นี้หรือไม่?',
+  //   icon: 'warning',
+  //   confirmButtonText: 'Comfirm',
+  //   confirmButtonColor: 'red',
+  //   showCancelButton: true,
+  //   cancelButtonText: 'Cancel',
+  //   cancelButtonColor: 'gray',
+  //   reverseButtons: true
+  // }).then((result) => {
+  //   if (result.isConfirmed) {
+  //     fetchDeletePost()
+  //   }
+  // })
+
+  await deleteLanguage(lang.languageId, index)
+}
+
+const addLanguage = async () => {
+  let newLang = { ...language.value, user: { userId: props.myUser.userId } }
+  console.log(newLang)
+  try {
+    const res = await useCreateLang(newLang)
+
+    if (res.value) {
+      console.log('Add New Language Success')
+      languagesList.value.push({
+        id: languagesList.value.length,
+        ...language.value
+      })
+      hideAddLanguageMode()
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't add new langague"
+    })
   }
-  hideEditLanguageMode()
+}
+
+const updateLanguage = async () => {
+  try {
+    const res = await useUpdateLang(editingLanguage.value.languageId, {
+      languageName: editingLanguage.value.languageName
+    })
+    if (res.value) {
+      console.log('Edit Language Success')
+      const { id } = editingLanguage.value
+      languagesList.value[id] = editingLanguage.value
+      hideEditLanguageMode()
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't edit this langague"
+    })
+  }
+}
+
+const deleteLanguage = async (langId, index) => {
+  try {
+    const res = await useDeleteLang(langId)
+    if (res.value.status == 200) {
+      console.log('Delete Language Success')
+      if (index > -1) {
+        languagesList.value.splice(index, 1)
+      }
+      hideEditLanguageMode()
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't delete this langague"
+    })
+  }
 }
 </script>
 

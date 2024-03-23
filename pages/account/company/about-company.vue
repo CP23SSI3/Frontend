@@ -116,7 +116,7 @@
       >
     </div>
   </BaseSectionContent>
-  {{ form }}
+  <!-- {{ form }} -->
 </template>
 
 <script setup>
@@ -137,26 +137,6 @@ const form = ref({
     tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
   }
 })
-
-const setupForm = () => {
-  form.value = { ...form.value, ...props.myUser.company }
-
-  if (form.value.address == null) {
-    form.value.address = {
-      country: 'ประเทศไทย',
-      postalCode: '',
-      city: '',
-      district: '',
-      subDistrict: '',
-      area: '',
-      latitude: null, // function getGeoLication()
-      longitude: null
-    }
-  } else {
-    setupSelectedAddress()
-  }
-}
-setupForm()
 
 const data = useLocationThai()
 // --- location: province > amphure > tambon ---
@@ -268,6 +248,26 @@ const setupSelectedAddress = () => {
     }
   }
 }
+
+const setupForm = async () => {
+  form.value = { ...form.value, ...props.myUser.company }
+
+  if (form.value.address == null) {
+    form.value.address = {
+      country: 'ประเทศไทย',
+      postalCode: '',
+      city: '',
+      district: '',
+      subDistrict: '',
+      area: '',
+      latitude: null, // function getGeoLication()
+      longitude: null
+    }
+  } else {
+    await setupSelectedAddress()
+  }
+}
+await setupForm()
 
 // -- quill editor ---
 const quillToolbar = [

@@ -406,7 +406,7 @@
       <ContainerForm>
         <BaseTitleForm>สถานที่ฝึกงาน</BaseTitleForm>
         <ContainerField>
-          <div class="col-span-full">
+          <div class="col-span-full" v-if="myUser.data.company.address != null">
             <fieldset class="mt-2">
               <div
                 class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0"
@@ -422,6 +422,7 @@
                     type="radio"
                     :value="choice.value"
                     v-model="selectedLocation"
+                    @click="setupMyAddress(choice.value)"
                     class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
                   />
                   <BaseLabel :id="choice.value" class="ml-3">
@@ -438,6 +439,7 @@
             v-model="myAddress.province"
             required
             @click="getAmphure(myAddress.province.id)"
+            :disabled="selectedLocation == 'default'"
           >
           </BaseDropdown>
           <BaseDropdown
@@ -445,7 +447,9 @@
             :option-lists="amphureList"
             label="เขต"
             v-model="myAddress.amphure"
-            :disabled="!(amphureList.length > 0)"
+            :disabled="
+              !(amphureList.length > 0) || selectedLocation == 'default'
+            "
             required
             @click="getTambon(myAddress.province.id, myAddress.amphure.id)"
           >
@@ -456,7 +460,9 @@
             :option-lists="tambonList"
             label="แขวง"
             v-model="myAddress.tambon"
-            :disabled="!(tambonList.length > 0)"
+            :disabled="
+              !(tambonList.length > 0) || selectedLocation == 'default'
+            "
             required
           >
           </BaseDropdown>
@@ -464,7 +470,8 @@
             class="sm:col-span-4"
             label="ที่อยู่"
             id="area"
-            v-model="form.address.area"
+            v-model="myAddress.area"
+            :disabled="selectedLocation == 'default'"
             required
           >
           </BaseInputField>
@@ -567,8 +574,12 @@ import moment from 'moment'
 import Swal from 'sweetalert2'
 
 definePageMeta({
-  layout: 'form'
+  layout: 'form',
+  middleware: 'authen'
 })
+const auth = useAuth()
+const userId = auth.user.userId
+const myUser = await getUserById(userId)
 
 const route = useRoute()
 const postId = route.params.postId
@@ -739,7 +750,8 @@ const workTypes = [
 ]
 
 // --- radio : สถานที่ฝึกงาน ---
-const selectedLocation = ref('new')
+const selectedLocation = ref()
+
 const choicesLocation = [
   { text: 'เพิ่มที่อยู่ใหม่', value: 'new' },
   { text: 'ใช้ที่อยู่เดียวกันกับบริษัท', value: 'default' }
@@ -813,7 +825,8 @@ const sortingThai = (a, b) => {
 const myAddress = ref({
   province: { id: 0, text: 'เลือก จังหวัด' },
   amphure: { id: 0, text: 'เลือก เขต' },
-  tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
+  tambon: { id: 0, text: 'เลือก แขวง', zip_code: null },
+  area: ''
 })
 // const { data } = await useFetch('/api/locations-thai')
 const data = useLocationThai()
@@ -879,11 +892,20 @@ const setAddress = () => {
   ;(address.city = myAddress.value.province.text),
     (address.district = myAddress.value.amphure.text),
     (address.subDistrict = myAddress.value.tambon.text),
-    (address.postalCode = myAddress.value.tambon.zip_code)
+    (address.postalCode = myAddress.value.tambon.zip_code),
+    (address.area = myAddress.value.area)
 }
 
-const setupMyAddress = () => {
-  let address = form.value.address
+const setupMyAddress = (value) => {
+  let address
+  if (value == null) {
+    address = form.value.address
+  } else if (value == 'default') {
+    address = myUser.value.data.company.address
+  } else if (value == 'new') {
+    address = form.value.address
+  }
+
   let province = data.location.find((p) => p.name_th === address.city)
   if (province) {
     myAddress.value.province.id = province.id
@@ -902,6 +924,8 @@ const setupMyAddress = () => {
     myAddress.value.tambon.text = tambon.text
     myAddress.value.tambon.zip_code = tambon.zip_code
   }
+
+  myAddress.value.area = address.area
 }
 
 // --- location: get latitude / longtitude ---
@@ -981,7 +1005,7 @@ const form = ref({
   workDay: ['mon', 'tue', 'wed', 'thu', 'fri'], //ส่ง array หรือ string ? *check value choices
   workType: 'HYBRID',
   comp: {
-    compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
+    compId: myUser.value.data.company.compId
   },
   openPositionList: [], //function setOpenPositionList()
   postUrl: '',
@@ -994,11 +1018,29 @@ const props = defineProps({
   }
 })
 
-form.value = props?.post
-positionList.value = props?.post.openPositionList
-setupWorkTime() // workStartTime, workEndTime ---> workTime
-setupClosedDate() // closeedDate ---> closingDate, statusClosingDate
-setupMyAddress() // address ---> myAddress
+const replaceObject = (obj1, obj2) => {
+  Object.keys(obj2).forEach((key) => {
+    if (obj1.hasOwnProperty(key)) {
+      obj2[key] = obj1[key]
+    }
+  })
+  return obj2
+}
+const setupForm = () => {
+  replaceObject(props?.post, form.value)
+  positionList.value = props?.post.openPositionList
+  setupWorkTime() // workStartTime, workEndTime ---> workTime
+  setupClosedDate() // closeedDate ---> closingDate, statusClosingDate
+  setupMyAddress() // address ---> myAddress
+  console.log(props.post)
+  if (props.post.comp.address.addressId == props.post.address.addressId) {
+    selectedLocation.value = 'default'
+  } else {
+    selectedLocation.value = 'new'
+  }
+}
+setupForm()
+// console.log(props?.post)
 
 // -- quill editor ---
 const quillToolbar = [
@@ -1087,7 +1129,7 @@ const submitForm = async () => {
   setWorkTime()
   setOpenPositionList()
   await getGeoLication()
-  // console.log(form.value)
+
   let error_message = checkValidate()
   if (error_message != null) {
     Swal.fire({
@@ -1099,6 +1141,15 @@ const submitForm = async () => {
       text: error_message
     })
   } else {
+    if (selectedLocation.value == 'default') {
+      let newKey = 'sameAddressAsCompany'
+      form.value[newKey] = true
+      delete form.value['address']
+      delete form.value['comp']
+    } else if (selectedLocation.value == 'new') {
+      delete form.value.address['addressId']
+    }
+    console.log(form.value)
     await savePost()
   }
 }

@@ -21,12 +21,12 @@
             >
               <BaseProfile
                 size="XL"
-                :fname="myUser.firstname"
-                :lname="myUser.lastname"
+                :fname="form.firstname"
+                :lname="form.lastname"
               />
 
               <!-- <BaseBadge color="blue">{{ myUser.role }}</BaseBadge> -->
-              <div class="flex gap-6 sm:flex-col">
+              <div class="flex flex-col gap-6">
                 <BaseDescription label="Role">
                   {{ form.role }}
                 </BaseDescription>
@@ -48,12 +48,11 @@
             </div>
 
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:col-span-2">
-              <!-- <div>{{ initialValues }}</div>
-              <div>{{ form }}</div> -->
               <div class="sm:col-span-2">
                 <BaseInputField
                   label="Username"
                   id="username"
+                  required
                   v-model="form.username"
                   @blur="checkUsername()"
                 />
@@ -69,12 +68,14 @@
                 class="sm:col-start-1"
                 label="First Name"
                 id="firstname"
+                required
                 v-model="form.firstname"
               ></BaseInputField>
 
               <BaseInputField
                 label="Last Name"
                 id="lastname"
+                required
                 v-model="form.lastname"
               ></BaseInputField>
 
@@ -102,6 +103,7 @@
                 <BaseDatePicker
                   label="วันเกิด"
                   id="dateOfBirth"
+                  required
                   placeholder="DD/MM/YYYY"
                   :enable-time-picker="false"
                   v-bind="field"
@@ -122,7 +124,7 @@
                 v-if="auth.user?.role !== 'ADMIN'"
                 >Profile Detail</BaseLineTopic
               >
-              <Field
+              <!-- <Field
                 v-slot="{ field, errors }"
                 name="userDesc"
                 v-if="auth.user?.role !== 'ADMIN'"
@@ -146,7 +148,18 @@
                     errors[0]
                   }}</span>
                 </div>
-              </Field>
+              </Field> -->
+              <BaseTextarea
+                label="About me"
+                id="userDescrciption"
+                nametag="userDescrciption"
+                :rows="4"
+                v-model="form.userDesc"
+              >
+                <p class="text-sm leading-6 text-gray-600" v-if="!errors[0]">
+                  Write a few sentences about yourself.
+                </p>
+              </BaseTextarea>
               <BaseLineTopic
                 class="col-start-1 col-span-full"
                 v-if="auth.user?.role !== 'ADMIN'"
@@ -222,62 +235,6 @@
         </Form>
       </div>
     </BaseSectionContent>
-
-    <!-- Form 2 -->
-    <!-- <BaseSectionContent class="w-full">
-      <div>
-        <div class="flex items-center justify-between px-4 py-5 sm:px-10">
-          <BaseTitleForm>Address</BaseTitleForm>
-        </div>
-        <BaseLine />
-        <div class="grid items-start gap-6 px-4 py-8 sm:grid-cols-3 sm:px-10">
-          <BaseInputField
-            label="ที่อยู่ปัจจุบัน"
-            id="area"
-            class="sm:col-start-1 sm:col-span-2"
-            v-model="form.address.area"
-          ></BaseInputField>
-
-          <BaseDropdown
-            class="relative z-40"
-            :option-lists="provinceList"
-            label="จังหวัด"
-            v-model="form.selectedAddress.province"
-            @click="getAmphure(form.selectedAddress.province.id)"
-          />
-          <BaseDropdown
-            class="relative z-30"
-            :option-lists="amphureList"
-            label="เขต"
-            v-model="form.selectedAddress.amphure"
-            :disabled="!(amphureList.length > 0)"
-            @click="
-              getTambon(
-                form.selectedAddress.province.id,
-                form.selectedAddress.amphure.id
-              )
-            "
-          />
-          <BaseDropdown
-            class="relative z-20"
-            :option-lists="tambonList"
-            label="แขวง"
-            v-model="form.selectedAddress.tambon"
-            :disabled="!(tambonList.length > 0)"
-          />
-          <BaseInput
-            label="รหัสไปรณีย์"
-            id="postalCode"
-            v-model="form.selectedAddress.tambon.zip_code"
-            disabled
-          ></BaseInput> 
-        </div>
-      </div>
-      <BaseLine />
-      <div class="flex items-center justify-end px-4 py-5 sm:px-10">
-        <BaseButton :leading-icon="ArrowDownTrayIcon">Save</BaseButton>
-      </div>
-    </BaseSectionContent> -->
   </div>
   <p class="mt-4 text-gray-500" v-else>No information found this user</p>
 
@@ -294,32 +251,41 @@ import moment from 'moment'
 import { Field, ErrorMessage, Form } from 'vee-validate'
 import yup from '@/assets/yup-error.js'
 
+const props = defineProps({
+  myUser: {
+    type: Object,
+    required: true
+  }
+})
+const emits = defineEmits(['getUser'])
+
 const auth = useAuth()
 const userId = auth.user.userId
 
 // --- GET : User by id ---
 const myUser = ref()
+myUser.value = props.myUser
 const loading = ref(false)
-const getUser = async () => {
-  loading.value = true
-  try {
-    const res = await getUserById(userId)
-    if (res.value.status == 200) {
-      myUser.value = res.value.data
-      loading.value = false
-    }
-  } catch (error) {
-    Swal.fire({
-      showConfirmButton: true,
-      timerProgressBar: true,
-      confirmButtonColor: 'blue',
-      icon: 'error',
-      title: 'Error',
-      text: error.message
-    })
-    loading.value = false
-  }
-}
+// const getUser = async () => {
+//   loading.value = true
+//   try {
+//     const res = await getUserById(userId)
+//     if (res.value.status == 200) {
+//       myUser.value = res.value.data
+//       loading.value = false
+//     }
+//   } catch (error) {
+//     Swal.fire({
+//       showConfirmButton: true,
+//       timerProgressBar: true,
+//       confirmButtonColor: 'blue',
+//       icon: 'error',
+//       title: 'Error',
+//       text: error.message
+//     })
+//     loading.value = false
+//   }
+// }
 
 // -- dropdown : gender --
 const genders = [
@@ -338,7 +304,7 @@ const form = ref({
   }
 })
 
-await getUser()
+// await getUser()
 const initialValues = ref()
 const setupForm = async () => {
   loading.value = true
@@ -433,26 +399,28 @@ const getAmphure = (provinceId) => {
 
 const tambonList = ref([])
 const getTambon = (provinceId, amphureId) => {
-  tambonList.value = []
-  form.value.selectedAddress.tambon = {
-    id: 0,
-    text: 'เลือก แขวง',
-    zip_code: null
-  }
-  let province = data.location.find((city) => city.id === provinceId)
-  let amphure = province.amphure.find((district) => district.id === amphureId)
-  let list = []
-  let tambon
-  amphure.tambon.forEach((subDistrict) => {
-    tambon = {
-      id: subDistrict.id,
-      text: subDistrict.name_th,
-      zip_code: subDistrict.zip_code
+  if (amphureId) {
+    tambonList.value = []
+    form.value.selectedAddress.tambon = {
+      id: 0,
+      text: 'เลือก แขวง',
+      zip_code: null
     }
-    list.push(tambon)
-  })
-  list.sort(sortingThai)
-  tambonList.value = list
+    let province = data.location.find((city) => city.id === provinceId)
+    let amphure = province.amphure.find((district) => district.id === amphureId)
+    let list = []
+    let tambon
+    amphure.tambon.forEach((subDistrict) => {
+      tambon = {
+        id: subDistrict.id,
+        text: subDistrict.name_th,
+        zip_code: subDistrict.zip_code
+      }
+      list.push(tambon)
+    })
+    list.sort(sortingThai)
+    tambonList.value = list
+  }
 }
 
 const setupSelectedAddress = () => {
@@ -575,11 +543,7 @@ const saveUserProfile = async (editUser) => {
         }).then((result) => {
           myUser.value = res.value.data
           setupForm()
-          //   let role = auth.user.role
-          //   reloadNuxtApp({
-          //     path: `/account/${role.toLowerCase()}/profile`,
-          //     ttl: 1000
-          //   })
+          emits('getUser')
         })
       }
     } catch (error) {

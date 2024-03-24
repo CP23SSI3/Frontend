@@ -405,27 +405,26 @@
       <ContainerForm>
         <BaseTitleForm>สถานที่ฝึกงาน</BaseTitleForm>
         <ContainerField>
-          <div class="col-span-full">
+          <div class="col-span-full" v-if="myUser.data.company.address != null">
             <fieldset class="mt-2">
               <div
                 class="space-y-4 sm:flex sm:items-center sm:space-x-10 sm:space-y-0"
               >
-                <div
-                  v-for="choice in choicesLocation"
-                  :key="choice.id"
-                  class="flex items-center"
-                >
-                  <input
-                    :id="choice.value"
-                    :name="choice.value"
-                    type="radio"
-                    :value="choice.value"
-                    v-model="selectedLocation"
-                    class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
-                  />
-                  <BaseLabel :id="choice.value" class="ml-3">
-                    {{ choice.text }}
-                  </BaseLabel>
+                <div v-for="choice in choicesLocation" :key="choice.id">
+                  <div class="flex items-center">
+                    <input
+                      :id="choice.value"
+                      :name="choice.value"
+                      type="radio"
+                      :value="choice.value"
+                      v-model="selectedLocation"
+                      @click="setupMyAddress(choice.value)"
+                      class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-600"
+                    />
+                    <BaseLabel :id="choice.value" class="ml-3">
+                      {{ choice.text }}
+                    </BaseLabel>
+                  </div>
                 </div>
               </div>
             </fieldset>
@@ -437,6 +436,7 @@
             v-model="myAddress.province"
             required
             @click="getAmphure(myAddress.province.id)"
+            :disabled="selectedLocation == 'default'"
           >
           </BaseDropdown>
           <BaseDropdown
@@ -444,7 +444,9 @@
             :option-lists="amphureList"
             label="เขต"
             v-model="myAddress.amphure"
-            :disabled="!(amphureList.length > 0)"
+            :disabled="
+              !(amphureList.length > 0) || selectedLocation == 'default'
+            "
             required
             @click="getTambon(myAddress.province.id, myAddress.amphure.id)"
           >
@@ -454,7 +456,9 @@
             :option-lists="tambonList"
             label="แขวง"
             v-model="myAddress.tambon"
-            :disabled="!(tambonList.length > 0)"
+            :disabled="
+              !(tambonList.length > 0) || selectedLocation == 'default'
+            "
             required
           >
           </BaseDropdown>
@@ -462,6 +466,7 @@
             class="sm:col-span-4"
             label="ที่อยู่"
             id="area"
+            :disabled="selectedLocation == 'default'"
             v-model="form.address.area"
             required
           ></BaseInputField>
@@ -565,8 +570,32 @@ import moment from 'moment'
 import Swal from 'sweetalert2'
 
 definePageMeta({
-  layout: 'form'
+  layout: 'form',
+  middleware: ['authen']
 })
+
+const auth = useAuth()
+const userId = auth.user.userId
+const myUser = await getUserById(userId)
+
+if (auth.user.role == 'COMPANY' && myUser.value.data?.company.address == null) {
+  Swal.fire({
+    title: 'ไม่สามารถสร้างโพสต์ได้',
+    confirmButtonColor: 'blue',
+    confirmButtonText: "ไปที่ Company's Profile",
+    text: 'กรุณาเพิ่มข้อมูล Company ให้เรียบร้อยก่อน',
+    icon: 'warning',
+    showCancelButton: true,
+    cancelButtonText: 'ย้อนกลับ',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      gotoProfileCompany()
+    } else {
+      back()
+    }
+  })
+}
 
 const router = useRouter()
 const gotoBack = () => {
@@ -595,7 +624,7 @@ const getListPositionTag = async () => {
   try {
     const res = await usePositionTag()
     if (res.value.status === 200) {
-      console.log(res.value.message)
+      // console.log(res.value.message)
       res.value.data.forEach((item) => {
         listPositionTag.value.push(item.positionTagName)
       })
@@ -856,6 +885,51 @@ const setAddress = () => {
     (address.subDistrict = myAddress.value.tambon.text),
     (address.postalCode = myAddress.value.tambon.zip_code)
 }
+// === getUserByID to get adddress form company ===
+
+const setupMyAddress = (value) => {
+  let address
+  if (value == 'default') {
+    address = myUser.value.data.company.address
+    form.value.address = myUser.value.data.company.address
+  } else {
+    myAddress.value = {
+      province: { id: 0, text: 'เลือก จังหวัด' },
+      amphure: { id: 0, text: 'เลือก เขต' },
+      tambon: { id: 0, text: 'เลือก แขวง', zip_code: null }
+    }
+    form.value.address = {
+      country: 'ประเทศไทย',
+      postalCode: '',
+      city: '',
+      district: '',
+      subDistrict: '',
+      area: '',
+      latitude: null,
+      longitude: null
+    }
+    address = form.value.address
+  }
+
+  let province = data.location.find((p) => p.name_th === address.city)
+  if (province) {
+    myAddress.value.province.id = province.id
+    myAddress.value.province.text = province.name_th
+    getAmphure(myAddress.value.province.id)
+  }
+  let amphure = amphureList.value.find((a) => a.text == address.district)
+  if (amphure) {
+    myAddress.value.amphure.id = amphure.id
+    myAddress.value.amphure.text = amphure.text
+    getTambon(myAddress.value.province.id, myAddress.value.amphure.id)
+  }
+  let tambon = tambonList.value.find((t) => t.text == address.subDistrict)
+  if (tambon) {
+    myAddress.value.tambon.id = tambon.id
+    myAddress.value.tambon.text = tambon.text
+    myAddress.value.tambon.zip_code = tambon.zip_code
+  }
+}
 
 // --- location: get latitude / longtitude ---
 const getGeoLication = async () => {
@@ -935,7 +1009,7 @@ const form = ref({
   workDay: ['mon', 'tue', 'wed', 'thu', 'fri'], //ส่ง array หรือ string ? *check value choices
   workType: 'HYBRID',
   comp: {
-    compId: '8e20782f-2807-4f13-a11e-0fb9ff955488'
+    compId: auth.user.role == 'COMPANY' ? myUser.value.data.company.compId : ''
   },
   openPositionList: [], //positionList --> function setOpenPositionList()
   postUrl: '',
@@ -1078,7 +1152,9 @@ const createPost = async () => {
   }
 }
 
-const back = () => router.push({ path: '/internship' })
+const back = () => router.go(-1)
+const gotoProfileCompany = () =>
+  router.push({ path: '/account/company/about-company' })
 </script>
 
 <style lang="scss" scoped>

@@ -39,7 +39,7 @@ export default defineNuxtConfig({
         )
     }
   },
-   app: {
+  app: {
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
@@ -48,7 +48,7 @@ export default defineNuxtConfig({
       // link: [{ rel: 'icon', type: 'svg', href: '/ssi3a/internhub-icon.svg' }] // -- run on server
     }
     // --- เอา comment ออก ถ้ารันบน server ---
-    ,
-    baseURL: '/ssi3a/'
+    // ,
+    // baseURL: '/ssi3a/'
   }
 })

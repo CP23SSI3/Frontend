@@ -17,9 +17,9 @@
         :disabled="disabled"
         :class="
           disabled
-            ? 'bg-gray-100 boder-gray-200 text-gray-400 min-h-[36px]'
+            ? 'bg-gray-100 boder-gray-200 text-gray-500 min-h-[36px]'
             : modelValue.id == 0
-            ? 'bg-white text-gray-400'
+            ? 'bg-white text-gray-500'
             : 'bg-white text-gray-900'
         "
         class="relative w-full cursor-default rounded-md py-1.5 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 sm:text-sm sm:leading-6"

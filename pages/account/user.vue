@@ -3,9 +3,13 @@
     <BaseTitle>{{ auth.user ? auth.user.username : 'My Account' }}</BaseTitle>
     <BaseTabs :route-path="route.path" :tabs="tabs"></BaseTabs>
 
-    <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <NuxtPage />
+    <!-- <div class="px-2 sm:mx-auto max-w-7xl sm:px-6 lg:px-8"> -->
+    <div class="relative h-auto py-2">
+      <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <NuxtPage :myUser="myUser?.data" @getUser="resetUser()" />
+      </div>
     </div>
+    <!-- </div> -->
   </div>
 </template>
 
@@ -15,13 +19,20 @@ import {
   BriefcaseIcon,
   AcademicCapIcon,
   StarIcon,
-  FolderIcon,
-  DocumentTextIcon,
-  DocumentChartBarIcon
+  DocumentTextIcon
 } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const auth = useAuth()
+const userId = auth.user.userId
+
+const myUser = await getUserById(userId)
+const resetUser = async () => {
+  const res = await getUserById(userId)
+  if (res.value) {
+    myUser.value = res.value
+  }
+}
 
 const tabs = [
   {

@@ -5,10 +5,16 @@
       class="relative flex flex-col w-full gap-2 sm:justify-between sm:flex-row sm:items-start lg:px-4"
     >
       <div class="flex flex-col gap-2 lg:items-start lg:gap-6 lg:flex-row">
-        <nuxt-img
+        <!-- <nuxt-img
           class="w-20 h-20 rounded-sm shadow-md lg:h-12 lg:w-12 bg-gray-50"
           src="/logo-test.png"
           alt="Your Company"
+        /> -->
+        <BaseProfile
+          company
+          class="w-20 h-20 text-xl rounded-md shadow-md lg:h-12 lg:w-12 lg:rounded-md bg-gray-50 lg:text-lg"
+          :fname="wordForProfileCompany(post.comp.compName, 0)"
+          :lname="wordForProfileCompany(post.comp.compName, 1)"
         />
 
         <div class="flex flex-col-reverse lg:flex-col lg:pr-[350px]">
@@ -17,11 +23,12 @@
           </h2>
 
           <div class="flex items-center gap-2">
-            <div
-              class="text-xs font-semibold leading-6 text-gray-600 lg:text-sm"
+            <NuxtLink
+              :to="`/internship/company/${post.comp.compId}`"
+              class="text-xs font-semibold leading-6 text-gray-600 cursor-pointer lg:text-sm hover:text-blue-800"
             >
               {{ post.comp.compName }}
-            </div>
+            </NuxtLink>
             <span class="text-xs text-gray-500">
               {{ moment(new Date(post.lastUpdateDate)).format('DD/MM/YYYY') }}
             </span>
@@ -175,7 +182,10 @@
       </div>
       <div
         class="space-x-3"
-        v-if="auth.user?.role == 'ADMIN' || auth.user?.role == 'COMPANY'"
+        v-if="
+          auth.user?.role == 'COMPANY' &&
+          auth.user?.companyId == post.comp.compId
+        "
       >
         <BaseButton :leadingIcon="TrashIcon" negative @click="removePost()"
           >Delete</BaseButton
@@ -210,8 +220,13 @@ const auth = useAuth()
 const route = useRoute()
 const postId = route.params.postId
 const router = useRouter()
-const back = () => router.push({ path: '/internship' })
+const back = () => router.go(-1)
 const goToEdit = () => router.push({ path: `/internship/${postId}/edit` })
+
+const wordForProfileCompany = (compName, index) => {
+  let words = compName.split(' ')
+  return words[index]
+}
 
 // ---- GET : LIST POST ----
 // const loading = ref(false)
@@ -225,11 +240,10 @@ const props = defineProps({
 post.value = props?.post
 
 useSeoMeta({
-  title: 'InternHub - ' + props.title,
-  ogTitle: props.title,
-  description: props.description,
-  ogDescription: props.description,
-  ogImage: '../../../public/InternHub-logo.svg'
+  title: 'InternHub - ' + props.post.title,
+  ogTitle: props.post.title,
+  description: props.post.postDesc,
+  ogDescription: props.post.postDesc
 })
 
 // -- share --

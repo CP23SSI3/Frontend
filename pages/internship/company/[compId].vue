@@ -1,22 +1,92 @@
 <template>
-  <div class="grid items-start gap-6 lg:grid-cols-12">
-    <!-- Filter -->
-    <BaseSectionContent
-      class="hidden col-span-3 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col"
+  <BaseLoading v-if="!company"></BaseLoading>
+  <div v-else>
+    <BaseItem
+      :icon="ChevronLeftIcon"
+      class="mb-4 cursor-pointer max-w-min hover:underline"
+      @click="back()"
     >
-      <FilterComponent
-        :filter="filter"
-        :option-list="listPositionTag"
-        @cancel="clearFilterValue()"
-        @search="search()"
-        @setLocation="setFilterLocation()"
-        @clearLocation="clearFilterLocation()"
+      back
+    </BaseItem>
+
+    <div class="relative -z-10">
+      <img
+        src="@/public/background-company.jpg"
+        class="object-cover w-full h-32 lg:h-48 rounded-2xl"
+      />
+      <div class="absolute inset-0 bg-black opacity-50 rounded-2xl"></div>
+    </div>
+
+    <div class="max-w-5xl px-4 mx-auto sm:px-2 lg:px-8">
+      <div class="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
+        <div class="flex">
+          <BaseProfile
+            company
+            size="XL"
+            class="w-24 h-24 text-4xl sm:h-32 sm:w-32 ring-4 ring-white"
+            :fname="wordForProfileCompany(company.data.compName, 0)"
+            :lname="wordForProfileCompany(company.data.compName, 1)"
+          />
+        </div>
+        <div
+          class="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1"
+        >
+          <div class="flex-1 min-w-0 mt-6 sm:hidden md:block">
+            <h1 class="text-2xl font-bold text-gray-900 truncate">
+              {{ company.data.compName }}
+            </h1>
+          </div>
+          <div
+            class="flex flex-col mt-6 space-y-3 justify-stretch sm:flex-row sm:space-x-4 sm:space-y-0"
+          >
+            <NuxtLink
+              :to="company.data.compUrl"
+              target="_blank"
+              v-if="company.data.compUrl != null"
+            >
+              <BaseButton :leading-icon="LinkIcon" outline full
+                >Website</BaseButton
+              >
+            </NuxtLink>
+          </div>
+        </div>
+      </div>
+      <div class="flex-1 hidden min-w-0 mt-6 sm:block md:hidden">
+        <h1 class="text-2xl font-bold text-gray-900 truncate">
+          {{ company.data.compName }}
+        </h1>
+      </div>
+    </div>
+    <BaseSectionContent
+      class="max-w-6xl px-5 py-4 mx-auto my-6 space-y-6 md:px-10 md:py-8"
+    >
+      <BaseDescription label="About Company">
+        {{ company.data.compDesc ? company.data.compDesc : '-' }}
+      </BaseDescription>
+      <BaseDescription label="Basic Welfare">
+        <div
+          v-html="company.data.defaultWelfare"
+          v-if="company.data.defaultWelfare != null"
+        ></div>
+        <div v-else>-</div>
+      </BaseDescription>
+      <BaseDescription label="Address" v-if="company.data.address != null">
+        {{
+          `${company.data.address.area} แขวง${company.data.address.subDistrict} เขต${company.data.address.district}, ${company.data.address.city}  ${company.data.address.postalCode}`
+        }}
+      </BaseDescription>
+      <BaseDescription label="Address" v-else>-</BaseDescription>
+      <BaseMap
+        v-if="company.data.address != null"
+        :lat="company.data.address.latitude"
+        :lng="company.data.address.longitude"
       />
     </BaseSectionContent>
 
     <!-- List Post -->
     <div
-      class="flex flex-col w-full col-span-1 gap-4 px-1 lg:col-span-9 sm:px-0"
+      class="flex flex-col max-w-5xl col-span-1 gap-4 px-1 mx-auto lg:col-span-9 sm:px-0"
+      v-if="listPost.length !== 0"
     >
       <!-- Topic -->
       <div
@@ -24,77 +94,49 @@
       >
         <div class="flex items-center gap-4">
           <h1 class="text-2xl font-bold leading-8 text-black">
-            Internship program
+            Internship program other
           </h1>
           <!-- total element -->
-          <span class="text-sm text-gray-400">{{ totalItems }} posts</span>
-          <button
-            type="button"
-            class="p-2 -m-2 text-gray-400 hover:text-gray-500 lg:hidden"
-            @click="openFilter()"
+          <span class="hidden text-sm text-gray-500 md:flex"
+            >{{ totalItems }} posts</span
           >
-            <span class="sr-only">Filters</span>
-
-            <FunnelIcon class="w-5 h-5" aria-hidden="true" />
-          </button>
         </div>
-        <NuxtLink :to="{ path: '/internship/form' }">
-          <BaseButton
-            :leadingIcon="PlusCircleIcon"
-            class="w-full md:w-auto"
-            v-if="auth.user?.role == 'COMPANY'"
-            >Add Post</BaseButton
+        <div class="flex items-center justify-between">
+          <!-- Pagination -->
+          <!-- <div
+            v-if="listPost.length == 0 && !loading"
+            class="flex justify-center"
           >
-        </NuxtLink>
-      </div>
-      <!-- Sidebar for Mobile -->
-      <div
-        id="slideover-container"
-        :class="[
-          'fixed inset-0 w-full h-full z-40',
-          filterMobile ? '' : 'invisible'
-        ]"
-      >
-        <div
-          id="slideover-bg"
-          :class="[
-            'absolute inset-0 w-full h-full transition-all duration-500 ease-out bg-gray-900 ',
-            filterMobile ? 'opacity-50' : 'opacity-0'
-          ]"
-          @click="closeFilter()"
-        ></div>
-        <div
-          id="slideover"
-          :class="[
-            'absolute top-16 right-0 h-full transition-all duration-300 ease-out bg-white md:w-96 w-80',
-            filterMobile ? '' : 'translate-x-full'
-          ]"
-        >
-          <div
-            class="absolute top-0 right-0 flex items-center justify-center w-8 h-8 mt-5 mr-5 text-gray-600 cursor-pointer"
-          >
-            <XMarkIcon class="w-10 h-10" @click="closeFilter()"></XMarkIcon>
-          </div>
-          <div class="col-span-1 gap-2 px-5 py-5 min-h-fit lg:flex lg:flex-col">
-            <!-- filter for mobile size -->
-            <FilterComponent
-              :filter="filter"
-              :option-list="listPositionTag"
-              @cancel="clearFilterValue()"
-              @search="search()"
-              @setLocation="setFilterLocation()"
-              @clearLocation="clearFilterLocation()"
+            <BaseButton :leading-icon="ArrowPathIcon" outline @click="refresh()"
+              >Refresh</BaseButton
+            >
+          </div> -->
+          <div class="p-4" v-if="!loading">
+            <v-pagination
+              v-model="pagination.currentPage"
+              :pages="pagination.totalPages"
+              :range-size="1"
+              active-color="#DBEAFE"
+              class="flex justify-center"
+              @update:modelValue="changePage"
             />
           </div>
+          <NuxtLink :to="{ path: '/internship/form' }">
+            <BaseButton
+              :leadingIcon="PlusCircleIcon"
+              class="w-full md:w-auto"
+              v-if="auth.user?.role == 'ADMIN' || auth.user?.role == 'COMPANY'"
+              >Add Post</BaseButton
+            >
+          </NuxtLink>
         </div>
       </div>
-      <!-- </div> -->
 
       <!-- List -->
       <BaseLoading v-if="loading" />
       <div v-else class="flex flex-col w-full col-span-4 gap-2 lg:col-span-3">
         <div v-if="listPost.length == 0" class="flex justify-center">
-          - ไม่พบข้อมูล -
+          -- บริษัทยังไม่มีการประกาศโพสต์ใดๆ --
         </div>
 
         <BaseSectionContent
@@ -215,142 +257,39 @@
           </div>
         </BaseSectionContent>
       </div>
-
-      <!-- Pagination -->
-      <div v-if="listPost.length == 0 && !loading" class="flex justify-center">
-        <BaseButton :leading-icon="ArrowPathIcon" outline @click="refresh()"
-          >Refresh</BaseButton
-        >
-      </div>
-      <div class="p-4 bg-white" v-else-if="!loading">
-        <v-pagination
-          v-model="pagination.currentPage"
-          :pages="pagination.totalPages"
-          :range-size="1"
-          active-color="#DBEAFE"
-          class="flex justify-center"
-          @update:modelValue="changePage"
-        />
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { StarIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
+import { ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import {
+  LinkIcon,
   CurrencyDollarIcon,
   MapPinIcon,
   Bars3BottomLeftIcon,
   StarIcon as ActiveStarIcon,
   ClockIcon,
-  FunnelIcon,
-  XMarkIcon,
   ArrowPathIcon
 } from '@heroicons/vue/20/solid'
-import { StarIcon, PlusCircleIcon } from '@heroicons/vue/24/outline'
-import FilterComponent from '~/components/filter/FilterComponent.vue'
-import moment from 'moment'
 import Swal from 'sweetalert2'
+import moment from 'moment'
 
+// definePageMeta({
+//   // middleware: ['authen']
+// })
 const auth = useAuth()
+const route = useRoute()
+const compId = route.params.compId
+const company = await getCompanyById(compId)
 
-// -- Filter : Mobile  --
-const filterMobile = ref(false)
-const openFilter = () => {
-  filterMobile.value = true
-}
-const closeFilter = () => {
-  filterMobile.value = false
-}
-
+const router = useRouter()
 const wordForProfileCompany = (compName, index) => {
   let words = compName.split(' ')
   return words[index]
 }
-
-// --- GET : position-tag (postTag) ---
-const listPositionTag = ref([])
-const getListPositionTag = async () => {
-  listPositionTag.value = []
-  try {
-    const res = await usePositionTag()
-    if (res.value.status === 200) {
-      res.value.data.forEach((item) => {
-        listPositionTag.value.push(item.positionTagName)
-      })
-    }
-  } catch (error) {
-    Swal.fire({
-      showConfirmButton: true,
-      timerProgressBar: true,
-      confirmButtonColor: 'blue',
-      icon: 'error',
-      title: 'Error',
-      text: 'get /position-tag ใช้งานไม่ได้'
-    })
-  }
-}
-
-const filter = ref({
-  search: '',
-  postTag: [],
-  location: null,
-  status: {
-    id: 1,
-    text: 'เปิดอยู่',
-    color: 'fill-gray-500',
-    value: 'NEARLY_CLOSED,OPENED,ALWAYS_OPENED'
-  },
-  workMonth: null,
-  salary: null,
-  city: null,
-  district: null
-})
-
-const clearFilterValue = () => {
-  filter.value = {
-    search: '',
-    postTag: [],
-    location: null,
-    status: {
-      id: 1,
-      text: 'เปิดอยู่',
-      color: 'fill-gray-500',
-      value: 'NEARLY_CLOSED,OPENED,ALWAYS_OPENED'
-    },
-    workMonth: null,
-    salary: null,
-    city: null,
-    district: null
-  }
-}
-
-const refresh = () => {
-  clearFilterValue()
-  getPost()
-}
-
-const setFilterLocation = () => {
-  let location = filter.value.location
-  if (location.includes(',')) {
-    let array = location.split(',')
-    filter.value.city = array[1].trim()
-    filter.value.district = array[0]
-  } else {
-    filter.value.city = location
-    filter.value.district = null
-  }
-}
-
-const clearFilterLocation = () => {
-  filter.value.city = null
-  filter.value.district = null
-}
-
-const search = () => {
-  closeFilter()
-  getPost()
-}
+const back = () => router.go(-1)
 
 // ---- SET : MIN-MAX ของระยะการฝึกงาน, ค่าตอบแทนของแต่ละ post ----
 const setMinMax = (positionList, postIndex) => {
@@ -442,7 +381,7 @@ const totalItems = ref()
 const pagination = ref({
   currentPage: 1,
   totalPages: 1,
-  itemPerPages: 10
+  itemPerPages: 5
 })
 
 // ---- GET : LIST POST ----
@@ -452,17 +391,11 @@ const listPost = ref([])
 const getPost = async () => {
   loading.value = true
   try {
-    const res = await usePost({
+    const res = await getPostByCompId(compId, {
       page: pagination.value.currentPage - 1,
-      pageSize: pagination.value.itemPerPages,
-      q: filter.value.search,
-      city: filter.value.city,
-      district: filter.value.district,
-      status: filter.value.status.value,
-      tags: filter.value.postTag.toString(),
-      month: filter.value.workMonth,
-      salary: filter.value.salary
+      pageSize: pagination.value.itemPerPages
     })
+
     if (res.value) {
       let data = res.value.data
       pagination.value.currentPage = data.number + 1
@@ -473,26 +406,28 @@ const getPost = async () => {
       listPost.value.forEach((post, index) => {
         setMinMax(post.openPositionList, index)
       })
-      // console.log(listPost.value)
+      console.log(listPost.value)
       loading.value = false
     }
   } catch (error) {
-    Swal.fire({
-      showConfirmButton: true,
-      timerProgressBar: true,
-      confirmButtonColor: 'blue',
-      icon: 'error',
-      title: 'Error',
-      text: 'ไม่สามารถเรียกดู list post ได้'
-    })
+    console.log(error)
+    // Swal.fire({
+    //   showConfirmButton: true,
+    //   timerProgressBar: true,
+    //   confirmButtonColor: 'blue',
+    //   icon: 'error',
+    //   title: 'Error',
+    //   text: 'ไม่สามารถเรียกดู list post ได้'
+    // })
     loading.value = false
   }
 }
 
 await getPost()
-await getListPositionTag()
 
-// console.log(listPost.value)
+// const refresh = () => {
+//   getPost()
+// }
 
 // --- Favorite Button ---
 const statusStar = ref(false)
@@ -519,6 +454,7 @@ const statusClosedDate = (postStatus, postClosedDate) => {
       return { text: 'ปิดรับสมัครแล้ว', color: 'red' }
   }
 }
+
 // --- แสดง text description ---
 function cutDescription(description, maxLength) {
   if (description.length > maxLength) {
@@ -527,12 +463,8 @@ function cutDescription(description, maxLength) {
     return description
   }
 }
+
+// console.log(listPost.value)
 </script>
 
-<style lang="scss" scoped>
-.multiselect-blue {
-  --ms-tag-bg: #dbeafe;
-  --ms-tag-color: #2563eb;
-  --ms-ring-color: rgba(56, 189, 248, 0.2);
-}
-</style>
+<style lang="scss" scoped></style>

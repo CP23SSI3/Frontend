@@ -7,7 +7,11 @@ export default defineNuxtRouteMiddleware((to, from) => {
     const error = storesError()
 
     auth.checkStatusAuth()
-    if (!auth.statusLogin && auth.user == undefined) {
+    if (
+      !auth.statusLogin &&
+      auth.user == undefined &&
+      to.path.includes('/account')
+    ) {
       return navigateTo('/auth/login')
     } else {
       let thisRole = auth.getRole()

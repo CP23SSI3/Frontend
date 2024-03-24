@@ -19,14 +19,24 @@ export const useAuth = defineStore('auth', () => {
 
   const getRole = () => (user.value ? user.value.role : null)
 
-  const login = (respone) => {
-    console.log('get token in login function')
-    console.log(respone)
-    user.value = {
-      userId: respone.userId,
-      username: respone.username,
-      role: respone.role
+  const getCompanyId = () => (user.value ? user.value.companyId : null)
+
+  const login = (respone, compId) => {
+    if (respone.role === 'COMPANY') {
+      user.value = {
+        userId: respone.userId,
+        username: respone.username,
+        role: respone.role,
+        companyId: compId
+      }
+    } else {
+      user.value = {
+        userId: respone.userId,
+        username: respone.username,
+        role: respone.role
+      }
     }
+
     statusLogin.value = true
     location.reload()
     router.push({ path: '/' })
@@ -63,7 +73,8 @@ export const useAuth = defineStore('auth', () => {
     login,
     logout,
     checkStatusAuth,
-    getRole
+    getRole,
+    getCompanyId
   }
 })
 

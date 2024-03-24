@@ -144,3 +144,35 @@ export async function updatePost(postId: string, editPost: any) {
 
   return data
 }
+
+export async function getPostByCompId(compId: string, params: any) {
+  const runtimeConfig = useRuntimeConfig()
+  const API_URL = runtimeConfig.public.API_URL
+  const url = `${API_URL}posts/company/${compId}`
+  const token = useToken()
+  const { data, error } = await useFetch<ResponsePostList>(url, {
+    params,
+    headers: token.getAccessToken()
+      ? {
+          Authorization: 'Bearer ' + token.getAccessToken()
+        }
+      : undefined
+  })
+
+  if (error.value) {
+    let errorMessage = {
+      ...error.value,
+      message: `Could not fetch data from ${url}`
+    }
+    if (error.value.statusCode === 500) {
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
+    } else if (error.value.statusCode === 404) {
+      errorMessage.message = `Post id ${compId} not found`
+    }
+    throw createError(errorMessage)
+  }
+
+  return data
+}

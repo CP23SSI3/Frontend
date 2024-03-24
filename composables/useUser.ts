@@ -166,6 +166,7 @@ export async function useRegister(newUser: UserRegister) {
   })
 
   if (error.value) {
+    console.log(error.value)
     let errorMessage = {
       ...error.value,
       message: `Could not fetch data from ${url}`

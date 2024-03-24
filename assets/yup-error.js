@@ -5,13 +5,13 @@ yup.setLocale({
   //   required: 'โปรดระบุ ${path}'
   // },
   string: {
-    email: 'email ไม่ถูกต้อง',
-    min: 'กรุณากรอกข้อมูลอย่างน้อย ${min} ตัวอักษร',
-    max: 'เกิน ${max} ตัวอักษร'
+    email: 'Invalid email',
+    min: 'Please enter at least ${min} characters',
+    max: 'Must be no more than ${max} characters.'
   },
   number: {
-    positive: 'กรุณากรอกเลขจำนวนเต็มบวก',
-    integer: 'กรุณากรอกเลขจำนวนเต็ม'
+    positive: 'Please enter a positive integer',
+    integer: 'Please enter an integer.'
   }
 })
 

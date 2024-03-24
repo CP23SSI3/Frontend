@@ -19,9 +19,17 @@ export const useAuth = defineStore('auth', () => {
 
   const getRole = () => (user.value ? user.value.role : null)
 
+  const getCompanyId = () => (user.value ? user.value.companyId : null)
+
+  const setCompanyId = (compId) => {
+    let comp = {
+      companyId: compId
+    }
+    user.value = { ...user.value, ...comp }
+    console.log(user.value)
+  }
+
   const login = (respone) => {
-    console.log('get token in login function')
-    console.log(respone)
     user.value = {
       userId: respone.userId,
       username: respone.username,
@@ -63,7 +71,9 @@ export const useAuth = defineStore('auth', () => {
     login,
     logout,
     checkStatusAuth,
-    getRole
+    getRole,
+    getCompanyId,
+    setCompanyId
   }
 })
 

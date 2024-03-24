@@ -82,6 +82,10 @@ const login = async () => {
   try {
     const res = await useLogin(user.value)
     auth.login(res.value.data)
+    if (res.value.data.role == 'COMPANY') {
+      const myUser = await getUserById(res.value.data.userId)
+      auth.setCompanyId(myUser.value.data.company.compId)
+    }
   } catch (error) {
     Swal.fire({
       showConfirmButton: true,

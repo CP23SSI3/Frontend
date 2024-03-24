@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <BaseLoading v-if="!company"></BaseLoading>
+  <div v-else>
     <BaseItem
       :icon="ChevronLeftIcon"
       class="mb-4 cursor-pointer max-w-min hover:underline"
@@ -38,7 +39,11 @@
           <div
             class="flex flex-col mt-6 space-y-3 justify-stretch sm:flex-row sm:space-x-4 sm:space-y-0"
           >
-            <NuxtLink :to="company.data.compUrl" target="_blank">
+            <NuxtLink
+              :to="company.data.compUrl"
+              target="_blank"
+              v-if="company.data.compUrl != null"
+            >
               <BaseButton :leading-icon="LinkIcon" outline full
                 >Website</BaseButton
               >
@@ -56,17 +61,23 @@
       class="max-w-6xl px-5 py-4 mx-auto my-6 space-y-6 md:px-10 md:py-8"
     >
       <BaseDescription label="About Company">
-        {{ company.data.compDesc }}
+        {{ company.data.compDesc ? company.data.compDesc : '-' }}
       </BaseDescription>
       <BaseDescription label="Basic Welfare">
-        <div v-html="company.data.defaultWelfare"></div>
+        <div
+          v-html="company.data.defaultWelfare"
+          v-if="company.data.defaultWelfare != null"
+        ></div>
+        <div v-else>-</div>
       </BaseDescription>
-      <BaseDescription label="Address">
+      <BaseDescription label="Address" v-if="company.data.address != null">
         {{
           `${company.data.address.area} แขวง${company.data.address.subDistrict} เขต${company.data.address.district}, ${company.data.address.city}  ${company.data.address.postalCode}`
         }}
       </BaseDescription>
+      <BaseDescription label="Address" v-else>-</BaseDescription>
       <BaseMap
+        v-if="company.data.address != null"
         :lat="company.data.address.latitude"
         :lng="company.data.address.longitude"
       />
@@ -77,6 +88,11 @@
 <script setup>
 import { ChevronLeftIcon } from '@heroicons/vue/24/solid'
 import { LinkIcon } from '@heroicons/vue/20/solid'
+
+definePageMeta({
+  // middleware: ['authen']
+})
+
 const route = useRoute()
 const compId = route.params.compId
 const company = await getCompanyById(compId)

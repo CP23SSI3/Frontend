@@ -2,126 +2,141 @@
   <BaseLoading v-if="!myUser"></BaseLoading>
   <div v-else-if="myUser != null" class="w-auto space-y-6"></div>
   <BaseSectionContent class="w-full">
-    <div>
-      <div class="flex items-center justify-between px-4 py-5 sm:px-10">
-        <BaseTitleForm>Company Information</BaseTitleForm>
-      </div>
-      <BaseLine />
-      <div class="grid items-start gap-6 px-4 py-8 sm:grid-cols-4 sm:px-10">
-        <BaseInputField
-          label="Company name"
-          id="compName"
-          class="sm:col-span-2"
-          required
-          v-model="form.compName"
-        />
-        <BaseInputField
-          :icon="LinkIcon"
-          label="Website"
-          id="compUrl"
-          class="sm:col-span-2"
-          v-model="form.compUrl"
-        />
-        <BaseTextarea
-          label="Description"
-          id="experienceDesc"
-          nametag="experienceDesc"
-          :rows="10"
-          v-model="form.compDesc"
-        ></BaseTextarea>
+    <Form
+      @submit="submitForm"
+      v-slot="{ meta, values, errors }"
+      :validation-schema="schema"
+      :initial-values="initialValues"
+    >
+      <div>
+        <div class="flex items-center justify-between px-4 py-5 sm:px-10">
+          <BaseTitleForm>Company Information</BaseTitleForm>
+        </div>
+        <BaseLine />
+        <div class="grid items-start gap-6 px-4 py-8 sm:grid-cols-4 sm:px-10">
+          <BaseInputField
+            label="Company name"
+            id="compName"
+            class="sm:col-span-2"
+            required
+            v-model="form.compName"
+          />
+          <BaseInputField
+            :icon="LinkIcon"
+            label="Website"
+            id="compUrl"
+            class="sm:col-span-2"
+            v-model="form.compUrl"
+          />
+          <BaseTextarea
+            label="Description"
+            id="compDesc"
+            nametag="compDesc"
+            :rows="10"
+            v-model="form.compDesc"
+          ></BaseTextarea>
 
-        <!-- <BaseTextarea
+          <!-- <BaseTextarea
           label="Basic Welfare"
           id="defaultWelfare"
           nametag="defaultWelfare"
           :rows="10"
           v-model="form.defaultWelfare"
         ></BaseTextarea> -->
-        <div class="col-span-full">
-          <BaseLabel id="defaultWelfare">Basic Welfare</BaseLabel>
-          <div class="mt-1">
-            <ClientOnly>
-              <quill-editor
-                content-type="html"
-                theme="snow"
-                :toolbar="quillToolbar"
-                class="h-full"
-                v-model:content="form.defaultWelfare"
-                style="
-                  height: 150px;
-                  border-bottom-right-radius: 0.375rem;
-                  border-bottom-left-radius: 0.375rem;
-                "
-              />
-            </ClientOnly>
-            <div class="pl-2 text-xs text-red-500">
-              {{ checkTextOnly(form.defaultWelfare, 'Basic Welfare') }}
+          <div class="col-span-full">
+            <BaseLabel id="defaultWelfare">Basic Welfare</BaseLabel>
+            <div class="mt-1">
+              <ClientOnly>
+                <quill-editor
+                  content-type="html"
+                  theme="snow"
+                  :toolbar="quillToolbar"
+                  class="h-full"
+                  v-model:content="form.defaultWelfare"
+                  style="
+                    height: 150px;
+                    border-bottom-right-radius: 0.375rem;
+                    border-bottom-left-radius: 0.375rem;
+                  "
+                />
+              </ClientOnly>
+              <div class="pl-2 text-xs text-red-500">
+                {{ checkTextOnly(form.defaultWelfare, 'Basic Welfare') }}
+              </div>
             </div>
           </div>
-        </div>
-        <!-- <BaseLineTopic class="col-start-1 col-span-full">Contact</BaseLineTopic> -->
-        <BaseLineTopic class="col-start-1 col-span-full">Address</BaseLineTopic>
-        <div class="grid items-start gap-6 col-span-full sm:grid-cols-3">
-          <BaseInputField
-            label="ที่อยู่ปัจจุบัน"
-            id="area"
-            class="sm:col-start-1 sm:col-span-2"
-            v-model="form.address.area"
+          <!-- <BaseLineTopic class="col-start-1 col-span-full">Contact</BaseLineTopic> -->
+          <BaseLineTopic class="col-start-1 col-span-full"
+            >Address</BaseLineTopic
           >
-          </BaseInputField>
+          <div class="grid items-start gap-6 col-span-full sm:grid-cols-3">
+            <BaseInputField
+              label="ที่อยู่ปัจจุบัน"
+              id="area"
+              class="sm:col-start-1 sm:col-span-2"
+              v-model="form.address.area"
+            >
+            </BaseInputField>
 
-          <BaseDropdown
-            class="relative z-40"
-            :option-lists="provinceList"
-            label="จังหวัด"
-            v-model="form.selectedAddress.province"
-            @click="getAmphure(form.selectedAddress.province.id)"
-          />
-          <BaseDropdown
-            class="relative z-30"
-            :option-lists="amphureList"
-            label="เขต"
-            v-model="form.selectedAddress.amphure"
-            :disabled="!(amphureList.length > 0)"
-            @click="
-              getTambon(
-                form.selectedAddress.province.id,
-                form.selectedAddress.amphure.id
-              )
-            "
-          />
-          <BaseDropdown
-            class="relative z-20"
-            :option-lists="tambonList"
-            label="แขวง"
-            v-model="form.selectedAddress.tambon"
-            :disabled="!(tambonList.length > 0)"
-          />
-          <BaseInput
-            label="รหัสไปรณีย์"
-            id="postalCode"
-            v-model="form.selectedAddress.tambon.zip_code"
-            disabled
-          ></BaseInput>
+            <BaseDropdown
+              class="relative z-40"
+              :option-lists="provinceList"
+              label="จังหวัด"
+              v-model="form.selectedAddress.province"
+              @click="getAmphure(form.selectedAddress.province.id)"
+            />
+            <BaseDropdown
+              class="relative z-30"
+              :option-lists="amphureList"
+              label="เขต"
+              v-model="form.selectedAddress.amphure"
+              :disabled="!(amphureList.length > 0)"
+              @click="
+                getTambon(
+                  form.selectedAddress.province.id,
+                  form.selectedAddress.amphure.id
+                )
+              "
+            />
+            <BaseDropdown
+              class="relative z-20"
+              :option-lists="tambonList"
+              label="แขวง"
+              v-model="form.selectedAddress.tambon"
+              :disabled="!(tambonList.length > 0)"
+            />
+            <BaseInput
+              label="รหัสไปรณีย์"
+              id="postalCode"
+              v-model="form.selectedAddress.tambon.zip_code"
+              disabled
+            ></BaseInput>
+          </div>
         </div>
       </div>
-    </div>
-    <BaseLine />
-    <div class="flex items-center justify-end px-4 py-5 sm:px-10">
-      <BaseButton
-        :leading-icon="ArrowDownTrayIcon"
-        type="sumbit"
-        :disabled="checkTextOnly(form.defaultWelfare, 'Basic Welfare') != ''"
-        >Save</BaseButton
-      >
-    </div>
+      <BaseLine />
+      <div class="flex items-center justify-between gap-3 px-4 py-5 sm:px-10">
+        <NuxtLink
+          :to="{ path: `/internship/company/${myUser.company.compId}` }"
+        >
+          <BaseButton :leading-icon="EyeIcon" type="button" secondary>
+            View Profile
+          </BaseButton>
+        </NuxtLink>
+        <BaseButton :leading-icon="ArrowDownTrayIcon" type="sumbit"
+          >Save</BaseButton
+        >
+      </div>
+    </Form>
   </BaseSectionContent>
-  <!-- {{ form }} -->
 </template>
 
 <script setup>
-import { ArrowDownTrayIcon } from '@heroicons/vue/24/outline'
+import { ArrowDownTrayIcon, EyeIcon } from '@heroicons/vue/24/outline'
 import { LinkIcon } from '@heroicons/vue/20/solid'
+import { Field, ErrorMessage, Form } from 'vee-validate'
+import yup from '@/assets/yup-error.js'
+import Swal from 'sweetalert2'
 
 const props = defineProps({
   myUser: {
@@ -249,7 +264,7 @@ const setupSelectedAddress = () => {
   }
 }
 
-const setupForm = async () => {
+const setupForm = () => {
   form.value = { ...form.value, ...props.myUser.company }
 
   if (form.value.address == null) {
@@ -264,10 +279,10 @@ const setupForm = async () => {
       longitude: null
     }
   } else {
-    await setupSelectedAddress()
+    setupSelectedAddress()
   }
 }
-await setupForm()
+setupForm()
 
 // -- quill editor ---
 const quillToolbar = [
@@ -292,6 +307,18 @@ function checkTextOnly(value, error_message) {
       return ''
     }
   }
+}
+
+const schema = yup.object({
+  compName: yup.string().required('Please enter your company name').max(100),
+  compUrl: yup.string().url('url is invalid').nullable().max(255),
+  compDesc: yup.string().nullable().max(500),
+  defaultWelfare: yup.string().max(1500)
+})
+
+const submitForm = () => {
+  console.log(form.value)
+  //edit profile company
 }
 </script>
 

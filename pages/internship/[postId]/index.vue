@@ -182,7 +182,11 @@
       </div>
       <div
         class="space-x-3"
-        v-if="auth.user?.role == 'ADMIN' || auth.user?.role == 'COMPANY'"
+        v-if="
+          auth.user?.role == 'ADMIN' ||
+          (auth.user?.role == 'COMPANY' &&
+            auth.user?.companyId == post.comp.compId)
+        "
       >
         <BaseButton :leadingIcon="TrashIcon" negative @click="removePost()"
           >Delete</BaseButton

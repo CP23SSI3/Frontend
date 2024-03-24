@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     const error = storesError()
     auth.checkStatusAuth()
     let thisRole = auth.getRole()
-    if (thisRole == 'COMPANY' || thisRole == 'ADMIN') {
+    if (thisRole == 'COMPANY') {
       return
     } else {
       return navigateTo('/internship')

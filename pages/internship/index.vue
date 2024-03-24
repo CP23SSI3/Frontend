@@ -42,7 +42,7 @@
           <BaseButton
             :leadingIcon="PlusCircleIcon"
             class="w-full md:w-auto"
-            v-if="auth.user?.role == 'ADMIN' || auth.user?.role == 'COMPANY'"
+            v-if="auth.user?.role == 'COMPANY'"
             >Add Post</BaseButton
           >
         </NuxtLink>
@@ -492,7 +492,7 @@ const getPost = async () => {
 await getPost()
 await getListPositionTag()
 
-console.log(listPost.value)
+// console.log(listPost.value)
 
 // --- Favorite Button ---
 const statusStar = ref(false)

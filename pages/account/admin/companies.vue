@@ -1,12 +1,7 @@
 <template>
   <div>
-    <div
-      class="flex flex-col justify-between gap-2 sm:items-center sm:flex-row"
-    >
-      <div class="flex items-center gap-4"></div>
-    </div>
     <div class="flex flex-col gap-2">
-      <div class="grid grid-cols-4">
+      <!-- <div class="grid grid-cols-4">
         <BaseInput
           class="col-span-1s"
           label=""
@@ -16,7 +11,7 @@
           :iconInput="MagnifyingGlassIcon"
           v-model="searchValue"
         ></BaseInput>
-      </div>
+      </div> -->
       <BaseLoading v-if="loading" />
       <EasyDataTable
         v-else
@@ -62,6 +57,7 @@
               `${item.address.area} ${item.address.subDistrict} ${item.address.district} ${item.address.city} ${item.address.postalCode} `
             }}
           </div>
+          <div v-else class="flex w-full gap-4 text-sm text-gray-500">-</div>
         </template>
         <template #item-createdDate="{ createdDate }">
           <div class="text-sm text-gray-500 whitespace-normal">

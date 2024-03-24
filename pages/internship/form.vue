@@ -578,7 +578,7 @@ const auth = useAuth()
 const userId = auth.user.userId
 const myUser = await getUserById(userId)
 
-if (myUser.value.data.company.address == null) {
+if (auth.user.role == 'COMPANY' && myUser.value.data?.company.address == null) {
   Swal.fire({
     title: 'ไม่สามารถสร้างโพสต์ได้',
     confirmButtonColor: 'blue',
@@ -1009,7 +1009,7 @@ const form = ref({
   workDay: ['mon', 'tue', 'wed', 'thu', 'fri'], //ส่ง array หรือ string ? *check value choices
   workType: 'HYBRID',
   comp: {
-    compId: myUser.value.data.company.compId
+    compId: auth.user.role == 'COMPANY' ? myUser.value.data.company.compId : ''
   },
   openPositionList: [], //positionList --> function setOpenPositionList()
   postUrl: '',
@@ -1152,7 +1152,7 @@ const createPost = async () => {
   }
 }
 
-const back = () => router.push({ path: '/internship' })
+const back = () => router.go(-1)
 const gotoProfileCompany = () =>
   router.push({ path: '/account/company/about-company' })
 </script>

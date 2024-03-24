@@ -21,20 +21,22 @@ export const useAuth = defineStore('auth', () => {
 
   const getCompanyId = () => (user.value ? user.value.companyId : null)
 
-  const setCompanyId = (compId) => {
-    let comp = {
-      companyId: compId
+  const login = (respone, compId) => {
+    if (respone.role === 'COMPANY') {
+      user.value = {
+        userId: respone.userId,
+        username: respone.username,
+        role: respone.role,
+        companyId: compId
+      }
+    } else {
+      user.value = {
+        userId: respone.userId,
+        username: respone.username,
+        role: respone.role
+      }
     }
-    user.value = { ...user.value, ...comp }
-    console.log(user.value)
-  }
 
-  const login = (respone) => {
-    user.value = {
-      userId: respone.userId,
-      username: respone.username,
-      role: respone.role
-    }
     statusLogin.value = true
     location.reload()
     router.push({ path: '/' })
@@ -72,8 +74,7 @@ export const useAuth = defineStore('auth', () => {
     logout,
     checkStatusAuth,
     getRole,
-    getCompanyId,
-    setCompanyId
+    getCompanyId
   }
 })
 

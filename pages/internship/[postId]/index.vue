@@ -183,9 +183,8 @@
       <div
         class="space-x-3"
         v-if="
-          auth.user?.role == 'ADMIN' ||
-          (auth.user?.role == 'COMPANY' &&
-            auth.user?.companyId == post.comp.compId)
+          auth.user?.role == 'COMPANY' &&
+          auth.user?.companyId == post.comp.compId
         "
       >
         <BaseButton :leadingIcon="TrashIcon" negative @click="removePost()"
@@ -221,7 +220,7 @@ const auth = useAuth()
 const route = useRoute()
 const postId = route.params.postId
 const router = useRouter()
-const back = () => router.push({ path: '/internship' })
+const back = () => router.go(-1)
 const goToEdit = () => router.push({ path: `/internship/${postId}/edit` })
 
 const wordForProfileCompany = (compName, index) => {
@@ -241,11 +240,10 @@ const props = defineProps({
 post.value = props?.post
 
 useSeoMeta({
-  title: 'InternHub - ' + props.title,
-  ogTitle: props.title,
-  description: props.description,
-  ogDescription: props.description,
-  ogImage: '../../../public/InternHub-logo.svg'
+  title: 'InternHub - ' + props.post.title,
+  ogTitle: props.post.title,
+  description: props.post.postDesc,
+  ogDescription: props.post.postDesc
 })
 
 // -- share --

@@ -139,6 +139,7 @@ const props = defineProps({
     required: true
   }
 })
+const emits = defineEmits(['getUser'])
 
 // ---- Part: Education ----
 const educationList = ref([

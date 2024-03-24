@@ -31,14 +31,11 @@
         v-model="education.schoolName"
         required
       ></BaseInputField>
-      <Field
-        v-slot="{ field, errors }"
-        name="startedYear"
-        class="sm:col-span-2 lg:col-span-1"
-      >
+      <Field v-slot="{ field, errors }" name="startedYear">
         <BaseYearPicker
           label="Start year"
           id="startedYear"
+          class="col-span-full sm:col-span-2 md:col-span-1"
           required
           v-model="education.startedYear"
           v-bind="field"
@@ -53,13 +50,10 @@
           </template>
         </BaseYearPicker>
       </Field>
-      <Field
-        v-slot="{ field, errors }"
-        name="graduatedYear"
-        class="sm:col-span-1"
-      >
+      <Field v-slot="{ field, errors }" name="graduatedYear">
         <BaseYearPicker
           label="Graduated Year"
+          class="col-span-full sm:col-span-2 md:col-span-1"
           id="graduatedYear"
           v-model="education.graduatedYear"
           v-bind="field"
@@ -72,13 +66,16 @@
             new Date().getFullYear()
           ]"
         >
-          <template v-slot:error-message v-if="errors"
-            >{{ errors[0] }}
+          <template v-if="errors" v-slot:error-message>
+            {{ errors[0] }}
+          </template>
+          <template v-slot:sub-description v-else>
+            Leave year blank for 'Present'.
           </template>
         </BaseYearPicker>
       </Field>
       <BaseInputField
-        class="sm:col-span-1"
+        class="col-span-full sm:col-span-2 md:col-span-1"
         label="Grade"
         id="grade"
         v-model="education.grade"
@@ -123,7 +120,7 @@ const schemaExperience = yup.object({
   degree: yup.string().required().max(50),
   educationDesc: yup.string().max(1500),
   field: yup.string().nullable().max(100),
-  grade: yup.string().max(5),
+  grade: yup.string().nullable().max(5),
   startedYear: yup.number().required("Please 'select' the working year"),
   graduatedYear: yup.number().nullable(),
   schoolName: yup.string().required().max(100)

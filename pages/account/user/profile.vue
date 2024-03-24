@@ -1,5 +1,5 @@
 <template>
-  <FormUserProfile :myUser="myUser" />
+  <FormUserProfile :myUser="myUser" @getUser="$emit('getUser')" />
 </template>
 
 <script setup>
@@ -11,6 +11,7 @@ const props = defineProps({
     required: true
   }
 })
+defineEmits(['getUser'])
 </script>
 
 <style lang="scss" scoped></style>

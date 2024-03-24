@@ -280,9 +280,7 @@ const props = defineProps({
   }
 })
 
-console.log(props.myUser)
-
-const loading = ref(false)
+const emits = defineEmits(['getUser'])
 
 // ---- Part: Experience ----
 const experiencesList = ref([])
@@ -472,7 +470,6 @@ const removeLanguage = async (lang, index) => {
 
 const addLanguage = async () => {
   let newLang = { ...language.value, user: { userId: props.myUser.userId } }
-  console.log(newLang)
   try {
     const res = await useCreateLang(newLang)
 
@@ -480,17 +477,22 @@ const addLanguage = async () => {
       console.log('Add New Language Success')
       languagesList.value.push({
         id: languagesList.value.length,
-        ...language.value
+        ...language.value,
+        languageId: res.value.data.languageId
       })
+      console.log(languagesList.value)
+      emits('getUser')
       hideAddLanguageMode()
     }
   } catch (error) {
+    console.log(error.message)
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,
       confirmButtonColor: 'blue',
       icon: 'error',
-      title: "Can't add new langague"
+      title: "Can't add new langague",
+      text: error.message ? error.message : ''
     })
   }
 }

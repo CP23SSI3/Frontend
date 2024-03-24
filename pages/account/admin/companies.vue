@@ -40,7 +40,11 @@
               :fname="wordForProfileCompany(item.compName, 0)"
               :lname="wordForProfileCompany(item.compName, 1)"
             />
-            <BaseItemDesc :text="item.compName" :desc="item.compDesc" />
+            <BaseItemDesc
+              class="max-w-sm"
+              :text="item.compName"
+              :desc="item.compDesc"
+            />
           </div>
         </template>
         <!-- <template #item-compDesc="{ compDesc }">
@@ -78,8 +82,6 @@ import type {
   ServerOptions,
   HeaderItemClassNameFunction
 } from 'vue3-easy-data-table'
-import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
-import { TrashIcon } from '@heroicons/vue/24/outline'
 import { User } from '~/types/User'
 import { Address, Company } from '~/types/Post'
 import Swal from 'sweetalert2'
@@ -105,9 +107,9 @@ const searchValue = ref('')
 // --- GET : List Company ---
 const loading = ref(false)
 const headers: Header[] = [
-  { text: 'NAME', value: 'compName', width: 600 },
-  { text: 'Address', value: 'address', width: 350 },
-  { text: 'CREATED DATE', value: 'createdDate' }
+  { text: 'NAME', value: 'compName', width: 500 },
+  { text: 'Address', value: 'address' },
+  { text: 'CREATED DATE', value: 'createdDate', width: 120 }
 ]
 const items = ref<Item>([])
 
@@ -145,7 +147,7 @@ const getCompanyList = async () => {
       confirmButtonColor: 'blue',
       icon: 'error',
       title: 'Error',
-      text: 'ไม่สามารถเรียกดู list company ได้'
+      text: "Can't view company list"
     })
   }
   loading.value = false
@@ -165,19 +167,6 @@ const headerItemClassNameFunction: HeaderItemClassNameFunction = (
   header: Header,
   columnNumber: number
 ): string => 'text-left text-sm leading-7 font-semibold sm:pl-6'
-
-const formatPhoneNumber = (phoneNumber: string) => {
-  if (phoneNumber) {
-    var cleaned = ('' + phoneNumber).replace(/\D/g, '')
-    var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-    if (match) {
-      return match[1] + '-' + match[2] + '-' + match[3]
-    }
-    return phoneNumber
-  } else {
-    return '-'
-  }
-}
 </script>
 
 <style lang="scss" scoped>

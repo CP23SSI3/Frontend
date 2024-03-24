@@ -6,7 +6,7 @@
     <BaseTabs :route-path="route.path" :tabs="tabs"></BaseTabs>
 
     <div>
-      <NuxtPage :myUser="myUser?.data" />
+      <NuxtPage :myUser="myUser?.data" @getUser="resetUser()" />
     </div>
   </div>
 </template>
@@ -23,6 +23,12 @@ const auth = useAuth()
 const userId = auth.user.userId
 
 const myUser = await getUserById(userId)
+const resetUser = async () => {
+  const res = await getUserById(userId)
+  if (res.value) {
+    myUser.value = res.value
+  }
+}
 
 const tabs = [
   {

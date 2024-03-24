@@ -19,6 +19,11 @@
       <div class="pl-2 text-xs text-red-500">
         <slot name="error-message"></slot>
       </div>
+
+      <!-- Error Message -->
+      <div class="pl-2 text-xs text-gray-500">
+        <slot name="sub-description"></slot>
+      </div>
     </div>
   </div>
 </template>

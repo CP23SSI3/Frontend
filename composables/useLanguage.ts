@@ -22,10 +22,23 @@ export async function useCreateLang(newLang: any) {
   })
 
   if (error.value) {
-    throw createError({
+    // console.log(error.value)
+    // throw createError({
+    //   ...error.value,
+    //   statusMessage: `Could not fetch data from ${url}`
+    // })
+    let errorMessage = {
       ...error.value,
-      statusMessage: `Could not fetch data from ${url}`
-    })
+      message: `Could not fetch data from ${url}`
+    }
+    if (error.value.statusCode === 500) {
+      errorMessage.statusMessage = 'Internal server error'
+      errorMessage.message =
+        'Something has gone wrong on the server hosting a website'
+    } else if (error.value.statusCode === 404) {
+      errorMessage.message = error.value.data.message
+    }
+    throw createError(errorMessage)
   }
 
   return data

@@ -335,7 +335,6 @@ const getPost = async () => {
       listPost.value.forEach((post, index) => {
         setMinMax(post.openPositionList, index)
       })
-      console.log(listPost.value)
       loading.value = false
     }
   } catch (error) {
@@ -433,8 +432,6 @@ const fetchDeletePost = async (postId) => {
     })
   }
 }
-
-// console.log(listPost.value)
 </script>
 
 <style lang="scss" scoped></style>

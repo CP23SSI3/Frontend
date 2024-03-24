@@ -257,6 +257,7 @@ const props = defineProps({
     required: true
   }
 })
+const emits = defineEmits(['getUser'])
 
 const auth = useAuth()
 const userId = auth.user.userId
@@ -542,11 +543,7 @@ const saveUserProfile = async (editUser) => {
         }).then((result) => {
           myUser.value = res.value.data
           setupForm()
-          //   let role = auth.user.role
-          //   reloadNuxtApp({
-          //     path: `/account/${role.toLowerCase()}/profile`,
-          //     ttl: 1000
-          //   })
+          emits('getUser')
         })
       }
     } catch (error) {

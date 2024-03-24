@@ -6,7 +6,6 @@
       @submit="submitForm"
       v-slot="{ meta, values, errors }"
       :validation-schema="schema"
-      :initial-values="initialValues"
     >
       <div>
         <div class="flex items-center justify-between px-4 py-5 sm:px-10">
@@ -144,6 +143,7 @@ const props = defineProps({
     required: true
   }
 })
+const emits = defineEmits(['getUser'])
 
 const form = ref({
   selectedAddress: {
@@ -318,7 +318,9 @@ const schema = yup.object({
 
 const submitForm = () => {
   console.log(form.value)
-  //edit profile company
+  //--- รอทำ function edit profile company ----
+
+  // +***อย่าลืมเพิ่ม emits('getUser')
 }
 </script>
 

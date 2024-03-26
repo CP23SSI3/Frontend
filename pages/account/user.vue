@@ -23,6 +23,7 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
+const router = useRouter()
 const auth = useAuth()
 const userId = auth.user.userId
 

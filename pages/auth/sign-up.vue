@@ -362,6 +362,7 @@ const user = ref({
     compName: '',
     compLogoKey: '/logo-image.jpg'
   }
+  // company: null
 })
 
 // --- Pagination (Multiform) ---
@@ -502,8 +503,7 @@ const submitForm = async () => {
     currentPage.value++
   } else {
     if (user.value.role == 'USER') {
-      user.value.compName = null
-      user.value.compLogoKey = null
+      user.value.company = null
     }
     // console.log('register')
     await register()

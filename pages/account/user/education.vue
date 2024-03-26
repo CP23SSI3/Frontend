@@ -77,7 +77,7 @@
                           'block px-4 py-2 text-sm cursor-pointer hover:underline'
                         ]"
                         :icon="TrashIconSolid"
-                        @click="deleteEducation(index)"
+                        @click="removeEducation(education, index)"
                         >Delete</BaseItem
                       >
                     </MenuItem>
@@ -133,6 +133,8 @@ import {
 } from '@heroicons/vue/24/solid'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { AcademicCapIcon } from '@heroicons/vue/24/outline'
+import Swal from 'sweetalert2'
+
 const props = defineProps({
   myUser: {
     type: Object,
@@ -184,7 +186,6 @@ educationList.value = props.myUser.educations
 const statusAddEducation = ref(false)
 const education = ref({
   degree: '',
-  educationDesc: '',
   educationId: '',
   field: null,
   grade: null,
@@ -218,12 +219,8 @@ const hideAddEducationMode = () => {
   statusAddEducation.value = false
   resetEducation()
 }
-const addNewEducation = () => {
-  educationList.value.push({
-    id: educationList.value.length,
-    ...education.value
-  })
-  hideAddEducationMode()
+const addNewEducation = async () => {
+  await addEducation()
 }
 
 const editingEducation = ref(null)
@@ -239,17 +236,126 @@ const editEducation = (editEducation, index) => {
     showEditEducationMode()
   }
 }
-const saveEducation = () => {
-  const { id } = editingEducation.value
-  educationList.value[id] = editingEducation.value
-  hideEditEducationMode()
+const saveEducation = async () => {
+  await updateEducation()
 }
-const deleteEducation = (index) => {
-  if (index > -1) {
-    educationList.value.splice(index, 1)
+const removeEducation = (education, index) => {
+  Swal.fire({
+    title: 'Do you want to delete this education?',
+    icon: 'warning',
+    confirmButtonText: 'Comfirm',
+    confirmButtonColor: 'red',
+    showCancelButton: true,
+    cancelButtonText: 'Cancel',
+    cancelButtonColor: 'gray',
+    reverseButtons: true
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await deleteEducation(education.educationId, index)
+    }
+  })
+}
+
+const addEducation = async () => {
+  try {
+    let newEducation = {
+      ...education.value,
+      user: { userId: props.myUser.userId }
+    }
+    console.log(education.value)
+    const res = await useCreateEducation(newEducation)
+    if (res.value) {
+      console.log(res.value)
+      let education = res.value.data
+      console.log('Add New Education Success')
+      educationList.value.push({
+        id: educationList.value.length,
+        degree: education.degree,
+        educationDesc: education.educationDesc,
+        educationId: education.educationId,
+        field: education.field,
+        grade: education.grade,
+        graduatedYear: education.graduatedYear,
+        schoolName: education.schoolName,
+        startedYear: education.startedYear
+      })
+      hideAddEducationMode()
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't add your education"
+    })
   }
-  hideEditEducationMode()
 }
+
+const updateEducation = async () => {
+  try {
+    console.log(editingEducation.value)
+    const {
+      id,
+      degree,
+      educationDesc,
+      educationId,
+      field,
+      grade,
+      graduatedYear,
+      schoolName,
+      startedYear
+    } = editingEducation.value
+    let editObject = {
+      degree,
+      educationId,
+      educationDesc,
+      field,
+      grade,
+      graduatedYear,
+      schoolName,
+      startedYear,
+      user: { userId: props.myUser.userId }
+    }
+    console.log(editObject)
+
+    const res = await useUpdateEducation(educationId, editObject)
+    if (res.value) {
+      console.log('Edit Education Success')
+      educationList.value[id] = editingEducation.value
+      hideEditEducationMode()
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't edit this education"
+    })
+  }
+}
+
+const deleteEducation = async (educationId, index) => {
+  try {
+    const res = await useDeleteEducation(educationId)
+    if (res.value.status == 200) {
+      console.log('Delete Education Success')
+      if (index > -1) {
+        educationList.value.splice(index, 1)
+      }
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't delete this education"
+    })
+  }
+}
+console.log(educationList.value)
 </script>
 
 <style lang="scss" scoped></style>

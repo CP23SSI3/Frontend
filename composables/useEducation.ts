@@ -1,16 +1,16 @@
 import { Response } from '~/types/Response'
-import { Experience } from '~/types/User'
+import { Education } from '~/types/User'
 
-type ResponseExperience = Response & {
-  data: Experience | null
+type ResponseEducation = Response & {
+  data: Education | null
 }
 
-export async function useCreateExperience(newExperience: any) {
+export async function useCreateEducation(newEducation: any) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
-  const url = `${API_URL}experiences`
+  const url = `${API_URL}educations`
   const token = useToken()
-  const { data, error } = await useFetch<ResponseExperience>(url, {
+  const { data, error } = await useFetch<ResponseEducation>(url, {
     headers: token.getAccessToken()
       ? {
           Authorization: 'Bearer ' + token.getAccessToken(),
@@ -18,7 +18,7 @@ export async function useCreateExperience(newExperience: any) {
         }
       : { 'Content-Type': 'application/json' },
     method: 'POST',
-    body: JSON.stringify(newExperience)
+    body: JSON.stringify(newEducation)
   })
 
   if (error.value) {
@@ -32,12 +32,15 @@ export async function useCreateExperience(newExperience: any) {
   return data
 }
 
-export async function useUpdateExperience(experId: string, editExper: any) {
+export async function useUpdateEducation(
+  educationId: string,
+  editEducation: any
+) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
-  const url = `${API_URL}experiences/${experId}`
+  const url = `${API_URL}educations/${educationId}`
   const token = useToken()
-  const { data, error } = await useFetch<ResponseExperience>(url, {
+  const { data, error } = await useFetch<ResponseEducation>(url, {
     headers: token.getAccessToken()
       ? {
           Authorization: 'Bearer ' + token.getAccessToken(),
@@ -45,7 +48,7 @@ export async function useUpdateExperience(experId: string, editExper: any) {
         }
       : { 'Content-Type': 'application/json' },
     method: 'PUT',
-    body: JSON.stringify(editExper)
+    body: JSON.stringify(editEducation)
   })
 
   if (error.value) {
@@ -59,12 +62,12 @@ export async function useUpdateExperience(experId: string, editExper: any) {
   return data
 }
 
-export async function useDeleteExperience(experienceId: string) {
+export async function useDeleteEducation(educationId: string) {
   const runtimeConfig = useRuntimeConfig()
   const API_URL = runtimeConfig.public.API_URL
-  const url = `${API_URL}experiences/${experienceId}`
+  const url = `${API_URL}educations/${educationId}`
   const token = useToken()
-  const { data, error } = await useFetch<ResponseExperience>(url, {
+  const { data, error } = await useFetch<ResponseEducation>(url, {
     headers: token.getAccessToken()
       ? {
           Authorization: 'Bearer ' + token.getAccessToken()

@@ -2,7 +2,8 @@
   <Form
     @submit="$emit('submit')"
     v-slot="{ meta, values, errors }"
-    :validation-schema="schemaExperience"
+    :validation-schema="schemaEducation"
+    :initial-values="initialValues"
   >
     <div
       class="grid items-start grid-cols-1 px-6 py-4 mt-1 rounded-md gap-x-3 gap-y-4 sm:grid-cols-4 bg-blue-50"
@@ -114,9 +115,10 @@ const props = defineProps({
     default: false
   }
 })
+const initialValues = { ...props.education }
 defineEmits(['submit', 'cancel'])
 
-const schemaExperience = yup.object({
+const schemaEducation = yup.object({
   degree: yup.string().required().max(50),
   educationDesc: yup.string().max(1500),
   field: yup.string().nullable().max(100),

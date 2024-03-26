@@ -3,6 +3,7 @@
     @submit="$emit('submit')"
     v-slot="{ meta, values, errors }"
     :validation-schema="schemaExperience"
+    :initial-values="initialValues"
   >
     <div
       class="grid items-start grid-cols-1 px-6 py-4 mt-1 rounded-md gap-x-3 gap-y-4 sm:grid-cols-4 bg-blue-50"
@@ -32,16 +33,13 @@
         v-model="experience.compName"
         required
       ></BaseInputField>
-      <Field
-        v-slot="{ field, errors }"
-        name="startedYear"
-        class="sm:col-span-2 lg:col-span-1"
-      >
+      <Field v-slot="{ field, errors }" name="startedYear">
         <BaseYearPicker
           label="Start year"
           id="startedYear"
           required
           v-model="experience.startedYear"
+          class="col-span-full sm:col-span-2 md:col-span-1"
           v-bind="field"
           placeholder="Select start year"
           :year-range="[
@@ -54,10 +52,11 @@
           </template>
         </BaseYearPicker>
       </Field>
-      <Field v-slot="{ field, errors }" name="endedYear" class="sm:col-span-1">
+      <Field v-slot="{ field, errors }" name="endedYear">
         <BaseYearPicker
           label="End year"
           id="endedYear"
+          class="col-span-full sm:col-span-2 md:col-span-1"
           required
           v-model="experience.endedYear"
           v-bind="field"
@@ -84,7 +83,11 @@
         v-model="experience.experienceDesc"
       ></BaseTextarea>
       <div class="flex flex-row-reverse gap-3 sm:col-span-full">
-        <BaseButton :leadingIcon="CheckIcon" type="submit">
+        <BaseButton
+          :leadingIcon="CheckIcon"
+          type="submit"
+          :disabled="!meta.dirty || !meta.valid"
+        >
           {{ editmode ? 'Save' : 'Add' }}
         </BaseButton>
         <BaseButton negative @click="$emit('cancel')" type="button">
@@ -110,6 +113,7 @@ const props = defineProps({
     default: false
   }
 })
+const initialValues = { ...props.experience }
 defineEmits(['submit', 'cancel'])
 
 const schemaExperience = yup.object({

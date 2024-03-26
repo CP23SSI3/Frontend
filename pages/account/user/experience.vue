@@ -3,7 +3,7 @@
     <BaseSectionCard topic="Experiences">
       <!-- List All Experience -->
       <div
-        v-for="(experiences, index) in experiencesList"
+        v-for="(experience, index) in experiencesList"
         v-if="experiencesList"
       >
         <div
@@ -19,19 +19,23 @@
           <div
             class="rounded-full bg-gray-100 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-200 min-w-max lg:w-64 lg:text-center"
           >
-            {{ experiences.position }}
+            {{ experience.position }}
           </div>
 
           <BaseText
-            :label="experiences.experienceName"
+            :label="experience.experienceName"
             class="w-full lg:max-w-lg"
           >
-            {{ experiences.experienceDesc }}
+            {{ experience.experienceDesc }}
           </BaseText>
           <div class="w-full text-end">
             <div class="flex items-center justify-end gap-6">
               <BaseItem :icon="BriefcaseIcon" class="min-w-max">
-                {{ experiences.startedYear }} - {{ experiences.endedYear }}
+                {{
+                  experience.startedYear == experience.endedYear
+                    ? experience.endedYear
+                    : experience.startedYear + ' - ' + experience.endedYear
+                }}
               </BaseItem>
               <Menu as="div" class="relative inline-block -ml-2 text-left">
                 <div>
@@ -64,7 +68,7 @@
                             'block px-4 py-2 text-sm cursor-pointer hover:underline'
                           ]"
                           :icon="PencilIcon"
-                          @click="editExper(experiences, index)"
+                          @click="editExper(experience, index)"
                           >Edit</BaseItem
                         >
                       </MenuItem>
@@ -77,7 +81,7 @@
                             'block px-4 py-2 text-sm cursor-pointer hover:underline'
                           ]"
                           :icon="TrashIconSolid"
-                          @click="deleteExper(index)"
+                          @click="removeExper(experience, index)"
                           >Delete</BaseItem
                         >
                       </MenuItem>
@@ -293,13 +297,6 @@ const experience = ref({
   startedYear: null,
   endedYear: null,
   compName: ''
-  //---- example data ---
-  // experienceName: 'New experience',
-  // experienceDesc: 'New experience description',
-  // position: 'New position',
-  // startedYear: 2024,
-  // endedYear: 2024,
-  // compName: 'anywhere'
 })
 
 const resetExperience = () => {
@@ -317,12 +314,8 @@ const hideAddExperMode = () => {
   statusAddExper.value = false
   resetExperience()
 }
-const addNewExper = () => {
-  experiencesList.value.push({
-    id: experiencesList.value.length,
-    ...experience.value
-  })
-  hideAddExperMode()
+const addNewExper = async () => {
+  await addExperience()
 }
 
 const editingExper = ref(null)
@@ -338,16 +331,114 @@ const editExper = (editExper, index) => {
     showEditExperMode()
   }
 }
-const saveExper = () => {
-  const { id } = editingExper.value
-  experiencesList.value[id] = editingExper.value
-  hideEditExperMode()
+const saveExper = async () => {
+  await updateExperience()
 }
-const deleteExper = (index) => {
-  if (index > -1) {
-    experiencesList.value.splice(index, 1)
+const removeExper = (experience, index) => {
+  Swal.fire({
+    title: 'Do you want to delete this experience?',
+    icon: 'warning',
+    confirmButtonText: 'Comfirm',
+    confirmButtonColor: 'red',
+    showCancelButton: true,
+    cancelButtonText: 'Cancel',
+    cancelButtonColor: 'gray',
+    reverseButtons: true
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await deleteExperience(experience.experienceId, index)
+    }
+  })
+}
+
+const addExperience = async () => {
+  let newExperience = {
+    ...experience.value,
+    user: { userId: props.myUser.userId }
   }
-  hideEditExperMode()
+  try {
+    const res = await useCreateExperience(newExperience)
+
+    if (res.value) {
+      let exper = res.value.data
+      console.log('Add New Experience Success')
+      experiencesList.value.push({
+        id: experiencesList.value.length,
+        compName: exper.compName,
+        endedYear: exper.endedYear,
+        experienceId: exper.experienceId,
+        experienceName: exper.experienceName,
+        experienceDesc: exper.experienceDesc,
+        position: exper.position,
+        startedYear: exper.startedYear
+      })
+      hideAddExperMode()
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't add new experience"
+    })
+  }
+}
+
+const updateExperience = async () => {
+  try {
+    const {
+      id,
+      compName,
+      endedYear,
+      experienceId,
+      experienceName,
+      experienceDesc,
+      position,
+      startedYear
+    } = editingExper.value
+    const res = await useUpdateExperience(experienceId, {
+      compName: compName,
+      endedYear: endedYear,
+      experienceName: experienceName,
+      experienceDesc: experienceDesc,
+      position: position,
+      startedYear: startedYear
+    })
+    if (res.value) {
+      console.log('Edit Experience Success')
+      experiencesList.value[id] = res.value.data
+      hideEditExperMode()
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't edit this experience"
+    })
+  }
+}
+
+const deleteExperience = async (experienceId, index) => {
+  try {
+    const res = await useDeleteExperience(experienceId)
+    if (res.value.status == 200) {
+      console.log('Delete Experience Success')
+      if (index > -1) {
+        experiencesList.value.splice(index, 1)
+      }
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't delete this experience"
+    })
+  }
 }
 
 // ---- Part: Skill ----
@@ -424,14 +515,12 @@ const addSkill = async () => {
       hideAddSkillMode()
     }
   } catch (error) {
-    console.log(error.message)
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,
       confirmButtonColor: 'blue',
       icon: 'error',
-      title: "Can't add new skill",
-      text: error.message ? error.message : ''
+      title: "Can't add new skill"
     })
   }
 }
@@ -449,7 +538,6 @@ const updateSkill = async () => {
       hideEditSkillMode()
     }
   } catch (error) {
-    console.log(error)
     Swal.fire({
       showConfirmButton: true,
       timerProgressBar: true,

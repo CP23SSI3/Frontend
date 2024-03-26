@@ -148,7 +148,7 @@
               <BaseItem
                 class="block px-4 py-2 text-sm text-gray-900 cursor-pointer hover:underline"
                 :icon="TrashIconSolid"
-                @click="deleteSkill(index)"
+                @click="removeSkill(skill, index)"
                 >Delete</BaseItem
               >
             </div>
@@ -353,13 +353,11 @@ const deleteExper = (index) => {
 // ---- Part: Skill ----
 const skillsList = ref([])
 skillsList.value = props.myUser.skills
+
 const statusAddSkill = ref(false)
 const skill = ref({
   skillName: '',
   skillDesc: ''
-  // //---- example data ---
-  // skillName: 'New skill',
-  // skillDesc: 'New skill description'
 })
 
 const resetSkill = () => {
@@ -373,14 +371,9 @@ const hideAddSkillMode = () => {
   statusAddSkill.value = false
   resetSkill()
 }
-const addNewSkill = () => {
-  skillsList.value.push({
-    id: skillsList.value.length,
-    ...skill.value
-  })
-  hideAddSkillMode()
+const addNewSkill = async () => {
+  await addSkill()
 }
-
 const editingSkill = ref(null)
 const statusEditSkill = ref(false)
 const showEditSkillMode = () => (statusEditSkill.value = true)
@@ -394,16 +387,97 @@ const editSkill = (editSkill, index) => {
     showEditSkillMode()
   }
 }
-const saveSkill = () => {
-  const { id } = editingSkill.value
-  skillsList.value[id] = editingSkill.value
-  hideEditSkillMode()
+const saveSkill = async () => {
+  await updateSkill()
 }
-const deleteSkill = (index) => {
-  if (index > -1) {
-    skillsList.value.splice(index, 1)
+
+const removeSkill = (skill, index) => {
+  Swal.fire({
+    title: 'Do you want to delete this skill?',
+    icon: 'warning',
+    confirmButtonText: 'Comfirm',
+    confirmButtonColor: 'red',
+    showCancelButton: true,
+    cancelButtonText: 'Cancel',
+    cancelButtonColor: 'gray',
+    reverseButtons: true
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await deleteSkill(skill.skillId, index)
+    }
+  })
+}
+
+const addSkill = async () => {
+  let newSkill = { ...skill.value, user: { userId: props.myUser.userId } }
+  try {
+    const res = await useCreateSkill(newSkill)
+
+    if (res.value) {
+      console.log('Add New Skill Success')
+      skillsList.value.push({
+        id: skillsList.value.length,
+        skillId: res.value.data.skillId,
+        skillName: res.value.data.skillName,
+        skillDesc: res.value.data.skillDesc
+      })
+      hideAddSkillMode()
+    }
+  } catch (error) {
+    console.log(error.message)
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't add new skill",
+      text: error.message ? error.message : ''
+    })
   }
-  hideEditSkillMode()
+}
+
+const updateSkill = async () => {
+  try {
+    const { id, skillId, skillName, skillDesc } = editingSkill.value
+    const res = await useUpdateSkill(skillId, {
+      skillName,
+      skillDesc
+    })
+    if (res.value) {
+      console.log('Edit Skill Success')
+      skillsList.value[id] = editingSkill.value
+      hideEditSkillMode()
+    }
+  } catch (error) {
+    console.log(error)
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't edit this skill"
+    })
+  }
+}
+
+const deleteSkill = async (skillId, index) => {
+  try {
+    const res = await useDeleteSkill(skillId)
+    if (res.value.status == 200) {
+      console.log('Delete Skill Success')
+      if (index > -1) {
+        skillsList.value.splice(index, 1)
+      }
+    }
+  } catch (error) {
+    Swal.fire({
+      showConfirmButton: true,
+      timerProgressBar: true,
+      confirmButtonColor: 'blue',
+      icon: 'error',
+      title: "Can't delete this langague"
+    })
+  }
 }
 
 // ---- Part: Languages ----
@@ -412,8 +486,6 @@ languagesList.value = props.myUser.languages
 const statusAddLanguage = ref(false)
 const language = ref({
   languageName: ''
-  //---- example data ---
-  // languageName: 'New language'
 })
 
 const resetLanguage = () => {
@@ -449,22 +521,6 @@ const saveLanguage = async () => {
 }
 
 const removeLanguage = async (lang, index) => {
-  // Swal.fire({
-  //   title: 'Are you sure remove this post?',
-  //   text: 'คุณต้องการลบโพสต์นี้หรือไม่?',
-  //   icon: 'warning',
-  //   confirmButtonText: 'Comfirm',
-  //   confirmButtonColor: 'red',
-  //   showCancelButton: true,
-  //   cancelButtonText: 'Cancel',
-  //   cancelButtonColor: 'gray',
-  //   reverseButtons: true
-  // }).then((result) => {
-  //   if (result.isConfirmed) {
-  //     fetchDeletePost()
-  //   }
-  // })
-
   await deleteLanguage(lang.languageId, index)
 }
 
@@ -480,8 +536,6 @@ const addLanguage = async () => {
         ...language.value,
         languageId: res.value.data.languageId
       })
-      console.log(languagesList.value)
-      emits('getUser')
       hideAddLanguageMode()
     }
   } catch (error) {
@@ -514,7 +568,8 @@ const updateLanguage = async () => {
       timerProgressBar: true,
       confirmButtonColor: 'blue',
       icon: 'error',
-      title: "Can't edit this langague"
+      title: "Can't edit this langague",
+      text: error.message ? error.message : ''
     })
   }
 }
@@ -527,7 +582,6 @@ const deleteLanguage = async (langId, index) => {
       if (index > -1) {
         languagesList.value.splice(index, 1)
       }
-      hideEditLanguageMode()
     }
   } catch (error) {
     Swal.fire({
